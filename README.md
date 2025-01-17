@@ -5,7 +5,7 @@ MoneyMaze is an interactive financial simulator designed to teach users the fund
 ## 👥 Team Members
 
 This project is being developed by three dedicated students:
-`Швец М.` `Соловарова С.` `Томилова А.`
+[`Швец М.`](https://github.com/marr97) [`Соловарова С.`](https://github.com/wahnkoij) [`Томилова А.`](https://github.com/alinatomilova)
 
 ## 🌟 Features
 
