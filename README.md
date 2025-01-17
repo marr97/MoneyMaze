@@ -49,7 +49,7 @@ We welcome contributions to MoneyMaze! If you have suggestions or want to contri
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/marr97/MoneyMaze/blob/main/LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/marr97/MoneyMaze/blob/main/LICENSE) file for details.
 
 ---
 
