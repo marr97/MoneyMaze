@@ -5,7 +5,7 @@ MoneyMaze is an interactive financial simulator designed to teach users the fund
 ## 👥 Team Members
 
 This project is being developed by three dedicated students:
-`Швец М.` `Соловарова С.` `Томилова А.`
+[`Швец М.`](https://github.com/marr97) [`Соловарова С.`](https://github.com/wahnkoij) [`Томилова А.`](https://github.com/alinatomilova)
 
 ## 🌟 Features
 
@@ -49,7 +49,7 @@ We welcome contributions to MoneyMaze! If you have suggestions or want to contri
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/marr97/MoneyMaze/blob/main/LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/marr97/MoneyMaze/blob/main/LICENSE) file for details.
 
 ---
 
