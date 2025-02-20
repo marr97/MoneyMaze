@@ -1,3 +1,0 @@
-/home/wahnkoij/Documents/project/MoneyMaze/build/CMakeFiles/database_manager_app.dir
-/home/wahnkoij/Documents/project/MoneyMaze/build/CMakeFiles/edit_cache.dir
-/home/wahnkoij/Documents/project/MoneyMaze/build/CMakeFiles/rebuild_cache.dir

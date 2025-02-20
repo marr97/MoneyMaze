@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/database_manager_app.dir/main.cpp.o CMakeFiles/database_manager_app.dir/src/database/DatabaseManager.cpp.o -o database_manager_app  /usr/lib/x86_64-linux-gnu/libpqxx.so 
