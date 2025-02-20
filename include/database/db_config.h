@@ -1,0 +1,5 @@
+#define DB_NAME "moneymaze_db"
+#define DB_USER "moneymaze_user"
+#define DB_PASSWORD "1111"
+#define DB_HOST "127.0.0.1"
+#define DB_PORT "5432"
