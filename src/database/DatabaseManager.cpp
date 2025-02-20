@@ -23,6 +23,7 @@ bool DatabaseManager::connect() {
     }
 }
 
+
 bool DatabaseManager::disconnect() {
     if (conn) {
         conn.reset(); 
