@@ -32,3 +32,20 @@ target_link_libraries(database_manager_app PRIVATE ${PQXX_LIBRARIES})
 
 # Добавить флаги компиляции для вывода всех предупреждений
 target_compile_options(database_manager_app PRIVATE -Wall -Wextra -Wpedantic)
+
+# Добавление цели для clang-format
+file(GLOB_RECURSE ALL_SOURCE_FILES 
+    ${CMAKE_SOURCE_DIR}/main.cpp
+    ${CMAKE_SOURCE_DIR}/src/database/*.cpp
+    ${CMAKE_SOURCE_DIR}/include/*.h
+)
+
+add_custom_target(
+    clang_format
+    COMMAND clang-format -i ${ALL_SOURCE_FILES}
+    COMMENT "Formatting code with clang-format"
+)
+
+# Сделать так, чтобы clang-format выполнялся перед сборкой
+add_dependencies(database_manager_app clang_format)
+

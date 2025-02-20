@@ -11,11 +11,16 @@ public:
     bool disconnect();
 
     // Методы для работы с пользователями
-    bool createUser(const std::string& username, const std::string& password);
-    bool authenticateUser(const std::string& username, const std::string& password);
+    bool createUser(const std::string &username, const std::string &password);
+    bool
+    authenticateUser(const std::string &username, const std::string &password);
 
     // Методы для работы с финансовым профилем
-    bool createFinancialProfile(int userId, double initialBalance, double dailyMinimum);
+    bool createFinancialProfile(
+        int userId,
+        double initialBalance,
+        double dailyMinimum
+    );
     bool updateBalance(int userId, double newBalance);
     double getBalance(int userId);
 
