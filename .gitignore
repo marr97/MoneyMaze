@@ -1,0 +1,13 @@
+# main.cpp
+database_manager_app
+
+# файлы вывода
+*.out
+*.log
+*.bin
+*.obj
+*.exe
+
+# директории сборки
+build/
+.vscode/
