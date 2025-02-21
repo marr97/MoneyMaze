@@ -1,4 +1,4 @@
-#include "include/database/DatabaseManager.h"
+#include "database/DatabaseManager.h"
 #include <iostream>
 
 DatabaseManager::DatabaseManager() : conn(nullptr) {

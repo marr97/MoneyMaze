@@ -1,5 +1,5 @@
 #include <iostream>
-#include "include/database/DatabaseManager.h"
+#include "database/DatabaseManager.h"
 
 int main() {
     DatabaseManager dbManager;
