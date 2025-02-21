@@ -2,6 +2,8 @@
 #include <pqxx/pqxx>
 #include "db_config.h"
 
+enum class LogLevel { DEBUG, INFO, WARNING, ERROR };
+
 class DatabaseManager {
 public:
     DatabaseManager();
