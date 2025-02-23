@@ -16,6 +16,7 @@ reg_window::reg_window(QWidget *parent)
       "background-color: rgb(128, 177, 145); color: grey;" // цвет при нажатии
       "}"
       );
+  ui->lineEdit_password->setEchoMode(QLineEdit::Password);
   ui->lineEdit_confirmation->setEchoMode(QLineEdit::Password);
 }
 
