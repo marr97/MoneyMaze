@@ -28,7 +28,7 @@ private:
   auth_window ui_Auth;
   reg_window ui_Reg;
 
-  QString user_name;
+  QString user_login;
   QString user_password;
 
 };

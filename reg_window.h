@@ -21,8 +21,6 @@ public:
 
 
 private slots:
-  void on_lineEdit_name_textEdited(const QString &arg1);
-
   void on_lineEdit_login_textEdited(const QString &arg1);
 
   void on_lineEdit_password_textEdited(const QString &arg1);
@@ -34,7 +32,6 @@ private slots:
 private:
   Ui::reg_window *ui;
 
-  QString new_user_name;
   QString user_newlogin;
   QString user_newpassword;
   QString user_password_confirmation;

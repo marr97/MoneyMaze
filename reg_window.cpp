@@ -23,12 +23,6 @@ reg_window::reg_window(QWidget *parent)
 reg_window::~reg_window() { delete ui; }
 
 
-void reg_window::on_lineEdit_name_textEdited(const QString &arg1)
-{
-  reg_window::new_user_name = arg1;
-}
-
-
 void reg_window::on_lineEdit_login_textEdited(const QString &arg1)
 {
   reg_window::user_newlogin = arg1;
@@ -46,10 +40,6 @@ void reg_window::on_lineEdit_confirmation_textEdited(const QString &arg1)
   reg_window::user_password_confirmation = arg1;
 }
 
-QString reg_window::get_name()
-{
-  return new_user_name;
-}
 
 QString reg_window::get_new_login()
 {

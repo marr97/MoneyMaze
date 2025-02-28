@@ -324,7 +324,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>80</y>
+     <y>70</y>
      <width>401</width>
      <height>83</height>
     </rect>
@@ -599,9 +599,9 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>274</y>
+     <y>260</y>
      <width>401</width>
-     <height>21</height>
+     <height>32</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
@@ -679,7 +679,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Зарегестрироваться</string>
+       <string>Зарегистрироваться</string>
       </property>
      </widget>
     </item>
@@ -689,7 +689,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>180</y>
+     <y>170</y>
      <width>401</width>
      <height>35</height>
     </rect>
