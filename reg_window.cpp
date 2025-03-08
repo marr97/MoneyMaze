@@ -22,7 +22,6 @@ reg_window::reg_window(QWidget *parent)
 
 reg_window::~reg_window() { delete ui; }
 
-
 void reg_window::on_lineEdit_login_textEdited(const QString &arg1)
 {
   reg_window::user_newlogin = arg1;
@@ -61,8 +60,10 @@ bool reg_window::check_password_confirmation()
   return (user_newpassword == user_password_confirmation);
 }
 
-void reg_window::on_pushButton_create_account_clicked()
-{
+void reg_window::on_pushButton_create_account_clicked() {
+    
+  json regData = create_registration_json(*this);
+  send_registration_data(regData);
   this->hide();
 }
 

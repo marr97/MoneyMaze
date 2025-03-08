@@ -2,6 +2,8 @@
 #define REG_WINDOW_H
 
 #include <QDialog>
+#include "http_client.h"
+#include "json_parser.h"
 
 namespace Ui {
 class reg_window;

@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include "reg_window.h"
+#include "http_client.h"
+#include "json_parser.h"
 
 namespace Ui {
 class auth_window;

@@ -34,7 +34,6 @@ auth_window::auth_window(QWidget *parent)
 
 auth_window::~auth_window() { delete ui; }
 
-
 void auth_window::on_lineEdit_login_textEdited(const QString &arg1)
 {
   auth_window::user_login = arg1;
@@ -56,8 +55,10 @@ QString auth_window::get_password()
 }
 
 
-void auth_window::on_sign_in_pushButton_clicked()
-{
+void auth_window::on_sign_in_pushButton_clicked() {
+    
+  json authData = create_auth_json(*this);
+  send_registration_data(authData);
   this->hide();
 }
 
