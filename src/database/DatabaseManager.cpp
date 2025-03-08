@@ -163,8 +163,7 @@ bool DatabaseManager::authenticateUser(const std::string &username,
 bool DatabaseManager::create_financial_profile(int user_id,
                                                double initial_balance,
                                                double daily_minimum,
-                                               double financial_well_being,
-                                               double debt) {
+                                               double savings, double debt) {
   if (!conn || !conn->is_open()) {
     Logger::log(LogLevel::ERROR, "Attempted to create financial profile "
                                  "without an open database connection.");
@@ -175,9 +174,9 @@ bool DatabaseManager::create_financial_profile(int user_id,
     pqxx::work txn(*conn);
     pqxx::result r = txn.exec_params(
         "INSERT INTO financial_profile (user_id, balance, daily_minimum, "
-        "financial_well_being, debt) VALUES ($1, $2, $3, $4, $5) ON "
+        "savings, debt) VALUES ($1, $2, $3, $4, $5) ON "
         "CONFLICT (user_id) DO NOTHING RETURNING id",
-        user_id, initial_balance, daily_minimum, financial_well_being, debt);
+        user_id, initial_balance, daily_minimum, savings, debt);
     txn.commit();
 
     if (r.empty()) {
@@ -233,9 +232,9 @@ bool DatabaseManager::update_financial_profile(const std::string &column_name,
       txn.commit();
       break;
     }
-    case FinancialProfile::FINANCIAL_WELL_BEING: {
+    case FinancialProfile::SAVINGS: {
       pqxx::work txn(*conn);
-      r = txn.exec_params("UPDATE financial_profile SET financial_well_being = "
+      r = txn.exec_params("UPDATE financial_profile SET savings = "
                           "$2 WHERE user_id = $1 RETURNING id",
                           user_id, new_value);
       txn.commit();
@@ -303,8 +302,8 @@ double DatabaseManager::get_value_from_financial_profile(
       column_to_get = "daily_minimum";
       break;
     }
-    case FinancialProfile::FINANCIAL_WELL_BEING: {
-      column_to_get = "financial_well_being";
+    case FinancialProfile::SAVINGS: {
+      column_to_get = "savings";
       break;
     }
     case FinancialProfile::DEBT: {
