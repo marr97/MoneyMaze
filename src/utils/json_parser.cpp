@@ -21,3 +21,4 @@ json create_auth_json(const auth_window &authWin) {
 
     return authData;
 }
+
