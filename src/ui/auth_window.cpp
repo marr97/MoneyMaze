@@ -58,7 +58,7 @@ QString auth_window::get_password()
 void auth_window::on_sign_in_pushButton_clicked() {
     
   json authData = create_auth_json(*this);
-  send_registration_data(authData);
+  send_auth_data(authData);
   this->hide();
 }
 
