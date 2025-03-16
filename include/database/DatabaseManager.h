@@ -41,13 +41,12 @@ public:
     }
   }
 
-  bool create_financial_profile(int user_id, double initial_balance,
-                                double daily_minimum, double savings,
-                                double debt);
+  bool create_financial_profile(int user_id, int initial_balance,
+                                int daily_minimum, int savings, int debt);
   bool update_financial_profile(const std::string &column_name, int user_id,
-                                double new_value);
-  double get_value_from_financial_profile(const std::string &column_name,
-                                          int user_id);
+                                int new_value);
+  int get_value_from_financial_profile(const std::string &column_name,
+                                       int user_id);
 
 private:
   std::unique_ptr<pqxx::connection> conn;
