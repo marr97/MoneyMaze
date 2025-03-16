@@ -160,10 +160,9 @@ bool DatabaseManager::authenticateUser(const std::string &username,
   }
 }
 
-bool DatabaseManager::create_financial_profile(int user_id,
-                                               double initial_balance,
-                                               double daily_minimum,
-                                               double savings, double debt) {
+bool DatabaseManager::create_financial_profile(int user_id, int initial_balance,
+                                               int daily_minimum, int savings,
+                                               int debt) {
   if (!conn || !conn->is_open()) {
     Logger::log(LogLevel::ERROR, "Attempted to create financial profile "
                                  "without an open database connection.");
@@ -204,7 +203,7 @@ bool DatabaseManager::create_financial_profile(int user_id,
 }
 
 bool DatabaseManager::update_financial_profile(const std::string &column_name,
-                                               int user_id, double new_value) {
+                                               int user_id, int new_value) {
   if (!conn || !conn->is_open()) {
     Logger::log(LogLevel::ERROR, "Attempted to update financial profile "
                                  "without an open database connection.");
@@ -281,17 +280,17 @@ bool DatabaseManager::update_financial_profile(const std::string &column_name,
   }
 }
 
-double DatabaseManager::get_value_from_financial_profile(
+int DatabaseManager::get_value_from_financial_profile(
     const std::string &column_name, int user_id) {
   if (!conn || !conn->is_open()) {
     Logger::log(LogLevel::ERROR, "Attempted to get financial profile value "
                                  "without an open database connection.");
-    return 0.0;
+    return 0;
   }
 
   try {
     const FinancialProfile column = financial_profile_column(column_name);
-    std::string column_to_get;
+    std::string column_to_get = "";
 
     switch (column) {
     case FinancialProfile::BALANCE: {
@@ -313,7 +312,7 @@ double DatabaseManager::get_value_from_financial_profile(
     case FinancialProfile::UNKNOWN_COLUMN: {
       Logger::log(LogLevel::WARNING,
                   "Unknown financial profile column: " + column_name + ".");
-      return 0.0;
+      return 0;
     }
     }
 
@@ -328,21 +327,21 @@ double DatabaseManager::get_value_from_financial_profile(
       Logger::log(LogLevel::WARNING,
                   "No financial profile found for user_id '" +
                       std::to_string(user_id) + "'.");
-      return 0.0;
+      return 0;
     }
 
-    return r[0][0].as<double>();
+    return r[0][0].as<int>();
 
   } catch (const pqxx::sql_error &e) {
     Logger::log(LogLevel::ERROR,
                 "SQL error during getting financial profile value: " +
                     std::string(e.what()));
-    return 0.0;
+    return 0;
 
   } catch (const std::exception &e) {
     Logger::log(LogLevel::ERROR,
                 "Unexpected error during getting financial profile value: " +
                     std::string(e.what()));
-    return 0.0;
+    return 0;
   }
 }
