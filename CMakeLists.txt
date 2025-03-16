@@ -4,11 +4,13 @@ project(DatabaseManagerProject)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOMOC ON)  # Enables automatic moc processing
+set(CMAKE_AUTOUIC ON)  # Enables automatic UI processing 
 
-# Поиск libpqxx
+# Find libpqxx
 find_package(PQXX)
 if(NOT PQXX_FOUND)
-    # Если стандартный поиск не удался, попробуем найти вручную
     find_path(PQXX_INCLUDE_DIRS NAMES pqxx/pqxx pqxx/version.hxx
         PATHS ${CMAKE_SOURCE_DIR}/external/libpqxx/include /usr/include /usr/local/include)
     find_library(PQXX_LIBRARIES NAMES pqxx
@@ -21,35 +23,63 @@ if(NOT PQXX_FOUND)
     endif()
 endif()
 
-# Добавить исходные файлы
-add_executable(database_manager_app 
+# Find Qt5
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+
+# Define source files
+set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/database/DatabaseManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/profile_window.cpp
 )
 
-# Включить директории заголовков
+# Define UI files
+set(UI_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/profile_window.ui
+)
+
+# Define header files
+set(HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/database/DatabaseManager.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/profile_window.h
+)
+
+# Add executable with all source files
+add_executable(database_manager_app 
+    ${SOURCE_FILES}
+    ${HEADER_FILES}
+    ${UI_FILES}
+)
+
+# Include directories
+# Add the directory containing http_client.h
 target_include_directories(database_manager_app PRIVATE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include  # This is important
+    ${CMAKE_CURRENT_BINARY_DIR}  # For ui_*.h files
     ${PQXX_INCLUDE_DIRS}
 )
 
-# Связать с libpqxx
-target_link_libraries(database_manager_app PRIVATE ${PQXX_LIBRARIES})
+# Link libraries
+target_link_libraries(database_manager_app PRIVATE 
+    Qt5::Widgets 
+    ${PQXX_LIBRARIES}
+)
 
-# Добавить флаги компиляции для вывода всех предупреждений
+# Add compiler flags for warnings
 if(MSVC)
     target_compile_options(database_manager_app PRIVATE /W4)
 else()
     target_compile_options(database_manager_app PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-# Добавление цели для clang-format (если доступен)
+# Add clang-format target (if available)
 find_program(CLANG_FORMAT "clang-format")
 if(CLANG_FORMAT)
     file(GLOB_RECURSE ALL_SOURCE_FILES 
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/database/*.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/*.cpp
     )
 
     add_custom_target(
@@ -57,22 +87,20 @@ if(CLANG_FORMAT)
         COMMAND ${CLANG_FORMAT} -i ${ALL_SOURCE_FILES}
         COMMENT "Formatting code with clang-format"
     )
-
-    # Сделать так, чтобы clang-format выполнялся перед сборкой
-    add_dependencies(database_manager_app clang_format)
 else()
     message(STATUS "clang-format not found, formatting target will not be available")
 endif()
 
-# Опция для включения тестов
+# Option for building tests
 option(BUILD_TESTS "Build the tests" OFF)
 if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
 
-# Вывод информации о конфигурации
+# Output configuration information
 message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "libpqxx include dir: ${PQXX_INCLUDE_DIRS}")
 message(STATUS "libpqxx library: ${PQXX_LIBRARIES}")
+message(STATUS "Qt5Widgets library: ${Qt5Widgets_FOUND}")
