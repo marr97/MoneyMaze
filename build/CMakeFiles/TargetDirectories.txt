@@ -1,0 +1,5 @@
+/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles/money_maze.dir
+/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/_deps/json-build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/_deps/json-build/CMakeFiles/rebuild_cache.dir
