@@ -1,5 +1,6 @@
-/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles/money_maze.dir
-/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles/edit_cache.dir
-/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles/rebuild_cache.dir
-/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/_deps/json-build/CMakeFiles/edit_cache.dir
-/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/_deps/json-build/CMakeFiles/rebuild_cache.dir
+/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/database.dir
+/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/ui.dir
+/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/client.dir
+/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/utils.dir
+/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/edit_cache.dir
+/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/rebuild_cache.dir

@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/a.out.dir/src/main.cpp.o CMakeFiles/a.out.dir/src/network.cpp.o -o a.out  -Wl,-rpath,/usr/local/lib /usr/local/lib/libPocoNet.so.111 /usr/local/lib/libPocoFoundation.so.111 -lpthread -ldl -lrt

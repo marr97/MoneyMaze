@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+a5f9f64eea481414c793b4c324d33f81 ui_auth_window.h
+371b1edd3dccd70e62e8f102f1bdc63b ui_mainwindow.h
+5e42c7b96c6cafd1f89c26aa2001f3d4 ui_reg_window.h

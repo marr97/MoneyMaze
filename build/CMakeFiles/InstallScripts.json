@@ -1,8 +1,7 @@
 {
 	"InstallScripts" : 
 	[
-		"/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/cmake_install.cmake",
-		"/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/_deps/json-build/cmake_install.cmake"
+		"/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/cmake_install.cmake"
 	],
 	"Parallel" : false
 }

@@ -1,78 +1,83 @@
-cmake_minimum_required(VERSION 3.10)
-project(DatabaseManagerProject)
+cmake_minimum_required(VERSION 3.15)
+project(MoneyMaze LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+# 1. Общие настройки
+set(CMAKE_CXX_STANDARD        17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS      OFF)
 
-# Поиск libpqxx
-find_package(PQXX)
-if(NOT PQXX_FOUND)
-    # Если стандартный поиск не удался, попробуем найти вручную
-    find_path(PQXX_INCLUDE_DIRS NAMES pqxx/pqxx pqxx/version.hxx
-        PATHS ${CMAKE_SOURCE_DIR}/external/libpqxx/include /usr/include /usr/local/include)
-    find_library(PQXX_LIBRARIES NAMES pqxx
-        PATHS ${CMAKE_SOURCE_DIR}/external/libpqxx/lib /usr/lib /usr/local/lib /usr/lib/x86_64-linux-gnu)
-
-    if(PQXX_INCLUDE_DIRS AND PQXX_LIBRARIES)
-        message(STATUS "Found libpqxx: ${PQXX_LIBRARIES}")
-    else()
-        message(FATAL_ERROR "Could not find libpqxx. Please install it or provide its location.")
-    endif()
-endif()
-
-# Добавить исходные файлы
-add_executable(database_manager_app 
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/database/DatabaseManager.cpp
+# 2. Пути к заголовкам
+include_directories(
+    ${CMAKE_SOURCE_DIR}/include
 )
 
-# Включить директории заголовков
-target_include_directories(database_manager_app PRIVATE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+# 3. Внешние зависимости
+
+## 3.1 libpqxx (PostgreSQL C++ API)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(PQXX REQUIRED libpqxx)
+
+## 3.2 Qt5 Widgets (для UI-модуля)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+
+# 4. Database-модуль
+add_library(database
+    src/database/database.cpp
+)
+target_include_directories(database PUBLIC
+    ${CMAKE_SOURCE_DIR}/include/database
     ${PQXX_INCLUDE_DIRS}
 )
+target_link_libraries(database PUBLIC
+    ${PQXX_LIBRARIES}
+)
 
-# Связать с libpqxx
-target_link_libraries(database_manager_app PRIVATE ${PQXX_LIBRARIES})
+# 5. UI-модуль
 
-# Добавить флаги компиляции для вывода всех предупреждений
-if(MSVC)
-    target_compile_options(database_manager_app PRIVATE /W4)
-else()
-    target_compile_options(database_manager_app PRIVATE -Wall -Wextra -Wpedantic)
-endif()
+# 5.1 Обёртка .ui → заголовки
+qt5_wrap_ui(UI_HEADERS
+    ${CMAKE_SOURCE_DIR}/src/ui/forms/auth_window.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/forms/mainwindow.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/forms/reg_window.ui
+)
 
-# Добавление цели для clang-format (если доступен)
-find_program(CLANG_FORMAT "clang-format")
-if(CLANG_FORMAT)
-    file(GLOB_RECURSE ALL_SOURCE_FILES 
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/database/*.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
-    )
+add_library(ui
+    src/ui/auth_window.cpp
+    src/ui/mainwindow.cpp
+    src/ui/reg_window.cpp
+    ${UI_HEADERS}
+)
+target_include_directories(ui PUBLIC
+    ${CMAKE_SOURCE_DIR}/include/ui
+)
 
-    add_custom_target(
-        clang_format
-        COMMAND ${CLANG_FORMAT} -i ${ALL_SOURCE_FILES}
-        COMMENT "Formatting code with clang-format"
-    )
 
-    # Сделать так, чтобы clang-format выполнялся перед сборкой
-    add_dependencies(database_manager_app clang_format)
-else()
-    message(STATUS "clang-format not found, formatting target will not be available")
-endif()
+target_link_libraries(ui PUBLIC
+    Qt5::Widgets
+)
 
-# Опция для включения тестов
-option(BUILD_TESTS "Build the tests" OFF)
-if(BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
+# 6. Client-модуль (использует nlohmann/json)
+add_library(client
+    src/client/http_client.cpp
+)
 
-# Вывод информации о конфигурации
-message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-message(STATUS "libpqxx include dir: ${PQXX_INCLUDE_DIRS}")
-message(STATUS "libpqxx library: ${PQXX_LIBRARIES}")
+target_include_directories(ui PUBLIC
+    ${CMAKE_SOURCE_DIR}/include/ui
+    ${CMAKE_BINARY_DIR}            
+)
+
+target_include_directories(client PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+# 7. Utils-модуль (JSON-парсер)
+add_library(utils
+    src/utils/json_parser.cpp
+)
+
+target_link_libraries(utils PUBLIC Qt5::Widgets)
+
+target_include_directories(utils PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+)
+

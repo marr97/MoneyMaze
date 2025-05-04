@@ -1,2 +1,0 @@
-add_executable(database_tests DatabaseManagerTests.cpp)
-target_link_libraries(database_tests database_manager)

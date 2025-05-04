@@ -1,0 +1,2 @@
+/usr/bin/ar qc libui.a CMakeFiles/ui.dir/src/ui/auth_window.cpp.o CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o CMakeFiles/ui.dir/src/ui/reg_window.cpp.o
+/usr/bin/ranlib libui.a

@@ -57,10 +57,10 @@ RM = /home/marr97/cmake-4.0.0-rc1-linux-x86_64/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/HUAWEI/Desktop/MoneyMaze
+CMAKE_SOURCE_DIR = /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build
+CMAKE_BINARY_DIR = /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles /mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -117,24 +117,63 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named money_maze
+# Target rules for targets named database
 
 # Build rule for target.
-money_maze: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 money_maze
-.PHONY : money_maze
+database: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 database
+.PHONY : database
 
 # fast build rule for target.
-money_maze/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/build
-.PHONY : money_maze/fast
+database/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/build
+.PHONY : database/fast
+
+#=============================================================================
+# Target rules for targets named ui
+
+# Build rule for target.
+ui: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ui
+.PHONY : ui
+
+# fast build rule for target.
+ui/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/build
+.PHONY : ui/fast
+
+#=============================================================================
+# Target rules for targets named client
+
+# Build rule for target.
+client: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client
+.PHONY : client
+
+# fast build rule for target.
+client/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
+.PHONY : client/fast
+
+#=============================================================================
+# Target rules for targets named utils
+
+# Build rule for target.
+utils: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 utils
+.PHONY : utils
+
+# fast build rule for target.
+utils/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/build
+.PHONY : utils/fast
 
 src/client/http_client.o: src/client/http_client.cpp.o
 .PHONY : src/client/http_client.o
 
 # target to build an object file
 src/client/http_client.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/client/http_client.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/client/http_client.cpp.o
 .PHONY : src/client/http_client.cpp.o
 
 src/client/http_client.i: src/client/http_client.cpp.i
@@ -142,7 +181,7 @@ src/client/http_client.i: src/client/http_client.cpp.i
 
 # target to preprocess a source file
 src/client/http_client.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/client/http_client.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/client/http_client.cpp.i
 .PHONY : src/client/http_client.cpp.i
 
 src/client/http_client.s: src/client/http_client.cpp.s
@@ -150,7 +189,7 @@ src/client/http_client.s: src/client/http_client.cpp.s
 
 # target to generate assembly for a file
 src/client/http_client.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/client/http_client.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/client/http_client.cpp.s
 .PHONY : src/client/http_client.cpp.s
 
 src/database/database.o: src/database/database.cpp.o
@@ -158,7 +197,7 @@ src/database/database.o: src/database/database.cpp.o
 
 # target to build an object file
 src/database/database.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/database/database.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/src/database/database.cpp.o
 .PHONY : src/database/database.cpp.o
 
 src/database/database.i: src/database/database.cpp.i
@@ -166,7 +205,7 @@ src/database/database.i: src/database/database.cpp.i
 
 # target to preprocess a source file
 src/database/database.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/database/database.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/src/database/database.cpp.i
 .PHONY : src/database/database.cpp.i
 
 src/database/database.s: src/database/database.cpp.s
@@ -174,87 +213,87 @@ src/database/database.s: src/database/database.cpp.s
 
 # target to generate assembly for a file
 src/database/database.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/database/database.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/src/database/database.cpp.s
 .PHONY : src/database/database.cpp.s
 
-src/server/http_server.o: src/server/http_server.cpp.o
-.PHONY : src/server/http_server.o
+src/ui/auth_window.o: src/ui/auth_window.cpp.o
+.PHONY : src/ui/auth_window.o
 
 # target to build an object file
-src/server/http_server.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/server/http_server.cpp.o
-.PHONY : src/server/http_server.cpp.o
+src/ui/auth_window.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/auth_window.cpp.o
+.PHONY : src/ui/auth_window.cpp.o
 
-src/server/http_server.i: src/server/http_server.cpp.i
-.PHONY : src/server/http_server.i
+src/ui/auth_window.i: src/ui/auth_window.cpp.i
+.PHONY : src/ui/auth_window.i
 
 # target to preprocess a source file
-src/server/http_server.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/server/http_server.cpp.i
-.PHONY : src/server/http_server.cpp.i
+src/ui/auth_window.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/auth_window.cpp.i
+.PHONY : src/ui/auth_window.cpp.i
 
-src/server/http_server.s: src/server/http_server.cpp.s
-.PHONY : src/server/http_server.s
+src/ui/auth_window.s: src/ui/auth_window.cpp.s
+.PHONY : src/ui/auth_window.s
 
 # target to generate assembly for a file
-src/server/http_server.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/server/http_server.cpp.s
-.PHONY : src/server/http_server.cpp.s
+src/ui/auth_window.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/auth_window.cpp.s
+.PHONY : src/ui/auth_window.cpp.s
 
-src/server/main.o: src/server/main.cpp.o
-.PHONY : src/server/main.o
+src/ui/mainwindow.o: src/ui/mainwindow.cpp.o
+.PHONY : src/ui/mainwindow.o
 
 # target to build an object file
-src/server/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/server/main.cpp.o
-.PHONY : src/server/main.cpp.o
+src/ui/mainwindow.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o
+.PHONY : src/ui/mainwindow.cpp.o
 
-src/server/main.i: src/server/main.cpp.i
-.PHONY : src/server/main.i
+src/ui/mainwindow.i: src/ui/mainwindow.cpp.i
+.PHONY : src/ui/mainwindow.i
 
 # target to preprocess a source file
-src/server/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/server/main.cpp.i
-.PHONY : src/server/main.cpp.i
+src/ui/mainwindow.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/mainwindow.cpp.i
+.PHONY : src/ui/mainwindow.cpp.i
 
-src/server/main.s: src/server/main.cpp.s
-.PHONY : src/server/main.s
+src/ui/mainwindow.s: src/ui/mainwindow.cpp.s
+.PHONY : src/ui/mainwindow.s
 
 # target to generate assembly for a file
-src/server/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/server/main.cpp.s
-.PHONY : src/server/main.cpp.s
+src/ui/mainwindow.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/mainwindow.cpp.s
+.PHONY : src/ui/mainwindow.cpp.s
 
-src/server/request_handler.o: src/server/request_handler.cpp.o
-.PHONY : src/server/request_handler.o
+src/ui/reg_window.o: src/ui/reg_window.cpp.o
+.PHONY : src/ui/reg_window.o
 
 # target to build an object file
-src/server/request_handler.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/server/request_handler.cpp.o
-.PHONY : src/server/request_handler.cpp.o
+src/ui/reg_window.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/reg_window.cpp.o
+.PHONY : src/ui/reg_window.cpp.o
 
-src/server/request_handler.i: src/server/request_handler.cpp.i
-.PHONY : src/server/request_handler.i
+src/ui/reg_window.i: src/ui/reg_window.cpp.i
+.PHONY : src/ui/reg_window.i
 
 # target to preprocess a source file
-src/server/request_handler.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/server/request_handler.cpp.i
-.PHONY : src/server/request_handler.cpp.i
+src/ui/reg_window.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/reg_window.cpp.i
+.PHONY : src/ui/reg_window.cpp.i
 
-src/server/request_handler.s: src/server/request_handler.cpp.s
-.PHONY : src/server/request_handler.s
+src/ui/reg_window.s: src/ui/reg_window.cpp.s
+.PHONY : src/ui/reg_window.s
 
 # target to generate assembly for a file
-src/server/request_handler.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/server/request_handler.cpp.s
-.PHONY : src/server/request_handler.cpp.s
+src/ui/reg_window.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/reg_window.cpp.s
+.PHONY : src/ui/reg_window.cpp.s
 
 src/utils/json_parser.o: src/utils/json_parser.cpp.o
 .PHONY : src/utils/json_parser.o
 
 # target to build an object file
 src/utils/json_parser.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/utils/json_parser.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/src/utils/json_parser.cpp.o
 .PHONY : src/utils/json_parser.cpp.o
 
 src/utils/json_parser.i: src/utils/json_parser.cpp.i
@@ -262,7 +301,7 @@ src/utils/json_parser.i: src/utils/json_parser.cpp.i
 
 # target to preprocess a source file
 src/utils/json_parser.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/utils/json_parser.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/src/utils/json_parser.cpp.i
 .PHONY : src/utils/json_parser.cpp.i
 
 src/utils/json_parser.s: src/utils/json_parser.cpp.s
@@ -270,7 +309,7 @@ src/utils/json_parser.s: src/utils/json_parser.cpp.s
 
 # target to generate assembly for a file
 src/utils/json_parser.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/src/utils/json_parser.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/src/utils/json_parser.cpp.s
 .PHONY : src/utils/json_parser.cpp.s
 
 # Help Target
@@ -281,22 +320,25 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... money_maze"
+	@echo "... client"
+	@echo "... database"
+	@echo "... ui"
+	@echo "... utils"
 	@echo "... src/client/http_client.o"
 	@echo "... src/client/http_client.i"
 	@echo "... src/client/http_client.s"
 	@echo "... src/database/database.o"
 	@echo "... src/database/database.i"
 	@echo "... src/database/database.s"
-	@echo "... src/server/http_server.o"
-	@echo "... src/server/http_server.i"
-	@echo "... src/server/http_server.s"
-	@echo "... src/server/main.o"
-	@echo "... src/server/main.i"
-	@echo "... src/server/main.s"
-	@echo "... src/server/request_handler.o"
-	@echo "... src/server/request_handler.i"
-	@echo "... src/server/request_handler.s"
+	@echo "... src/ui/auth_window.o"
+	@echo "... src/ui/auth_window.i"
+	@echo "... src/ui/auth_window.s"
+	@echo "... src/ui/mainwindow.o"
+	@echo "... src/ui/mainwindow.i"
+	@echo "... src/ui/mainwindow.s"
+	@echo "... src/ui/reg_window.o"
+	@echo "... src/ui/reg_window.i"
+	@echo "... src/ui/reg_window.s"
 	@echo "... src/utils/json_parser.o"
 	@echo "... src/utils/json_parser.i"
 	@echo "... src/utils/json_parser.s"

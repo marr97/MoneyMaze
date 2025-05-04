@@ -54,83 +54,166 @@ RM = /home/marr97/cmake-4.0.0-rc1-linux-x86_64/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/HUAWEI/Desktop/MoneyMaze
+CMAKE_SOURCE_DIR = /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build
+CMAKE_BINARY_DIR = /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build
 
 #=============================================================================
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/money_maze.dir/all
-all: _deps/json-build/all
+all: CMakeFiles/database.dir/all
+all: CMakeFiles/ui.dir/all
+all: CMakeFiles/client.dir/all
+all: CMakeFiles/utils.dir/all
 .PHONY : all
 
 # The main recursive "codegen" target.
-codegen: CMakeFiles/money_maze.dir/codegen
-codegen: _deps/json-build/codegen
+codegen: CMakeFiles/database.dir/codegen
+codegen: CMakeFiles/ui.dir/codegen
+codegen: CMakeFiles/client.dir/codegen
+codegen: CMakeFiles/utils.dir/codegen
 .PHONY : codegen
 
 # The main recursive "preinstall" target.
-preinstall: _deps/json-build/preinstall
+preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/money_maze.dir/clean
-clean: _deps/json-build/clean
+clean: CMakeFiles/database.dir/clean
+clean: CMakeFiles/ui.dir/clean
+clean: CMakeFiles/client.dir/clean
+clean: CMakeFiles/utils.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Directory level rules for directory _deps/json-build
-
-# Recursive "all" directory target.
-_deps/json-build/all:
-.PHONY : _deps/json-build/all
-
-# Recursive "codegen" directory target.
-_deps/json-build/codegen:
-.PHONY : _deps/json-build/codegen
-
-# Recursive "preinstall" directory target.
-_deps/json-build/preinstall:
-.PHONY : _deps/json-build/preinstall
-
-# Recursive "clean" directory target.
-_deps/json-build/clean:
-.PHONY : _deps/json-build/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/money_maze.dir
+# Target rules for target CMakeFiles/database.dir
 
 # All Build rule for target.
-CMakeFiles/money_maze.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target money_maze"
-.PHONY : CMakeFiles/money_maze.dir/all
+CMakeFiles/database.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=3,4 "Built target database"
+.PHONY : CMakeFiles/database.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/money_maze.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles 7
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/money_maze.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles 0
-.PHONY : CMakeFiles/money_maze.dir/rule
+CMakeFiles/database.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/database.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles 0
+.PHONY : CMakeFiles/database.dir/rule
 
 # Convenience name for target.
-money_maze: CMakeFiles/money_maze.dir/rule
-.PHONY : money_maze
+database: CMakeFiles/database.dir/rule
+.PHONY : database
 
 # codegen rule for target.
-CMakeFiles/money_maze.dir/codegen:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/c/Users/HUAWEI/Desktop/MoneyMaze/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Finished codegen for target money_maze"
-.PHONY : CMakeFiles/money_maze.dir/codegen
+CMakeFiles/database.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=3,4 "Finished codegen for target database"
+.PHONY : CMakeFiles/database.dir/codegen
 
 # clean rule for target.
-CMakeFiles/money_maze.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze.dir/build.make CMakeFiles/money_maze.dir/clean
-.PHONY : CMakeFiles/money_maze.dir/clean
+CMakeFiles/database.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/clean
+.PHONY : CMakeFiles/database.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/ui.dir
+
+# All Build rule for target.
+CMakeFiles/ui.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=5,6,7,8,9,10,11 "Built target ui"
+.PHONY : CMakeFiles/ui.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/ui.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles 7
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/ui.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles 0
+.PHONY : CMakeFiles/ui.dir/rule
+
+# Convenience name for target.
+ui: CMakeFiles/ui.dir/rule
+.PHONY : ui
+
+# codegen rule for target.
+CMakeFiles/ui.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=5,6,7,8,9,10,11 "Finished codegen for target ui"
+.PHONY : CMakeFiles/ui.dir/codegen
+
+# clean rule for target.
+CMakeFiles/ui.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/clean
+.PHONY : CMakeFiles/ui.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/client.dir
+
+# All Build rule for target.
+CMakeFiles/client.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=1,2 "Built target client"
+.PHONY : CMakeFiles/client.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/client.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/client.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles 0
+.PHONY : CMakeFiles/client.dir/rule
+
+# Convenience name for target.
+client: CMakeFiles/client.dir/rule
+.PHONY : client
+
+# codegen rule for target.
+CMakeFiles/client.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=1,2 "Finished codegen for target client"
+.PHONY : CMakeFiles/client.dir/codegen
+
+# clean rule for target.
+CMakeFiles/client.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/clean
+.PHONY : CMakeFiles/client.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/utils.dir
+
+# All Build rule for target.
+CMakeFiles/utils.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=12,13 "Built target utils"
+.PHONY : CMakeFiles/utils.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/utils.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/utils.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles 0
+.PHONY : CMakeFiles/utils.dir/rule
+
+# Convenience name for target.
+utils: CMakeFiles/utils.dir/rule
+.PHONY : utils
+
+# codegen rule for target.
+CMakeFiles/utils.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=12,13 "Finished codegen for target utils"
+.PHONY : CMakeFiles/utils.dir/codegen
+
+# clean rule for target.
+CMakeFiles/utils.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/clean
+.PHONY : CMakeFiles/utils.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
