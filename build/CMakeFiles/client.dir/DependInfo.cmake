@@ -8,6 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "" "client_autogen/timestamp" "custom" "client_autogen/deps"
+  "/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/client_autogen/mocs_compilation.cpp" "CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o.d"
   "/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/client/http_client.cpp" "CMakeFiles/client.dir/src/client/http_client.cpp.o" "gcc" "CMakeFiles/client.dir/src/client/http_client.cpp.o.d"
   )
 

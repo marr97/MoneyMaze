@@ -1,31 +1,38 @@
-#pragma once
-#include <pqxx/pqxx>
-#include "db_config.h"
+// // database_manager.h
+// #pragma once
 
-enum class LogLevel { DEBUG, INFO, WARNING, ERROR };
+// #include <pqxx/pqxx>
+// #include "db_config.h"
+// #include <memory>
+// #include <string>
 
-class DatabaseManager {
-public:
-    DatabaseManager();
-    ~DatabaseManager();
+// enum class LogLevel { DEBUG, INFO, WARNING, ERROR };
+// enum class FinancialProfile { BALANCE, DAILY_MINIMUM, SAVINGS, DEBT, UNKNOWN_COLUMN };
 
-    bool connect();
-    bool disconnect();
+// class DatabaseManager {
+// public:
+//     DatabaseManager();
+//     ~DatabaseManager();
 
-    // Методы для работы с пользователями
-    bool createUser(const std::string &username, const std::string &password);
-    bool
-    authenticateUser(const std::string &username, const std::string &password);
+//     bool connect();
+//     bool disconnect();
 
-    // Методы для работы с финансовым профилем
-    bool createFinancialProfile(
-        int userId,
-        double initialBalance,
-        double dailyMinimum
-    );
-    bool updateBalance(int userId, double newBalance);
-    double getBalance(int userId);
+//     // Методы для работы с пользователями
+//     bool createUser(const std::string &username, const std::string &password);
+//     bool authenticateUser(const std::string &username, const std::string &password);
 
-private:
-    std::unique_ptr<pqxx::connection> conn;
-};
+//     // Методы для работы с финансовым профилем
+//     bool createFinancialProfile(
+//         int user_id,
+//         int initial_balance,
+//         int daily_minimum,
+//         int savings,
+//         int debt
+//     );
+//     bool update_financial_profile(const std::string &column_name, int user_id, int new_value);
+//     int  get_value_from_financial_profile(const std::string &column_name, int user_id);
+
+// private:
+//     std::unique_ptr<pqxx::connection> conn;
+//     FinancialProfile financial_profile_column(const std::string &column_name);
+// };

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB
 
-CXX_INCLUDES = -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/include -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
+CXX_INCLUDES = -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/utils_autogen/include -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/include -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui -isystem /opt/Qt/6.9.0/gcc_64/include/QtWidgets -isystem /opt/Qt/6.9.0/gcc_64/include -isystem /opt/Qt/6.9.0/gcc_64/include/QtCore -isystem /opt/Qt/6.9.0/gcc_64/mkspecs/linux-g++ -isystem /opt/Qt/6.9.0/gcc_64/include/QtGui
 
 CXX_FLAGS = -std=c++17 -fPIC
 

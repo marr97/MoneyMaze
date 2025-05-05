@@ -8,7 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "" "utils_autogen/timestamp" "custom" "utils_autogen/deps"
   "/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/utils/json_parser.cpp" "CMakeFiles/utils.dir/src/utils/json_parser.cpp.o" "gcc" "CMakeFiles/utils.dir/src/utils/json_parser.cpp.o.d"
+  "/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/utils_autogen/mocs_compilation.cpp" "CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

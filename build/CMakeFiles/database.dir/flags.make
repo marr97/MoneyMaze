@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/include -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/include/database
+CXX_INCLUDES = -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/database_autogen/include -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/include -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build -I/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/include/database
 
 CXX_FLAGS = -std=c++17
 

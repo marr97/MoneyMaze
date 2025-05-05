@@ -8,7 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "" "database_autogen/timestamp" "custom" "database_autogen/deps"
+  "/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/database_autogen/mocs_compilation.cpp" "CMakeFiles/database.dir/database_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/database.dir/database_autogen/mocs_compilation.cpp.o.d"
   "/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/database/database.cpp" "CMakeFiles/database.dir/src/database/database.cpp.o" "gcc" "CMakeFiles/database.dir/src/database/database.cpp.o.d"
+  "/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/database/database_manager.cpp" "CMakeFiles/database.dir/src/database/database_manager.cpp.o" "gcc" "CMakeFiles/database.dir/src/database/database_manager.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

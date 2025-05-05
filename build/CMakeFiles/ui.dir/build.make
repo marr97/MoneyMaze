@@ -69,25 +69,34 @@ include CMakeFiles/ui.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/ui.dir/flags.make
 
-ui_auth_window.h: /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/forms/auth_window.ui
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating ui_auth_window.h"
-	/usr/lib/qt5/bin/uic -o /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/ui_auth_window.h /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/forms/auth_window.ui
-
-ui_mainwindow.h: /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/forms/mainwindow.ui
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating ui_mainwindow.h"
-	/usr/lib/qt5/bin/uic -o /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/ui_mainwindow.h /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/forms/mainwindow.ui
-
-ui_reg_window.h: /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/forms/reg_window.ui
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Generating ui_reg_window.h"
-	/usr/lib/qt5/bin/uic -o /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/ui_reg_window.h /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/forms/reg_window.ui
+ui_autogen/timestamp: /opt/Qt/6.9.0/gcc_64/libexec/moc
+ui_autogen/timestamp: /opt/Qt/6.9.0/gcc_64/libexec/uic
+ui_autogen/timestamp: CMakeFiles/ui.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC and UIC for target ui"
+	/home/marr97/cmake-4.0.0-rc1-linux-x86_64/bin/cmake -E cmake_autogen /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/ui_autogen.dir/AutogenInfo.json ""
+	/home/marr97/cmake-4.0.0-rc1-linux-x86_64/bin/cmake -E touch /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/ui_autogen/timestamp
 
 CMakeFiles/ui.dir/codegen:
 .PHONY : CMakeFiles/ui.dir/codegen
 
+CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o: CMakeFiles/ui.dir/flags.make
+CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o: ui_autogen/mocs_compilation.cpp
+CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o: CMakeFiles/ui.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o -MF CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o.d -o CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o -c /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/ui_autogen/mocs_compilation.cpp
+
+CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/ui_autogen/mocs_compilation.cpp > CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.i
+
+CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/ui_autogen/mocs_compilation.cpp -o CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.s
+
 CMakeFiles/ui.dir/src/ui/auth_window.cpp.o: CMakeFiles/ui.dir/flags.make
 CMakeFiles/ui.dir/src/ui/auth_window.cpp.o: /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/auth_window.cpp
 CMakeFiles/ui.dir/src/ui/auth_window.cpp.o: CMakeFiles/ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ui.dir/src/ui/auth_window.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/ui.dir/src/ui/auth_window.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ui.dir/src/ui/auth_window.cpp.o -MF CMakeFiles/ui.dir/src/ui/auth_window.cpp.o.d -o CMakeFiles/ui.dir/src/ui/auth_window.cpp.o -c /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/auth_window.cpp
 
 CMakeFiles/ui.dir/src/ui/auth_window.cpp.i: cmake_force
@@ -101,7 +110,7 @@ CMakeFiles/ui.dir/src/ui/auth_window.cpp.s: cmake_force
 CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o: CMakeFiles/ui.dir/flags.make
 CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o: /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/mainwindow.cpp
 CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o: CMakeFiles/ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o -MF CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o.d -o CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o -c /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/mainwindow.cpp
 
 CMakeFiles/ui.dir/src/ui/mainwindow.cpp.i: cmake_force
@@ -115,7 +124,7 @@ CMakeFiles/ui.dir/src/ui/mainwindow.cpp.s: cmake_force
 CMakeFiles/ui.dir/src/ui/reg_window.cpp.o: CMakeFiles/ui.dir/flags.make
 CMakeFiles/ui.dir/src/ui/reg_window.cpp.o: /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/reg_window.cpp
 CMakeFiles/ui.dir/src/ui/reg_window.cpp.o: CMakeFiles/ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/ui.dir/src/ui/reg_window.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ui.dir/src/ui/reg_window.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ui.dir/src/ui/reg_window.cpp.o -MF CMakeFiles/ui.dir/src/ui/reg_window.cpp.o.d -o CMakeFiles/ui.dir/src/ui/reg_window.cpp.o -c /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/reg_window.cpp
 
 CMakeFiles/ui.dir/src/ui/reg_window.cpp.i: cmake_force
@@ -126,18 +135,36 @@ CMakeFiles/ui.dir/src/ui/reg_window.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ui.dir/src/ui/reg_window.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/reg_window.cpp -o CMakeFiles/ui.dir/src/ui/reg_window.cpp.s
 
+CMakeFiles/ui.dir/src/ui/ui_main.cpp.o: CMakeFiles/ui.dir/flags.make
+CMakeFiles/ui.dir/src/ui/ui_main.cpp.o: /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/ui_main.cpp
+CMakeFiles/ui.dir/src/ui/ui_main.cpp.o: CMakeFiles/ui.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/ui.dir/src/ui/ui_main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ui.dir/src/ui/ui_main.cpp.o -MF CMakeFiles/ui.dir/src/ui/ui_main.cpp.o.d -o CMakeFiles/ui.dir/src/ui/ui_main.cpp.o -c /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/ui_main.cpp
+
+CMakeFiles/ui.dir/src/ui/ui_main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ui.dir/src/ui/ui_main.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/ui_main.cpp > CMakeFiles/ui.dir/src/ui/ui_main.cpp.i
+
+CMakeFiles/ui.dir/src/ui/ui_main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ui.dir/src/ui/ui_main.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/ui/ui_main.cpp -o CMakeFiles/ui.dir/src/ui/ui_main.cpp.s
+
 # Object files for target ui
 ui_OBJECTS = \
+"CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o" \
 "CMakeFiles/ui.dir/src/ui/auth_window.cpp.o" \
 "CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o" \
-"CMakeFiles/ui.dir/src/ui/reg_window.cpp.o"
+"CMakeFiles/ui.dir/src/ui/reg_window.cpp.o" \
+"CMakeFiles/ui.dir/src/ui/ui_main.cpp.o"
 
 # External object files for target ui
 ui_EXTERNAL_OBJECTS =
 
+libui.a: CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o
 libui.a: CMakeFiles/ui.dir/src/ui/auth_window.cpp.o
 libui.a: CMakeFiles/ui.dir/src/ui/mainwindow.cpp.o
 libui.a: CMakeFiles/ui.dir/src/ui/reg_window.cpp.o
+libui.a: CMakeFiles/ui.dir/src/ui/ui_main.cpp.o
 libui.a: CMakeFiles/ui.dir/build.make
 libui.a: CMakeFiles/ui.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library libui.a"
@@ -152,9 +179,7 @@ CMakeFiles/ui.dir/clean:
 	$(CMAKE_COMMAND) -P CMakeFiles/ui.dir/cmake_clean.cmake
 .PHONY : CMakeFiles/ui.dir/clean
 
-CMakeFiles/ui.dir/depend: ui_auth_window.h
-CMakeFiles/ui.dir/depend: ui_mainwindow.h
-CMakeFiles/ui.dir/depend: ui_reg_window.h
+CMakeFiles/ui.dir/depend: ui_autogen/timestamp
 	cd /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/ui.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/ui.dir/depend
 

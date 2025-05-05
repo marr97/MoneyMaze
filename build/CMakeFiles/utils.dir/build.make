@@ -69,13 +69,34 @@ include CMakeFiles/utils.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/utils.dir/flags.make
 
+utils_autogen/timestamp: /opt/Qt/6.9.0/gcc_64/libexec/moc
+utils_autogen/timestamp: /opt/Qt/6.9.0/gcc_64/libexec/uic
+utils_autogen/timestamp: CMakeFiles/utils.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC and UIC for target utils"
+	/home/marr97/cmake-4.0.0-rc1-linux-x86_64/bin/cmake -E cmake_autogen /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/utils_autogen.dir/AutogenInfo.json ""
+	/home/marr97/cmake-4.0.0-rc1-linux-x86_64/bin/cmake -E touch /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/utils_autogen/timestamp
+
 CMakeFiles/utils.dir/codegen:
 .PHONY : CMakeFiles/utils.dir/codegen
+
+CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o: CMakeFiles/utils.dir/flags.make
+CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o: utils_autogen/mocs_compilation.cpp
+CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o: CMakeFiles/utils.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o -MF CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o.d -o CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o -c /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/utils_autogen/mocs_compilation.cpp
+
+CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/utils_autogen/mocs_compilation.cpp > CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.i
+
+CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/utils_autogen/mocs_compilation.cpp -o CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.s
 
 CMakeFiles/utils.dir/src/utils/json_parser.cpp.o: CMakeFiles/utils.dir/flags.make
 CMakeFiles/utils.dir/src/utils/json_parser.cpp.o: /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/utils/json_parser.cpp
 CMakeFiles/utils.dir/src/utils/json_parser.cpp.o: CMakeFiles/utils.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/utils.dir/src/utils/json_parser.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/utils.dir/src/utils/json_parser.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/utils.dir/src/utils/json_parser.cpp.o -MF CMakeFiles/utils.dir/src/utils/json_parser.cpp.o.d -o CMakeFiles/utils.dir/src/utils/json_parser.cpp.o -c /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/src/utils/json_parser.cpp
 
 CMakeFiles/utils.dir/src/utils/json_parser.cpp.i: cmake_force
@@ -88,15 +109,17 @@ CMakeFiles/utils.dir/src/utils/json_parser.cpp.s: cmake_force
 
 # Object files for target utils
 utils_OBJECTS = \
+"CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o" \
 "CMakeFiles/utils.dir/src/utils/json_parser.cpp.o"
 
 # External object files for target utils
 utils_EXTERNAL_OBJECTS =
 
+libutils.a: CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o
 libutils.a: CMakeFiles/utils.dir/src/utils/json_parser.cpp.o
 libutils.a: CMakeFiles/utils.dir/build.make
 libutils.a: CMakeFiles/utils.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libutils.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library libutils.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/utils.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/utils.dir/link.txt --verbose=$(VERBOSE)
 
@@ -108,7 +131,7 @@ CMakeFiles/utils.dir/clean:
 	$(CMAKE_COMMAND) -P CMakeFiles/utils.dir/cmake_clean.cmake
 .PHONY : CMakeFiles/utils.dir/clean
 
-CMakeFiles/utils.dir/depend:
+CMakeFiles/utils.dir/depend: utils_autogen/timestamp
 	cd /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build /mnt/d/uni/MoneyMaze/mainproj/MoneyMaze/build/CMakeFiles/utils.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/utils.dir/depend
 

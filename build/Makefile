@@ -168,6 +168,284 @@ utils/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/build
 .PHONY : utils/fast
 
+#=============================================================================
+# Target rules for targets named server
+
+# Build rule for target.
+server: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server
+.PHONY : server
+
+# fast build rule for target.
+server/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
+.PHONY : server/fast
+
+#=============================================================================
+# Target rules for targets named money_maze_app
+
+# Build rule for target.
+money_maze_app: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 money_maze_app
+.PHONY : money_maze_app
+
+# fast build rule for target.
+money_maze_app/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze_app.dir/build.make CMakeFiles/money_maze_app.dir/build
+.PHONY : money_maze_app/fast
+
+#=============================================================================
+# Target rules for targets named database_autogen_timestamp_deps
+
+# Build rule for target.
+database_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 database_autogen_timestamp_deps
+.PHONY : database_autogen_timestamp_deps
+
+# fast build rule for target.
+database_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database_autogen_timestamp_deps.dir/build.make CMakeFiles/database_autogen_timestamp_deps.dir/build
+.PHONY : database_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named database_autogen
+
+# Build rule for target.
+database_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 database_autogen
+.PHONY : database_autogen
+
+# fast build rule for target.
+database_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database_autogen.dir/build.make CMakeFiles/database_autogen.dir/build
+.PHONY : database_autogen/fast
+
+#=============================================================================
+# Target rules for targets named ui_autogen_timestamp_deps
+
+# Build rule for target.
+ui_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ui_autogen_timestamp_deps
+.PHONY : ui_autogen_timestamp_deps
+
+# fast build rule for target.
+ui_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui_autogen_timestamp_deps.dir/build.make CMakeFiles/ui_autogen_timestamp_deps.dir/build
+.PHONY : ui_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named ui_autogen
+
+# Build rule for target.
+ui_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ui_autogen
+.PHONY : ui_autogen
+
+# fast build rule for target.
+ui_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui_autogen.dir/build.make CMakeFiles/ui_autogen.dir/build
+.PHONY : ui_autogen/fast
+
+#=============================================================================
+# Target rules for targets named client_autogen_timestamp_deps
+
+# Build rule for target.
+client_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_autogen_timestamp_deps
+.PHONY : client_autogen_timestamp_deps
+
+# fast build rule for target.
+client_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_autogen_timestamp_deps.dir/build.make CMakeFiles/client_autogen_timestamp_deps.dir/build
+.PHONY : client_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named client_autogen
+
+# Build rule for target.
+client_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client_autogen
+.PHONY : client_autogen
+
+# fast build rule for target.
+client_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client_autogen.dir/build.make CMakeFiles/client_autogen.dir/build
+.PHONY : client_autogen/fast
+
+#=============================================================================
+# Target rules for targets named utils_autogen_timestamp_deps
+
+# Build rule for target.
+utils_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 utils_autogen_timestamp_deps
+.PHONY : utils_autogen_timestamp_deps
+
+# fast build rule for target.
+utils_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils_autogen_timestamp_deps.dir/build.make CMakeFiles/utils_autogen_timestamp_deps.dir/build
+.PHONY : utils_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named utils_autogen
+
+# Build rule for target.
+utils_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 utils_autogen
+.PHONY : utils_autogen
+
+# fast build rule for target.
+utils_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils_autogen.dir/build.make CMakeFiles/utils_autogen.dir/build
+.PHONY : utils_autogen/fast
+
+#=============================================================================
+# Target rules for targets named server_autogen_timestamp_deps
+
+# Build rule for target.
+server_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server_autogen_timestamp_deps
+.PHONY : server_autogen_timestamp_deps
+
+# fast build rule for target.
+server_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_autogen_timestamp_deps.dir/build.make CMakeFiles/server_autogen_timestamp_deps.dir/build
+.PHONY : server_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named server_autogen
+
+# Build rule for target.
+server_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server_autogen
+.PHONY : server_autogen
+
+# fast build rule for target.
+server_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_autogen.dir/build.make CMakeFiles/server_autogen.dir/build
+.PHONY : server_autogen/fast
+
+#=============================================================================
+# Target rules for targets named money_maze_app_autogen_timestamp_deps
+
+# Build rule for target.
+money_maze_app_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 money_maze_app_autogen_timestamp_deps
+.PHONY : money_maze_app_autogen_timestamp_deps
+
+# fast build rule for target.
+money_maze_app_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze_app_autogen_timestamp_deps.dir/build.make CMakeFiles/money_maze_app_autogen_timestamp_deps.dir/build
+.PHONY : money_maze_app_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named money_maze_app_autogen
+
+# Build rule for target.
+money_maze_app_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 money_maze_app_autogen
+.PHONY : money_maze_app_autogen
+
+# fast build rule for target.
+money_maze_app_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze_app_autogen.dir/build.make CMakeFiles/money_maze_app_autogen.dir/build
+.PHONY : money_maze_app_autogen/fast
+
+client_autogen/mocs_compilation.o: client_autogen/mocs_compilation.cpp.o
+.PHONY : client_autogen/mocs_compilation.o
+
+# target to build an object file
+client_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o
+.PHONY : client_autogen/mocs_compilation.cpp.o
+
+client_autogen/mocs_compilation.i: client_autogen/mocs_compilation.cpp.i
+.PHONY : client_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+client_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.i
+.PHONY : client_autogen/mocs_compilation.cpp.i
+
+client_autogen/mocs_compilation.s: client_autogen/mocs_compilation.cpp.s
+.PHONY : client_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+client_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.s
+.PHONY : client_autogen/mocs_compilation.cpp.s
+
+database_autogen/mocs_compilation.o: database_autogen/mocs_compilation.cpp.o
+.PHONY : database_autogen/mocs_compilation.o
+
+# target to build an object file
+database_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/database_autogen/mocs_compilation.cpp.o
+.PHONY : database_autogen/mocs_compilation.cpp.o
+
+database_autogen/mocs_compilation.i: database_autogen/mocs_compilation.cpp.i
+.PHONY : database_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+database_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/database_autogen/mocs_compilation.cpp.i
+.PHONY : database_autogen/mocs_compilation.cpp.i
+
+database_autogen/mocs_compilation.s: database_autogen/mocs_compilation.cpp.s
+.PHONY : database_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+database_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/database_autogen/mocs_compilation.cpp.s
+.PHONY : database_autogen/mocs_compilation.cpp.s
+
+money_maze_app_autogen/mocs_compilation.o: money_maze_app_autogen/mocs_compilation.cpp.o
+.PHONY : money_maze_app_autogen/mocs_compilation.o
+
+# target to build an object file
+money_maze_app_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze_app.dir/build.make CMakeFiles/money_maze_app.dir/money_maze_app_autogen/mocs_compilation.cpp.o
+.PHONY : money_maze_app_autogen/mocs_compilation.cpp.o
+
+money_maze_app_autogen/mocs_compilation.i: money_maze_app_autogen/mocs_compilation.cpp.i
+.PHONY : money_maze_app_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+money_maze_app_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze_app.dir/build.make CMakeFiles/money_maze_app.dir/money_maze_app_autogen/mocs_compilation.cpp.i
+.PHONY : money_maze_app_autogen/mocs_compilation.cpp.i
+
+money_maze_app_autogen/mocs_compilation.s: money_maze_app_autogen/mocs_compilation.cpp.s
+.PHONY : money_maze_app_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+money_maze_app_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze_app.dir/build.make CMakeFiles/money_maze_app.dir/money_maze_app_autogen/mocs_compilation.cpp.s
+.PHONY : money_maze_app_autogen/mocs_compilation.cpp.s
+
+server_autogen/mocs_compilation.o: server_autogen/mocs_compilation.cpp.o
+.PHONY : server_autogen/mocs_compilation.o
+
+# target to build an object file
+server_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server_autogen/mocs_compilation.cpp.o
+.PHONY : server_autogen/mocs_compilation.cpp.o
+
+server_autogen/mocs_compilation.i: server_autogen/mocs_compilation.cpp.i
+.PHONY : server_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+server_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server_autogen/mocs_compilation.cpp.i
+.PHONY : server_autogen/mocs_compilation.cpp.i
+
+server_autogen/mocs_compilation.s: server_autogen/mocs_compilation.cpp.s
+.PHONY : server_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+server_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server_autogen/mocs_compilation.cpp.s
+.PHONY : server_autogen/mocs_compilation.cpp.s
+
 src/client/http_client.o: src/client/http_client.cpp.o
 .PHONY : src/client/http_client.o
 
@@ -215,6 +493,102 @@ src/database/database.s: src/database/database.cpp.s
 src/database/database.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/src/database/database.cpp.s
 .PHONY : src/database/database.cpp.s
+
+src/database/database_manager.o: src/database/database_manager.cpp.o
+.PHONY : src/database/database_manager.o
+
+# target to build an object file
+src/database/database_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/src/database/database_manager.cpp.o
+.PHONY : src/database/database_manager.cpp.o
+
+src/database/database_manager.i: src/database/database_manager.cpp.i
+.PHONY : src/database/database_manager.i
+
+# target to preprocess a source file
+src/database/database_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/src/database/database_manager.cpp.i
+.PHONY : src/database/database_manager.cpp.i
+
+src/database/database_manager.s: src/database/database_manager.cpp.s
+.PHONY : src/database/database_manager.s
+
+# target to generate assembly for a file
+src/database/database_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/src/database/database_manager.cpp.s
+.PHONY : src/database/database_manager.cpp.s
+
+src/server/http_server.o: src/server/http_server.cpp.o
+.PHONY : src/server/http_server.o
+
+# target to build an object file
+src/server/http_server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/http_server.cpp.o
+.PHONY : src/server/http_server.cpp.o
+
+src/server/http_server.i: src/server/http_server.cpp.i
+.PHONY : src/server/http_server.i
+
+# target to preprocess a source file
+src/server/http_server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/http_server.cpp.i
+.PHONY : src/server/http_server.cpp.i
+
+src/server/http_server.s: src/server/http_server.cpp.s
+.PHONY : src/server/http_server.s
+
+# target to generate assembly for a file
+src/server/http_server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/http_server.cpp.s
+.PHONY : src/server/http_server.cpp.s
+
+src/server/main.o: src/server/main.cpp.o
+.PHONY : src/server/main.o
+
+# target to build an object file
+src/server/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze_app.dir/build.make CMakeFiles/money_maze_app.dir/src/server/main.cpp.o
+.PHONY : src/server/main.cpp.o
+
+src/server/main.i: src/server/main.cpp.i
+.PHONY : src/server/main.i
+
+# target to preprocess a source file
+src/server/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze_app.dir/build.make CMakeFiles/money_maze_app.dir/src/server/main.cpp.i
+.PHONY : src/server/main.cpp.i
+
+src/server/main.s: src/server/main.cpp.s
+.PHONY : src/server/main.s
+
+# target to generate assembly for a file
+src/server/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/money_maze_app.dir/build.make CMakeFiles/money_maze_app.dir/src/server/main.cpp.s
+.PHONY : src/server/main.cpp.s
+
+src/server/request_handler.o: src/server/request_handler.cpp.o
+.PHONY : src/server/request_handler.o
+
+# target to build an object file
+src/server/request_handler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/request_handler.cpp.o
+.PHONY : src/server/request_handler.cpp.o
+
+src/server/request_handler.i: src/server/request_handler.cpp.i
+.PHONY : src/server/request_handler.i
+
+# target to preprocess a source file
+src/server/request_handler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/request_handler.cpp.i
+.PHONY : src/server/request_handler.cpp.i
+
+src/server/request_handler.s: src/server/request_handler.cpp.s
+.PHONY : src/server/request_handler.s
+
+# target to generate assembly for a file
+src/server/request_handler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server/request_handler.cpp.s
+.PHONY : src/server/request_handler.cpp.s
 
 src/ui/auth_window.o: src/ui/auth_window.cpp.o
 .PHONY : src/ui/auth_window.o
@@ -288,6 +662,30 @@ src/ui/reg_window.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/reg_window.cpp.s
 .PHONY : src/ui/reg_window.cpp.s
 
+src/ui/ui_main.o: src/ui/ui_main.cpp.o
+.PHONY : src/ui/ui_main.o
+
+# target to build an object file
+src/ui/ui_main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/ui_main.cpp.o
+.PHONY : src/ui/ui_main.cpp.o
+
+src/ui/ui_main.i: src/ui/ui_main.cpp.i
+.PHONY : src/ui/ui_main.i
+
+# target to preprocess a source file
+src/ui/ui_main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/ui_main.cpp.i
+.PHONY : src/ui/ui_main.cpp.i
+
+src/ui/ui_main.s: src/ui/ui_main.cpp.s
+.PHONY : src/ui/ui_main.s
+
+# target to generate assembly for a file
+src/ui/ui_main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/src/ui/ui_main.cpp.s
+.PHONY : src/ui/ui_main.cpp.s
+
 src/utils/json_parser.o: src/utils/json_parser.cpp.o
 .PHONY : src/utils/json_parser.o
 
@@ -312,6 +710,54 @@ src/utils/json_parser.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/src/utils/json_parser.cpp.s
 .PHONY : src/utils/json_parser.cpp.s
 
+ui_autogen/mocs_compilation.o: ui_autogen/mocs_compilation.cpp.o
+.PHONY : ui_autogen/mocs_compilation.o
+
+# target to build an object file
+ui_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o
+.PHONY : ui_autogen/mocs_compilation.cpp.o
+
+ui_autogen/mocs_compilation.i: ui_autogen/mocs_compilation.cpp.i
+.PHONY : ui_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+ui_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.i
+.PHONY : ui_autogen/mocs_compilation.cpp.i
+
+ui_autogen/mocs_compilation.s: ui_autogen/mocs_compilation.cpp.s
+.PHONY : ui_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+ui_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ui.dir/build.make CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.s
+.PHONY : ui_autogen/mocs_compilation.cpp.s
+
+utils_autogen/mocs_compilation.o: utils_autogen/mocs_compilation.cpp.o
+.PHONY : utils_autogen/mocs_compilation.o
+
+# target to build an object file
+utils_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.o
+.PHONY : utils_autogen/mocs_compilation.cpp.o
+
+utils_autogen/mocs_compilation.i: utils_autogen/mocs_compilation.cpp.i
+.PHONY : utils_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+utils_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.i
+.PHONY : utils_autogen/mocs_compilation.cpp.i
+
+utils_autogen/mocs_compilation.s: utils_autogen/mocs_compilation.cpp.s
+.PHONY : utils_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+utils_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/utils.dir/build.make CMakeFiles/utils.dir/utils_autogen/mocs_compilation.cpp.s
+.PHONY : utils_autogen/mocs_compilation.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -320,16 +766,54 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... client_autogen"
+	@echo "... client_autogen_timestamp_deps"
+	@echo "... database_autogen"
+	@echo "... database_autogen_timestamp_deps"
+	@echo "... money_maze_app_autogen"
+	@echo "... money_maze_app_autogen_timestamp_deps"
+	@echo "... server_autogen"
+	@echo "... server_autogen_timestamp_deps"
+	@echo "... ui_autogen"
+	@echo "... ui_autogen_timestamp_deps"
+	@echo "... utils_autogen"
+	@echo "... utils_autogen_timestamp_deps"
 	@echo "... client"
 	@echo "... database"
+	@echo "... money_maze_app"
+	@echo "... server"
 	@echo "... ui"
 	@echo "... utils"
+	@echo "... client_autogen/mocs_compilation.o"
+	@echo "... client_autogen/mocs_compilation.i"
+	@echo "... client_autogen/mocs_compilation.s"
+	@echo "... database_autogen/mocs_compilation.o"
+	@echo "... database_autogen/mocs_compilation.i"
+	@echo "... database_autogen/mocs_compilation.s"
+	@echo "... money_maze_app_autogen/mocs_compilation.o"
+	@echo "... money_maze_app_autogen/mocs_compilation.i"
+	@echo "... money_maze_app_autogen/mocs_compilation.s"
+	@echo "... server_autogen/mocs_compilation.o"
+	@echo "... server_autogen/mocs_compilation.i"
+	@echo "... server_autogen/mocs_compilation.s"
 	@echo "... src/client/http_client.o"
 	@echo "... src/client/http_client.i"
 	@echo "... src/client/http_client.s"
 	@echo "... src/database/database.o"
 	@echo "... src/database/database.i"
 	@echo "... src/database/database.s"
+	@echo "... src/database/database_manager.o"
+	@echo "... src/database/database_manager.i"
+	@echo "... src/database/database_manager.s"
+	@echo "... src/server/http_server.o"
+	@echo "... src/server/http_server.i"
+	@echo "... src/server/http_server.s"
+	@echo "... src/server/main.o"
+	@echo "... src/server/main.i"
+	@echo "... src/server/main.s"
+	@echo "... src/server/request_handler.o"
+	@echo "... src/server/request_handler.i"
+	@echo "... src/server/request_handler.s"
 	@echo "... src/ui/auth_window.o"
 	@echo "... src/ui/auth_window.i"
 	@echo "... src/ui/auth_window.s"
@@ -339,9 +823,18 @@ help:
 	@echo "... src/ui/reg_window.o"
 	@echo "... src/ui/reg_window.i"
 	@echo "... src/ui/reg_window.s"
+	@echo "... src/ui/ui_main.o"
+	@echo "... src/ui/ui_main.i"
+	@echo "... src/ui/ui_main.s"
 	@echo "... src/utils/json_parser.o"
 	@echo "... src/utils/json_parser.i"
 	@echo "... src/utils/json_parser.s"
+	@echo "... ui_autogen/mocs_compilation.o"
+	@echo "... ui_autogen/mocs_compilation.i"
+	@echo "... ui_autogen/mocs_compilation.s"
+	@echo "... utils_autogen/mocs_compilation.o"
+	@echo "... utils_autogen/mocs_compilation.i"
+	@echo "... utils_autogen/mocs_compilation.s"
 .PHONY : help
 
 
