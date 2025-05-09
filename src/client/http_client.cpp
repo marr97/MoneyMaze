@@ -8,7 +8,7 @@
 
 void send_json_to_server(const nlohmann::json& data, const std::string& endpoint) {
     try {
-        Poco::Net::HTTPClientSession session("127.0.0.1", 8080);
+        Poco::Net::HTTPClientSession session("89.169.154.118", 9090);
         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, endpoint, Poco::Net::HTTPMessage::HTTP_1_1);
         std::string jsonStr = data.dump();
 
@@ -22,6 +22,8 @@ void send_json_to_server(const nlohmann::json& data, const std::string& endpoint
         std::istream& is = session.receiveResponse(response);
         std::stringstream responseStream;
         Poco::StreamCopier::copyStream(is, responseStream);
+
+        std::cout << responseStream;
 
     } catch (const std::exception& e) {
         std::cerr << "Error sending JSON: " << e.what() << "\n";
