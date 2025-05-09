@@ -23,7 +23,6 @@ void send_json_to_server(const nlohmann::json& data, const std::string& endpoint
         std::stringstream responseStream;
         Poco::StreamCopier::copyStream(is, responseStream);
 
-        std::cout << responseStream;
 
     } catch (const std::exception& e) {
         std::cerr << "Error sending JSON: " << e.what() << "\n";
