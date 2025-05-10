@@ -11,3 +11,6 @@ database_manager_app
 # директории сборки
 build/
 .vscode/
+
+# macOS system files
+.DS_Store
