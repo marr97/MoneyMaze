@@ -49,7 +49,7 @@ void reg_window::err_message(const QString& message) {
       "font-size: 14px;"
       );
 
-  // Чтобы сообщение было по середине окна
+  // Чтобы сообщение было посередине окна
   int x = (this->width() - label->sizeHint().width()) / 2;
   int y = (this->height() - label->sizeHint().height()) / 2;
 
