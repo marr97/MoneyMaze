@@ -3,6 +3,9 @@ project(money_maze LANGUAGES CXX)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 
+## 4.2 Qt6 Widgets (замена Qt5 на Qt6 для доступа к QPalette::Accent и др.)
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
+
 qt_standard_project_setup()
 
 qt_add_executable(money_maze
