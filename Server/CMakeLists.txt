@@ -7,15 +7,12 @@ set(CMAKE_CXX_EXTENSIONS  OFF)
 
 find_package(Poco REQUIRED COMPONENTS Net Util JSON Foundation)
 
-
 file(GLOB_RECURSE SERVER_SOURCES CONFIGURE_DEPENDS
-     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-     "${CMAKE_CURRENT_SOURCE_DIR}/*.cc"
-     "${CMAKE_CURRENT_SOURCE_DIR}/*.cxx")
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 file(GLOB_RECURSE SERVER_HEADERS CONFIGURE_DEPENDS
-     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-     "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
 
 add_executable(MoneyMazeServer
     ${SERVER_SOURCES}
@@ -24,7 +21,7 @@ add_executable(MoneyMazeServer
 
 target_include_directories(MoneyMazeServer
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 target_link_libraries(MoneyMazeServer
@@ -34,3 +31,6 @@ target_link_libraries(MoneyMazeServer
         Poco::JSON
         Poco::Foundation
 )
+
+install(TARGETS MoneyMazeServer
+        RUNTIME DESTINATION bin)
