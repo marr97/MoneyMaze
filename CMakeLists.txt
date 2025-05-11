@@ -4,4 +4,3 @@ project("MoneyMaze")
 
 add_subdirectory(Desktop)
 add_subdirectory(Server)
-add_subdirectory(Poco)
