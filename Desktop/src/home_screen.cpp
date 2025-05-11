@@ -6,6 +6,7 @@
 home_screen::home_screen(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::home_screen) {
   ui->setupUi(this);
+  this->setWindowTitle("Главная");
 
   // Имя пользователя
 
