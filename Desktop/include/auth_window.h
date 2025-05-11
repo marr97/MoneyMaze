@@ -3,8 +3,7 @@
 
 #include <QDialog>
 #include "reg_window.h"
-#include "http_client.h"
-#include "json_parser.h"
+#include "home_screen.h"
 
 namespace Ui {
 class auth_window;
@@ -16,8 +15,8 @@ class auth_window : public QDialog {
 public:
   explicit auth_window(QWidget *parent = nullptr);
   ~auth_window();
-  QString get_login() const;
-  QString get_password() const;
+  QString get_login();
+  QString get_password();
 
 private slots:
   void on_lineEdit_password_textEdited(const QString &arg1);
@@ -31,6 +30,7 @@ private slots:
 private:
   Ui::auth_window *ui;
   reg_window ui_Reg;
+  home_screen ui_Home;
 
 
   QString user_login;
