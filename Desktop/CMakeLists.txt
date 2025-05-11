@@ -3,26 +3,6 @@ project(money_maze LANGUAGES CXX)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 
-# Общие настройки
-set(CMAKE_CXX_STANDARD        17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS      OFF)
-
-# Автоматическая обработка Qt (.ui, signals/slots, resources)
-set(CMAKE_AUTOMOC   ON)
-set(CMAKE_AUTOUIC   ON)
-set(CMAKE_AUTORCC   ON)
-
-# Пути к заголовкам
-include_directories(
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_BINARY_DIR}       # здесь будут генерироваться ui_*.h
-)
-
-## Qt6 Widgets (замена Qt5 на Qt6 для доступа к QPalette::Accent и др.)
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
-
-
 qt_standard_project_setup()
 
 qt_add_executable(money_maze
@@ -42,14 +22,6 @@ target_link_libraries(money_maze
     PRIVATE
         Qt::Core
         Qt::Widgets
-)
-
-# Client-модуль (HTTP-клиент, JSON-парсер берёт json.hpp из include)
-add_library(client
-    src/client/http_client.cpp
-)
-target_include_directories(client PUBLIC
-    ${CMAKE_SOURCE_DIR}/include
 )
 
 include(GNUInstallDirs)
