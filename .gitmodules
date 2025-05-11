@@ -1,3 +1,7 @@
 [submodule "poco"]
 	path = poco
 	url = https://github.com/pocoproject/poco
+
+[submodule "libpqxx"]
+	path = libpqxx
+	url = https://github.com/jtv/libpqxx.git
