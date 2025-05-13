@@ -1,6 +1,13 @@
 #include "reg_window.h"
 #include "ui_reg_window.h"
 
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QDebug>
+#include <QString>
+
+
 reg_window::reg_window(QWidget *parent)
     : QDialog(parent), ui(new Ui::reg_window)
 {
@@ -112,6 +119,25 @@ void reg_window::on_pushButton_create_account_clicked() {
     err_message("Подтверждение пароля не совпадает с исходным");
     return;
   }
+
+
+  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+  QNetworkRequest request;
+  request.setUrl(QUrl("http://89.169.154.118:9090"));
+
+  qDebug() << "------------ отправка данных ------------";
+
+  QNetworkReply *reply = manager->get(request);
+
+  connect(reply, &QNetworkReply::finished, [=]() {
+      if(reply->error() == QNetworkReply::NoError) {
+          QString response = reply->readAll();
+          qDebug() << "Ответ сервера:" << response;
+      } else {
+          qDebug() << "Ошибка:" << reply->errorString();
+      }
+      reply->deleteLater();
+  });
+
   this->hide();
 }
-
