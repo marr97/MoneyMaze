@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(money_maze LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Gui)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Gui Network)
 
 ## Qt6 Widgets (замена Qt5 на Qt6 для доступа к QPalette::Accent и др.)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
@@ -35,6 +35,7 @@ target_link_libraries(money_maze
         Qt::Core
         Qt::Gui
         Qt::Widgets
+        Qt6::Network
 )
 
 target_link_libraries(money_maze
