@@ -87,7 +87,7 @@ void reg_window::show_message(const QString &message, int message_type)
     QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
 }
 
-void reg_window::handle_registration_result(int status_code){
+void reg_window::handle_registration_result(int status_code, const QString &error_msg){
     if (status_code == 200){
         show_message("Вы успешно зарегистрировались!", SUCCESS);
 
@@ -97,7 +97,7 @@ void reg_window::handle_registration_result(int status_code){
 
     }
     else {
-        show_message("Ошибка регистрации", ERROR);
+        show_message("Ошибка регистрации: " + error_msg, ERROR);
     }
 }
 
