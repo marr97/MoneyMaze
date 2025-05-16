@@ -1,14 +1,17 @@
 #ifndef HTTP_CLIENT_H
 #define HTTP_CLIENT_H
 
-#include <nlohmann/json.hpp>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QDebug>
+#include <QString>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QByteArray>
 
-using json = nlohmann::json;
 
-class HttpClient {
-public:
-    static void send_registration_data(const json& data);
-    static void send_auth_data(const json& data);
-};
+void handle_server_response(QNetworkReply* reply);
+int registrate(QString &nickname, QString &password);
 
 #endif // HTTP_CLIENT_H
