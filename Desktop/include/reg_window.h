@@ -7,6 +7,8 @@
 #include <QString>
 #include <QNetworkReply>
 
+class httpClient;
+
 namespace Ui {
 class reg_window;
 }
@@ -21,8 +23,9 @@ public:
   QString get_password();
   QString get_confirmation();
   bool check_password_confirmation();
-  void err_message(const QString &message);
-  void handle_server_response(QNetworkReply *reply);
+  void show_message(const QString &message, int message_type);
+  void handle_registration_result(int status_code);
+  void handle_network_error(const QString &error);
 
 private slots:
   void on_lineEdit_login_textEdited(const QString &arg1);
@@ -36,10 +39,13 @@ private slots:
 
 private:
   Ui::reg_window *ui;
+  httpClient *http_client;
 
   QString user_newlogin;
   QString user_newpassword;
   QString user_password_confirmation;
+  const int SUCCESS = 1;
+  const int ERROR = 0;
 };
 
 #endif // REG_WINDOW_H

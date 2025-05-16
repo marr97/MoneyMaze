@@ -2,16 +2,26 @@
 #define HTTP_CLIENT_H
 
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QDebug>
-#include <QString>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QByteArray>
+#include <QObject>
 
+class httpClient: public QObject {
+    Q_OBJECT
 
-void handle_server_response(QNetworkReply* reply);
-int registrate(QString &nickname, QString &password);
+public:
+    explicit httpClient(QObject *parent = nullptr);
+    ~httpClient();
+    void registrate(const QString &nickname, const QString &password);
+
+private slots:
+    void handle_server_response(QNetworkReply* reply);
+
+signals:
+    void registration_finished(int status_code);
+    void error_occurred(const QString &error);  // для ошибок сети
+
+private:
+    QNetworkAccessManager *manager;
+};
 
 #endif // HTTP_CLIENT_H
