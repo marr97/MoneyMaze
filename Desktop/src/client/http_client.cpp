@@ -1,23 +1,40 @@
 #include "http_client.h"
+#include <QDebug>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QByteArray>
 
+httpClient::httpClient(QObject *parent): QObject(parent) {
+    manager = new QNetworkAccessManager(this);
+}
 
-void handle_server_response(QNetworkReply* reply){
+httpClient::~httpClient(){
+    delete manager;
+}
+
+void httpClient::handle_server_response(QNetworkReply* reply)
+{
     if (reply->error() == QNetworkReply::NoError) {
         QString response = reply->readAll();
         qDebug() << "Ответ сервера: " << response;
-    } else {
-        qDebug() << "Ошибка: " << reply->errorString();
+
+        int status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+        emit registration_finished(status_code);
     }
+    else {
+        qDebug() << "Ошибка сети: " << reply->errorString();
+        emit error_occurred(reply->errorString());
+    }
+
     reply->deleteLater();
 }
 
 
-int registrate(QString &nickname, QString &password){
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+void httpClient::registrate(const QString &nickname, const QString &password)
+{
     QNetworkRequest request;
     request.setUrl(QUrl("http://89.169.154.118:9090"));
-
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     QJsonObject json_data;
     json_data["nickname"] = nickname;
@@ -36,11 +53,4 @@ int registrate(QString &nickname, QString &password){
     connect(reply, &QNetworkReply::finished, this, [=](){
         handle_server_response(reply);
     });
-
-    connect(reply, &QNetworkReply::errorOccurred, this, [](QNetworkReply::NetworkError err) {
-        qDebug() << "Ошибка сети: " << err;
-    });
-
-    int status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    return status_code;
 }
