@@ -43,13 +43,13 @@ void reg_window::show_message(const QString &message, int message_type)
     const int timeout_ms = 2500;
 
     QLabel* label = new QLabel(this);
-    label->setFixedHeight(50);
+    label->setFixedHeight(40);
     label->setText(message);
     label->setAlignment(Qt::AlignCenter);
 
     if (message_type == ERROR){
         label->setStyleSheet(
-            "background-color: rgba(216, 58, 47, 0.9);"
+            "background-color: rgb(216, 58, 47);"
             "color: rgb(255, 255, 255);"
             "border-radius: 5px;"
             "padding: 10px;"
@@ -58,7 +58,16 @@ void reg_window::show_message(const QString &message, int message_type)
             );
     } else if (message_type == SUCCESS){
         label->setStyleSheet(
-            "background-color: rgba(97, 197, 84, 0.9);"
+            "background-color: rgb(97, 197, 84);"
+            "color: rgb(255, 255, 255);"
+            "border-radius: 5px;"
+            "padding: 10px;"
+            "font-family: 'Gill Sans', sans-serif;"
+            "font-size: 14px;"
+            );
+    } else if (message_type == NETWORK_ERROR){
+        label->setStyleSheet(
+            "background-color: rgb(155, 155, 155);"
             "color: rgb(255, 255, 255);"
             "border-radius: 5px;"
             "padding: 10px;"
@@ -69,9 +78,8 @@ void reg_window::show_message(const QString &message, int message_type)
         return;
     }
 
-    // Чтобы сообщение было посередине окна
     int x = (this->width() - label->sizeHint().width()) / 2;
-    int y = (this->height() - label->sizeHint().height()) / 2;
+    int y = (this->height() - label->sizeHint().height()) / 10;
 
     label->move(x, y);
     label->show();
@@ -81,7 +89,7 @@ void reg_window::show_message(const QString &message, int message_type)
 
 void reg_window::handle_registration_result(int status_code){
     if (status_code == 200){
-        show_message("Вы успешно зарегестрировались!", SUCCESS);
+        show_message("Вы успешно зарегистрировались!", SUCCESS);
 
         QTimer::singleShot(2500 + 200, this, [this]{
             this->hide();
@@ -95,7 +103,7 @@ void reg_window::handle_registration_result(int status_code){
 
 
 void reg_window::handle_network_error(const QString &error){
-    show_message("Ошибка сети: " + error, ERROR);
+    show_message("Ошибка сети: " + error, NETWORK_ERROR);
 }
 
 
