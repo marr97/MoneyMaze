@@ -44,8 +44,9 @@ private:
   QString user_newlogin;
   QString user_newpassword;
   QString user_password_confirmation;
-  const int SUCCESS = 1;
-  const int ERROR = 0;
+  const int SUCCESS = 0;
+  const int ERROR = 1;
+  const int NETWORK_ERROR = 2;
 };
 
 #endif // REG_WINDOW_H
