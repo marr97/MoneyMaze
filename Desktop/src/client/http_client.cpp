@@ -19,7 +19,7 @@ void httpClient::handle_server_response(QNetworkReply* reply)
         qDebug() << "Ответ сервера: " << response;
 
         int status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-        emit registration_finished(status_code);
+        emit registration_finished(status_code, response);
     }
     else {
         qDebug() << "Ошибка сети: " << reply->errorString();
@@ -33,7 +33,11 @@ void httpClient::handle_server_response(QNetworkReply* reply)
 void httpClient::registrate(const QString &nickname, const QString &password)
 {
     QNetworkRequest request;
-    request.setUrl(QUrl("http://89.169.154.118:9090"));
+
+    QUrl url("http://89.169.154.118:9090");
+    url.setPath("/register");
+    request.setUrl(url);
+
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     QJsonObject json_data;
