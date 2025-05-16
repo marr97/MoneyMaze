@@ -17,7 +17,7 @@ private slots:
     void handle_server_response(QNetworkReply* reply);
 
 signals:
-    void registration_finished(int status_code);
+    void registration_finished(int status_code, const QString &error_msg);
     void error_occurred(const QString &error);  // для ошибок сети
 
 private:

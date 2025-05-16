@@ -24,7 +24,7 @@ public:
   QString get_confirmation();
   bool check_password_confirmation();
   void show_message(const QString &message, int message_type);
-  void handle_registration_result(int status_code);
+  void handle_registration_result(int status_code, const QString &error_msg);
   void handle_network_error(const QString &error);
 
 private slots:
