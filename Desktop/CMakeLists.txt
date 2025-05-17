@@ -26,7 +26,6 @@ qt_add_executable(money_maze
 target_include_directories(money_maze
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/utils
         ${CMAKE_CURRENT_SOURCE_DIR}/include/nlohmann
 )
 
