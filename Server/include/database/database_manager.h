@@ -4,6 +4,7 @@
 #include "db_config.h"
 #include <memory>
 #include <string>
+#include <optional> 
 
 enum class LogLevel { DEBUG, INFO, WARNING, ERROR };
 enum class FinancialProfile { BALANCE, DAILY_MINIMUM, SAVINGS, DEBT, UNKNOWN_COLUMN };
@@ -35,6 +36,7 @@ public:
     );
     bool update_financial_profile(const std::string &column_name, int user_id, int new_value);
     int  get_value_from_financial_profile(const std::string &column_name, int user_id);
+    std::optional<std::string> getPasswordByUsername(const std::string& username);
 
 private:
     std::unique_ptr<pqxx::connection> conn;

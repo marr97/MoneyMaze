@@ -7,6 +7,7 @@
 #include <Poco/Net/HTTPServerParams.h>
 #include <Poco/Thread.h>
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
+#include "database_manager.h"
 
 class HttpServer {
 public:
@@ -17,6 +18,7 @@ public:
 private:
     int port;
     Poco::Net::HTTPServer* server;
+    DatabaseManager dbManager; 
 };
 
 #endif // HTTP_SERVER_H

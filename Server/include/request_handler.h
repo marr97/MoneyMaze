@@ -6,15 +6,24 @@
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
+#include "database_manager.h" 
 
 class RequestHandler : public Poco::Net::HTTPRequestHandler {
 public:
+    RequestHandler(DatabaseManager& dbManager);
     void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response) override;
+
+private:
+    DatabaseManager& dbManager;
 };
 
 class RequestHandlerFactory : public Poco::Net::HTTPRequestHandlerFactory {
 public:
+    RequestHandlerFactory(DatabaseManager& dbManager);
     Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request) override;
+
+private:
+    DatabaseManager& dbManager;
 };
 
 #endif // REQUEST_HANDLER_H

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <optional>
 
 void Logger::log(LogLevel level, const std::string &message) {
     std::string levelStr;
@@ -43,6 +44,8 @@ bool DatabaseManager::connect() {
         pqxx::work txn(*conn);
 
         // Проверка/создание таблицы users
+        #pragma GCC diagnostic push //игнорировать устаревший метод exec
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec("SELECT to_regclass('public.users');");
         if (r[0][0].is_null()) {
             txn.exec(R"(
@@ -54,8 +57,11 @@ bool DatabaseManager::connect() {
             )");
             Logger::log(LogLevel::INFO, "Created table 'users'.");
         }
+        #pragma GCC diagnostic pop
 
         // Проверка/создание таблицы financial_profile
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r2 = txn.exec("SELECT to_regclass('public.financial_profile');");
         if (r2[0][0].is_null()) {
             txn.exec(R"(
@@ -70,6 +76,7 @@ bool DatabaseManager::connect() {
             )");
             Logger::log(LogLevel::INFO, "Created table 'financial_profile'.");
         }
+        #pragma GCC diagnostic pop
 
         txn.commit();
         return true;
@@ -95,11 +102,15 @@ bool DatabaseManager::createUser(const std::string &username, const std::string 
     }
     try {
         pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec_params(
             "INSERT INTO users (username, password) VALUES ($1, $2) "
             "ON CONFLICT (username) DO NOTHING RETURNING id;",
             username, password
         );
+        #pragma GCC diagnostic pop
+
         txn.commit();
         if (r.empty()) {
             Logger::log(LogLevel::WARNING, "User already exists: " + username);
@@ -113,6 +124,32 @@ bool DatabaseManager::createUser(const std::string &username, const std::string 
     }
 }
 
+// новый метод для входа(получение пароля)
+
+std::optional<std::string> DatabaseManager::getPasswordByUsername(const std::string& username) {
+    if (!conn || !conn->is_open()) {
+        Logger::log(LogLevel::ERROR, "No open DB connection for getPasswordByUsername.");
+        return std::nullopt;
+    }
+    try {
+        pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        auto r = txn.exec_params("SELECT password FROM users WHERE username = $1;", username);
+        #pragma GCC diagnostic pop
+        txn.commit();
+
+        if (r.empty()) {
+            Logger::log(LogLevel::WARNING, "User not found: " + username);
+            return std::nullopt;
+        }
+        return r[0][0].as<std::string>();
+    } catch (const std::exception &e) {
+        Logger::log(LogLevel::ERROR, std::string("getPasswordByUsername error: ") + e.what());
+        return std::nullopt;
+    }
+}
+
 bool DatabaseManager::authenticateUser(const std::string &username, const std::string &password) {
     if (!conn || !conn->is_open()) {
         Logger::log(LogLevel::ERROR, "No open DB connection for authenticateUser.");
@@ -120,10 +157,13 @@ bool DatabaseManager::authenticateUser(const std::string &username, const std::s
     }
     try {
         pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec_params(
             "SELECT id FROM users WHERE username = $1 AND password = $2;",
             username, password
         );
+        #pragma GCC diagnostic pop
         return !r.empty();
     } catch (const std::exception &e) {
         Logger::log(LogLevel::ERROR, std::string("authenticateUser error: ") + e.what());
@@ -140,11 +180,14 @@ bool DatabaseManager::createFinancialProfile(int user_id, int initial_balance,
     }
     try {
         pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec_params(
             "INSERT INTO financial_profile (user_id, balance, daily_minimum, savings, debt) "
             "VALUES ($1, $2, $3, $4, $5) ON CONFLICT (user_id) DO NOTHING RETURNING id;",
             user_id, initial_balance, daily_minimum, savings, debt
         );
+        #pragma GCC diagnostic pop
         txn.commit();
         if (r.empty()) {
             Logger::log(LogLevel::WARNING, "Profile exists for user_id: " + std::to_string(user_id));
@@ -176,10 +219,13 @@ bool DatabaseManager::update_financial_profile(const std::string &column_name, i
                 return false;
         }
         pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec_params(
             "UPDATE financial_profile SET " + field + " = $2 WHERE user_id = $1 RETURNING id;",
             user_id, new_value
         );
+        #pragma GCC diagnostic pop
         txn.commit();
         if (r.empty()) {
             Logger::log(LogLevel::WARNING, "No profile for user_id: " + std::to_string(user_id));
@@ -211,10 +257,13 @@ int DatabaseManager::get_value_from_financial_profile(const std::string &column_
                 return 0;
         }
         pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec_params(
             "SELECT " + field + " FROM financial_profile WHERE user_id = $1;",
             user_id
         );
+        #pragma GCC diagnostic pop
         txn.commit();
         if (r.empty()) {
             Logger::log(LogLevel::WARNING, "No profile for user_id: " + std::to_string(user_id));

@@ -41,7 +41,7 @@ void httpClient::registrate(const QString &nickname, const QString &password)
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     QJsonObject json_data;
-    json_data["nickname"] = nickname;
+    json_data["login"] = nickname;
     json_data["password"] = password;
 
     QJsonDocument json_doc(json_data);

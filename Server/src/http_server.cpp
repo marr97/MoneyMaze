@@ -10,12 +10,22 @@ HttpServer::HttpServer(int port) : port(port), server(nullptr) {}
 
 void HttpServer::start() {
     try {
+        if (!dbManager.connect()) {
+            std::cerr << "DB connection failed, server not started\n";
+            return;
+        }
+        
         Poco::Net::ServerSocket serverSocket(port);
 
         Poco::Net::HTTPServerParams* params = new Poco::Net::HTTPServerParams;
         params->setMaxThreads(16);
 
-        server = new Poco::Net::HTTPServer(new RequestHandlerFactory, serverSocket, params);
+        auto* factory = new RequestHandlerFactory(dbManager);
+        server = new Poco::Net::HTTPServer(
+            new RequestHandlerFactory(dbManager),
+            serverSocket,
+            params
+        );
         server->start();
         std::cout << "Server started on port " << port << "\n";
 
