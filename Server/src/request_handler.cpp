@@ -39,7 +39,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                 responseObj->set("success", true);
             } else {
-                response.setStatus(Poco::Net::HTTPResponse::HTTP_CONFLICT);
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
                 responseObj->set("success", false);
                 responseObj->set("error", "User already exists");
             }
