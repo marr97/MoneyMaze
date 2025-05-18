@@ -35,12 +35,14 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
 
         if (request.getURI() == "/register") {
             bool ok = dbManager.createUser(login, password);
-            response.setStatus(ok
-                ? Poco::Net::HTTPResponse::HTTP_OK
-                : Poco::Net::HTTPResponse::HTTP_CONFLICT
-            );
-            responseObj->set("success", ok);
-            if (!ok) responseObj->set("error", "User already exists");
+             if (ok) {
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+                responseObj->set("success", true);
+            } else {
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_CONFLICT);
+                responseObj->set("success", false);
+                responseObj->set("error", "User already exists");
+            }
 
         } else if (request.getURI() == "/login") {
             auto dbPass = dbManager.getPasswordByUsername(login);
