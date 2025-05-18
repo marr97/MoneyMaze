@@ -47,12 +47,13 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         } else if (request.getURI() == "/login") {
             auto dbPass = dbManager.getPasswordByUsername(login);
             bool ok = dbPass.has_value() && dbPass.value() == password;
-            response.setStatus(ok
-                ? Poco::Net::HTTPResponse::HTTP_OK
-                : Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED
-            );
-            responseObj->set("success", ok);
-            if (!ok) responseObj->set("error", "Invalid login or password");
+            if (ok) {
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+                responseObj->set("success", true);
+            } else {
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED);
+                responseObj->set("success", false);
+                responseObj->set("error", "Invalid login or password");
         } else {
             responseObj->set("success", false);
             responseObj->set("error", "Unknown endpoint");
