@@ -54,6 +54,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED);
                 responseObj->set("success", false);
                 responseObj->set("error", "Invalid login or password");
+            }
         } else {
             responseObj->set("success", false);
             responseObj->set("error", "Unknown endpoint");
