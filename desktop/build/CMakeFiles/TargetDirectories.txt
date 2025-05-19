@@ -1,0 +1,9 @@
+/Users/alinatomilova/Desktop/MoneyMaze/Desktop/build/CMakeFiles/money_maze.dir
+/Users/alinatomilova/Desktop/MoneyMaze/Desktop/build/CMakeFiles/edit_cache.dir
+/Users/alinatomilova/Desktop/MoneyMaze/Desktop/build/CMakeFiles/rebuild_cache.dir
+/Users/alinatomilova/Desktop/MoneyMaze/Desktop/build/CMakeFiles/list_install_components.dir
+/Users/alinatomilova/Desktop/MoneyMaze/Desktop/build/CMakeFiles/install.dir
+/Users/alinatomilova/Desktop/MoneyMaze/Desktop/build/CMakeFiles/install/local.dir
+/Users/alinatomilova/Desktop/MoneyMaze/Desktop/build/CMakeFiles/install/strip.dir
+/Users/alinatomilova/Desktop/MoneyMaze/Desktop/build/CMakeFiles/money_maze_autogen_timestamp_deps.dir
+/Users/alinatomilova/Desktop/MoneyMaze/Desktop/build/CMakeFiles/money_maze_autogen.dir
