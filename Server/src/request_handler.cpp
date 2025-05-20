@@ -55,11 +55,11 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
 
         Poco::JSON::Object::Ptr responseObj = new Poco::JSON::Object;
         
-        std::string RequestBody = "{ login: " + login + ",  password: " + password + " }";
+        std::string RequestBody = "Body: { login: " + login + ",  password: " + password + " }";
         std::string ReplyBody;
 
         if (request.getURI() == "/register") {
-            std::string RequestInfo = "Endpoint: '/register'    " + RequestBody;
+            std::string RequestInfo = "Endpoint: '/register' | " + RequestBody;
             RequestLogger::logRequest(RequestLogLevel::INFO, RequestInfo);
 
             bool ok = dbManager.createUser(login, password);
@@ -67,7 +67,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                 responseObj->set("success", true);
 
-                LogMessage = "User '" + login + "' successfully registered\n";
+                LogMessage = "User '" + login + "' successfully registered";
                 RequestLogger::logRequest(RequestLogLevel::INFO, LogMessage);
 
                 ReplyBody = " - | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK);
@@ -77,7 +77,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 responseObj->set("success", false);
                 responseObj->set("error", "User already exists");
 
-                LogMessage = "Couldn't register user: '" + login + "'\n";
+                LogMessage = "Couldn't register user: '" + login;
                 RequestLogger::logRequest(RequestLogLevel::ERROR, LogMessage);
 
                 ReplyBody = " 'User already exists' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
@@ -88,14 +88,14 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             auto dbPass = dbManager.getPasswordByUsername(login);
             bool ok = dbPass.has_value() && dbPass.value() == password;
             
-            std::string RequestInfo = "Endpoint: '/login' \n" + RequestBody;
+            std::string RequestInfo = "Endpoint: '/login' | " + RequestBody;
             RequestLogger::logRequest(RequestLogLevel::INFO, RequestInfo);
             
             if (ok) {
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                 responseObj->set("success", true);
                 
-                LogMessage = "User '" + login + "' successfully logged in\n";
+                LogMessage = "User '" + login + "' successfully logged in";
                 RequestLogger::logRequest(RequestLogLevel::INFO, LogMessage);
 
                 ReplyBody = " - | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK);
@@ -106,7 +106,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 responseObj->set("success", false);
                 responseObj->set("error", "Invalid login or password");
 
-                LogMessage = "Couldn't authorize user: '" + login + "'\n";
+                LogMessage = "Couldn't authorize user: '" + login;
                 RequestLogger::logRequest(RequestLogLevel::ERROR, LogMessage);
 
                 ReplyBody = " 'Invalid login or password' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED);
@@ -116,7 +116,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             responseObj->set("success", false);
             responseObj->set("error", "Unknown endpoint");
 
-            LogMessage = "Unknown endpoint: " + request.getURI() + "\n";
+            LogMessage = "Unknown endpoint: " + request.getURI();
             RequestLogger::logRequest(RequestLogLevel::WARNING, LogMessage);
         }
 
@@ -129,7 +129,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         Poco::JSON::Stringifier::stringify(errorObj, out);
 
         std::ostringstream ExceptionInfo;
-        ExceptionInfo << "Catch exception: " << e.what() << "\n";
+        ExceptionInfo << "Catch exception: " << e.what();
         RequestLogger::logRequest(RequestLogLevel::ERROR, ExceptionInfo.str());
     }
 }
