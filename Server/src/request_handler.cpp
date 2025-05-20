@@ -74,17 +74,17 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 LogMessage = "User '" + login + "' successfully registered";
                 RequestLogger::logRequest(RequestLogLevel::INFO, LogMessage);
 
-                ReplyBody = " - | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK);
+                ReplyBody = " OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK);
                 RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
             } else {
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
                 responseObj->set("success", false);
                 responseObj->set("error", "User already exists");
 
-                LogMessage = "Couldn't register user: '" + login;
+                LogMessage = "Couldn't register user: '" + login + "'";
                 RequestLogger::logRequest(RequestLogLevel::ERROR, LogMessage);
 
-                ReplyBody = " 'User already exists' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
+                ReplyBody = "'User already exists' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
                 RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
             }
 
@@ -102,7 +102,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 LogMessage = "User '" + login + "' successfully logged in";
                 RequestLogger::logRequest(RequestLogLevel::INFO, LogMessage);
 
-                ReplyBody = " - | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK);
+                ReplyBody = " OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK);
                 RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
 
             } else {
@@ -110,7 +110,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 responseObj->set("success", false);
                 responseObj->set("error", "Invalid login or password");
 
-                LogMessage = "Couldn't authorize user: '" + login;
+                LogMessage = "Couldn't authorize user: '" + login + "'";
                 RequestLogger::logRequest(RequestLogLevel::ERROR, LogMessage);
 
                 ReplyBody = " 'Invalid login or password' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED);
