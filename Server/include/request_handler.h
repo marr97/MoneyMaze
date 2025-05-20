@@ -17,7 +17,7 @@ enum class RequestLogLevel {
 
 class RequestLogger {
 public:
-    void logRequest(RequestLogLevel level, const std::string &message);
+    static void logRequest(RequestLogLevel level, const std::string &message);
 };
 
 
