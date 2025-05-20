@@ -7,8 +7,8 @@
 #include <Poco/Dynamic/Var.h>
 #include <sstream>
 #include <fstream>
-#include <format>
-#include <chrono>
+#include <cstdlib>
+#include <ctime>
 
 RequestHandler::RequestHandler(DatabaseManager& dbManager)
     : dbManager(dbManager) {}
@@ -28,10 +28,13 @@ void RequestLogger::logRequest(RequestLogLevel level, const std::string &message
         case RequestLogLevel::WARNING: levelStr = "Warning"; break;
         case RequestLogLevel::ERROR:   levelStr = "Error"; break;
     }
-    
-    auto now = std::chrono::system_clock::now();
-    std::cout << std::format("{:%Y-%m-%d %H:%M:%S}", now);
 
+    setenv("TZ", "Europe/Moscow", 1);
+    tzset(); 
+
+    std::time_t now = std::time(nullptr);
+    char buf[101];
+    std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
     std::string logMsg = std::string(buf) + " [" + levelStr + "] " + message + "\n";
     std::cout << logMsg;
     std::ofstream ofs("application.log", std::ios::app);
