@@ -114,7 +114,8 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         errorObj->set("error", std::string("Exception: ") + e.what());
         Poco::JSON::Stringifier::stringify(errorObj, out);
 
-        LogMessage = "Catch exception: " + e.what() + "\n";
-        RequestLogger::logRequest(RequestLogLevel::ERROR, LogMessage);
+        std::ostringstream ExceptionInfo;
+        ExceptionInfo << "Catch exception: " << e.what() << "\n";
+        RequestLogger::logRequest(RequestLogLevel::ERROR, ExceptionInfo.str());
     }
 }
