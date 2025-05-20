@@ -2,11 +2,24 @@
 #define REQUEST_HANDLER_H
 
 #include <iostream>
+#include <string>
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
 #include "database_manager.h" 
+
+enum class RequestLogLevel { 
+    INFO, 
+    WARNING, 
+    ERROR 
+};
+
+class RequestLogger {
+public:
+    void logRequest(RequestLogLevel level, const std::string &message);
+};
+
 
 class RequestHandler : public Poco::Net::HTTPRequestHandler {
 public:
