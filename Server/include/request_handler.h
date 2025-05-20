@@ -10,7 +10,8 @@
 #include "database_manager.h" 
 
 enum class RequestLogLevel { 
-    INFO, 
+    INFO,
+    REPLYINFO, 
     WARNING, 
     ERROR 
 };
