@@ -4,6 +4,8 @@
 #include <iostream>
 #include <algorithm>
 #include <optional>
+#include <chrono>
+#include <format>
 
 void Logger::log(LogLevel level, const std::string &message) {
     std::string levelStr;
@@ -14,9 +16,9 @@ void Logger::log(LogLevel level, const std::string &message) {
         case LogLevel::ERROR:   levelStr = "ERROR"; break;
     }
 
-    std::time_t now = std::time(nullptr);
-    char buf[64];
-    std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+    auto now = std::chrono::system_clock::now();
+    std::cout << std::format("{:%Y-%m-%d %H:%M:%S}", now);
+    
     std::string logMsg = std::string(buf) + " [" + levelStr + "] " + message + "\n";
     std::cout << logMsg;
     std::ofstream ofs("application.log", std::ios::app);
