@@ -116,6 +116,18 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 ReplyBody = " 'Invalid login or password' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED);
                 RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
             }
+        } else if (request.getURI() == "/test") {
+
+            response.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
+            responseObj->set("success", false);
+            responseObj->set("error", "error...");
+                
+            std::string RequestInfo = "Endpoint: '/test' ";
+            RequestLogger::logRequest(RequestLogLevel::INFO, RequestInfo);
+
+            ReplyBody = " - | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
+            RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
+
         } else {
             responseObj->set("success", false);
             responseObj->set("error", "Unknown endpoint");
