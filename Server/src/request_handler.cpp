@@ -123,8 +123,8 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             RequestLogger::logRequest(RequestLogLevel::WARNING, LogMessage);
         }
 
-        Poco::JSON::Stringifier::stringify(responseObj, out);
         std::ostream& out = response.send();
+        Poco::JSON::Stringifier::stringify(responseObj, out);
 
     } catch (const std::exception& e) {
         Poco::JSON::Object::Ptr errorObj = new Poco::JSON::Object;
