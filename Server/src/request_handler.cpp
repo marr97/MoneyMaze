@@ -46,7 +46,6 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                                    Poco::Net::HTTPServerResponse& response) {
     response.setContentType("application/json");
     response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
-    std::ostream& out = response.send();
     std::string LogMessage;
 
     try {
@@ -116,18 +115,6 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 ReplyBody = " 'Invalid login or password' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED);
                 RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
             }
-        } else if (request.getURI() == "/test") {
-
-            response.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
-            responseObj->set("success", false);
-            responseObj->set("error", "error...");
-                
-            std::string RequestInfo = "Endpoint: '/test' ";
-            RequestLogger::logRequest(RequestLogLevel::INFO, RequestInfo);
-
-            ReplyBody = " - | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
-            RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
-
         } else {
             responseObj->set("success", false);
             responseObj->set("error", "Unknown endpoint");
@@ -137,6 +124,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         }
 
         Poco::JSON::Stringifier::stringify(responseObj, out);
+        std::ostream& out = response.send();
 
     } catch (const std::exception& e) {
         Poco::JSON::Object::Ptr errorObj = new Poco::JSON::Object;
