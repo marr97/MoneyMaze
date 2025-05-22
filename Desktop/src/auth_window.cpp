@@ -2,9 +2,10 @@
 #include "ui_auth_window.h"
 #include "ui_reg_window.h"
 #include "reg_window.h"
+#include "http_client.h"
 
 auth_window::auth_window(QWidget *parent)
-    : QDialog(parent), ui(new Ui::auth_window)
+    : QDialog(parent), ui(new Ui::auth_window), http_client_auth(new httpClient(this))
 {
   ui->setupUi(this);
   this->setWindowTitle("Вход");

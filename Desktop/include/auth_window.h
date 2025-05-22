@@ -5,6 +5,8 @@
 #include "reg_window.h"
 #include "home_screen.h"
 
+class httpClient;
+
 namespace Ui {
 class auth_window;
 }
@@ -31,7 +33,7 @@ private:
   Ui::auth_window *ui;
   reg_window ui_Reg;
   home_screen ui_Home;
-
+  httpClient *http_client_auth;
 
   QString user_login;
   QString user_password;
