@@ -45,7 +45,6 @@ void RequestLogger::logRequest(RequestLogLevel level, const std::string &message
 void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                                    Poco::Net::HTTPServerResponse& response) {
     response.setContentType("application/json");
-    response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
     std::string LogMessage;
 
     try {
@@ -122,7 +121,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             LogMessage = "Unknown endpoint: " + request.getURI();
             RequestLogger::logRequest(RequestLogLevel::WARNING, LogMessage);
         }
-
+        
         std::ostream& out = response.send();
         Poco::JSON::Stringifier::stringify(responseObj, out);
 
@@ -130,6 +129,8 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         Poco::JSON::Object::Ptr errorObj = new Poco::JSON::Object;
         errorObj->set("success", false);
         errorObj->set("error", std::string("Exception: ") + e.what());
+        
+        std::ostream& out = response.send();
         Poco::JSON::Stringifier::stringify(errorObj, out);
 
         std::ostringstream ExceptionInfo;
