@@ -66,28 +66,6 @@ void httpClient::show_result(const QString &message, Status status, QDialog *obj
 
 
 
-void httpClient::handle_server_response(QNetworkReply* reply)
-{
-    int status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    qDebug() << "reply status code=" << status_code << "\n";
-
-    if (status_code == 200 || status_code >= 400) {
-        QString response = reply->readAll();
-        qDebug() << "Ответ сервера: " << response;
-
-        emit registration_finished(status_code, response);
-
-    }
-    else {
-
-        qDebug() << "Ошибка сети: " << reply->errorString();
-        emit error_occurred(reply->errorString());
-    }
-
-    reply->deleteLater();
-}
-
-
 void httpClient::registrate(const QString &nickname, const QString &password)
 {
     QNetworkRequest request;
@@ -105,15 +83,59 @@ void httpClient::registrate(const QString &nickname, const QString &password)
     QJsonDocument json_doc(json_data);
     QByteArray registration_data = json_doc.toJson();
 
-
-    qDebug() << "[ Отправка данных регистрации ]";
-
-
     QNetworkReply *reply = manager->post(request, registration_data);
 
 
     connect(reply, &QNetworkReply::finished, this, [=](){
-        handle_server_response(reply);
+        int status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+        if (status_code == 200 || status_code >= 400) {
+            QString response = reply->readAll();
+            emit registration_finished(status_code, response);
+
+        }
+        else {
+            emit error_occurred(reply->errorString());
+        }
+
+        reply->deleteLater();
+    });
+}
+
+
+void httpClient::authorize(const QString &login, const QString &password)
+{
+    QNetworkRequest request;
+
+    QUrl url("http://89.169.154.118:9090");
+    url.setPath("/login");
+    request.setUrl(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json_data;
+    json_data["login"] = login;
+    json_data["password"] = password;
+
+    QJsonDocument json_doc(json_data);
+    QByteArray auth_data = json_doc.toJson();
+
+    QNetworkReply *reply = manager->post(request, auth_data);
+
+
+    connect(reply, &QNetworkReply::finished, this, [=](){
+        int status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+        if (status_code == 200 || status_code >= 400) {
+            QString response = reply->readAll();
+            emit authorization_finished(status_code, response);
+
+        }
+        else {
+            emit error_occurred(reply->errorString());
+        }
+
+        reply->deleteLater();
     });
 }
 

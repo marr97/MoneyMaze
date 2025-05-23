@@ -21,13 +21,12 @@ public:
     Q_ENUM(Status)
 
     void registrate(const QString &nickname, const QString &password);
+    void authorize(const QString &login, const QString &password);
     void show_result(const QString &message, Status status, QDialog *object);
-
-private slots:
-    void handle_server_response(QNetworkReply* reply);
 
 signals:
     void registration_finished(int status_code, const QString &error_msg);
+    void authorization_finished(int status_code, const QString &error_msg);
     void error_occurred(const QString &error);
 
 private:

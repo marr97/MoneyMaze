@@ -27,7 +27,7 @@ reg_window::reg_window(QWidget *parent)
     ui->lineEdit_password->setEchoMode(QLineEdit::Password);
     ui->lineEdit_confirmation->setEchoMode(QLineEdit::Password);
 
-    // Максимальная длина имени пользователя и пароля
+    // максимальная длина имени пользователя и пароля
     ui->lineEdit_login->setMaxLength(20);
     ui->lineEdit_password->setMaxLength(20);
     ui->lineEdit_confirmation->setMaxLength(20);
@@ -67,28 +67,6 @@ void reg_window::show_message(const QString &message)
 }
 
 
-void reg_window::handle_registration_result(int status_code, const QString &error_msg){
-    if (status_code == 200){
-        http_client_reg->show_result("Вы успешно зарегестрировались!", httpClient::Status::OK, this);
-
-        QTimer::singleShot(2500 + 200, this, [this]{
-            this->hide();
-        });
-
-    }
-    else if (status_code == 400){
-        http_client_reg->show_result("Пользователь с таким логином уже существует", httpClient::Status::ERROR, this);
-    } else {
-        http_client_reg->show_result("Ошибка: ", httpClient::Status::ERROR, this);
-    }
-}
-
-
-void reg_window::handle_network_error(const QString &error){
-    http_client_reg->show_result("Ошибка сети: " + error, httpClient::Status::NETWORK_ERROR, this);
-}
-
-
 void reg_window::on_lineEdit_login_textEdited(const QString &arg1)
 {
     reg_window::user_newlogin = arg1;
@@ -125,6 +103,28 @@ QString reg_window::get_confirmation()
 bool reg_window::check_password_confirmation()
 {
     return (get_password() == get_confirmation());
+}
+
+
+void reg_window::handle_registration_result(int status_code, const QString &error_msg){
+    if (status_code == 200){
+        http_client_reg->show_result("Вы успешно зарегестрировались!", httpClient::Status::OK, this);
+
+        QTimer::singleShot(2500 + 200, this, [this]{
+            this->hide();
+        });
+
+    }
+    else if (status_code >= 400){
+        http_client_reg->show_result("Пользователь с таким логином уже существует", httpClient::Status::ERROR, this);
+    } else {
+        http_client_reg->show_result("Ошибка: ", httpClient::Status::ERROR, this);
+    }
+}
+
+
+void reg_window::handle_network_error(const QString &error){
+    http_client_reg->show_result("Ошибка сети: " + error, httpClient::Status::NETWORK_ERROR, this);
 }
 
 
