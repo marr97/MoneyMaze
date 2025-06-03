@@ -5,6 +5,8 @@
 #include <QPropertyAnimation>
 #include <QString>
 #include <QWidget>
+#include "loan_module.h"
+#include "savings_module.h"
 
 namespace Ui {
 class home_screen;
@@ -22,9 +24,16 @@ private slots:
   void tb_modules_down();
   void tb_savings_down();
   void tb_loans_down();
+  void on_pb_next_month_clicked();
 
-private:
+  void on_pb_mod_loans_clicked();
+
+  void on_pb_mod_savings_clicked();
+
+  private:
   Ui::home_screen *ui;
+  loan_module ui_loan_module;
+  savings_module ui_savings_module;
 
   QPropertyAnimation *animation_modules;
   QPropertyAnimation *animation_savings;

@@ -2,6 +2,7 @@
 #include "ui_home_screen.h"
 #include <QToolButton>
 #include <QPropertyAnimation>
+#include <QTimer>
 
 home_screen::home_screen(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::home_screen) {
@@ -29,7 +30,7 @@ home_screen::home_screen(QWidget *parent)
                       "}";
 
   ui->ql_balance->setStyleSheet(qlStyle_1);
-  ui->ql_daily_min->setStyleSheet(qlStyle_1);
+  ui->ql_monthly_min->setStyleSheet(qlStyle_1);
   ui->ql_debt->setStyleSheet(qlStyle_1);
 
   // Стрелочки
@@ -89,11 +90,39 @@ home_screen::home_screen(QWidget *parent)
       "   background-color: rgb(225, 211, 255)"
       "}";
 
+
+
   ui->pb_make_loan->setStyleSheet(buttonStyle_1);
   ui->pb_make_deposit->setStyleSheet(buttonStyle_1);
 
   ui->pb_mod_loans->setStyleSheet(buttonStyle_2);
   ui->pb_mod_savings->setStyleSheet(buttonStyle_2);
+
+  // Информация о текущем месяце игры
+
+  QString buttonStyle_3 =
+      "QPushButton {"
+      "   background-color: rgba(174, 208, 180, 0.6);"
+      "   border-top: none;"
+      "   text-align: center;"
+      "   color: grey;"
+      "   border-radius: 8px;"
+      "   padding: 5px;"
+      "}"
+      "QPushButton:hover {"
+      "   background-color: rgb(151, 207, 169)"
+      "}";
+
+  ui->pb_next_month->setStyleSheet(buttonStyle_3);
+
+  ui->ql_month->setStyleSheet(
+      "QLabel {"
+      "   color: grey;"
+      "   padding: 5px;"
+      "}"
+      );
+
+
 
 
   // Виджеты с кнопками
@@ -199,3 +228,24 @@ void home_screen::tb_modules_down()
 
   is_modules_visible = !is_modules_visible;
 }
+
+void home_screen::on_pb_next_month_clicked()
+{
+}
+
+
+void home_screen::on_pb_mod_loans_clicked()
+{
+    QTimer::singleShot(200, this, [this]{
+        ui_loan_module.show();
+    });
+}
+
+
+void home_screen::on_pb_mod_savings_clicked()
+{
+    QTimer::singleShot(200, this, [this]{
+        ui_savings_module.show();
+    });
+}
+
