@@ -114,6 +114,102 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 ReplyBody = " 'Invalid login or password' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED);
                 RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
             }
+        } else if (request.getURI() == "/financial-profile") {
+            std::string username = json->getValue<std::string>("username");
+            auto user_id_opt = dbManager.getUserIdByUsername(username);
+            if (!user_id_opt) {
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+                response.send() << "User not found";
+                return;
+            }
+            int user_id = user_id_opt.value();
+            
+            if (auto profile = dbManager.getFinancialProfile(user_id)) {
+                Poco::JSON::Object::Ptr responseObj = new Poco::JSON::Object;
+                responseObj->set("balance", profile->balance);
+                responseObj->set("monthly_minimum", profile->monthly_minimum);
+                responseObj->set("total_loans", profile->debt);
+                
+                // Рассчет процентов (примерная логика)
+                double interest_due = profile->debt * 0.15 / 12;
+                responseObj->set("interest_due", interest_due);
+                responseObj->set("salary", profile->salary);
+                responseObj->set("current_month", profile->played_months);
+                
+                // Проверка условий игры
+                if (profile->balance < 0) {
+                    responseObj->set("status", "lose");
+                    responseObj->set("score", profile->played_months);
+                } else if (profile->played_months >= 12) { // 12 месяцев - условие победы
+                    responseObj->set("status", "win");
+                    responseObj->set("score", profile->balance + profile->savings - profile->debt);
+                } else {
+                    responseObj->set("status", "in_progress");
+                }
+                
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+                std::ostream& out = response.send();
+                Poco::JSON::Stringifier::stringify(responseObj, out);
+            } else {
+                // Обработка ошибки
+            }
+        } else if (request.getURI() == "/next-month") {
+            std::string username = json->getValue<std::string>("username");
+            auto user_id_opt = dbManager.getUserIdByUsername(username);
+            if (!user_id_opt) {
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+                response.send() << "User not found";
+                return;
+            }
+            int user_id = user_id_opt.value();
+            
+            if (auto profile = dbManager.getFinancialProfile(user_id)) {
+                // Рассчет процентов
+                double interest_due = profile->debt * 0.15 / 12;
+                
+                // Обновление баланса
+                profile->balance = profile->balance - profile->monthly_minimum - interest_due + profile->salary;
+                profile->played_months++;
+                
+                dbManager.updateFinancialProfile(user_id, *profile);
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+            } else {
+                // Обработка ошибки
+            }
+        } else if (request.getURI() == "/loan-info") {
+            auto loanInfo = dbManager.getLoanInfo();
+            
+            Poco::JSON::Object::Ptr responseObj = new Poco::JSON::Object;
+            responseObj->set("interest_rate", loanInfo.interest_rate);
+            responseObj->set("min_loan_month", loanInfo.min_loan_month);
+            responseObj->set("max_loan_month", loanInfo.max_loan_month);
+            responseObj->set("min_loan_amount", loanInfo.min_loan_amount);
+            responseObj->set("max_loan_amount", loanInfo.max_loan_amount);
+            
+            response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+            std::ostream& out = response.send();
+            Poco::JSON::Stringifier::stringify(responseObj, out);
+        } else if (request.getURI() == "/take-loan") {
+            std::string username = json->getValue<std::string>("username");
+            int period = json->getValue<int>("loan_period");
+            int amount = json->getValue<int>("loan_amount");
+            auto user_id_opt = dbManager.getUserIdByUsername(username);
+            if (!user_id_opt) {
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+                response.send() << "User not found";
+                return;
+            }
+            int user_id = user_id_opt.value();
+            
+            auto loanInfo = dbManager.getLoanInfo();
+            if (amount < loanInfo.min_loan_amount || amount > loanInfo.max_loan_amount ||
+                period < loanInfo.min_loan_month || period > loanInfo.max_loan_month) {
+                // Обработка невалидных параметров
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
+            } else {
+                dbManager.createLoan(user_id, amount, period, loanInfo.interest_rate);
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+            }
         } else {
             responseObj->set("success", false);
             responseObj->set("error", "Unknown endpoint");

@@ -7,11 +7,27 @@
 #include <optional> 
 
 enum class LogLevel { DEBUG, INFO, WARNING, ERROR };
-enum class FinancialProfile { BALANCE, DAILY_MINIMUM, SAVINGS, DEBT, UNKNOWN_COLUMN };
 
 class Logger {
 public:
     static void log(LogLevel level, const std::string &message);
+};
+
+struct FinancialProfile {
+    int balance;
+    int monthly_minimum;
+    int savings;
+    int debt;
+    int salary;
+    int played_months;
+};
+
+struct LoanInfo {
+    double interest_rate;
+    int min_loan_month;
+    int max_loan_month;
+    int min_loan_amount;
+    int max_loan_amount;
 };
 
 class DatabaseManager {
@@ -38,7 +54,16 @@ public:
     int  get_value_from_financial_profile(const std::string &column_name, int user_id);
     std::optional<std::string> getPasswordByUsername(const std::string& username);
 
+    std::optional<FinancialProfile> getFinancialProfile(int user_id);
+    bool updateFinancialProfile(int user_id, const FinancialProfile& profile);
+    bool createLoan(int user_id, int amount, int period, double rate);
+    LoanInfo getLoanInfo();
+
+    std::optional<int> getUserIdByUsername(const std::string& username);
+
 private:
     std::unique_ptr<pqxx::connection> conn;
     FinancialProfile financial_profile_column(const std::string &column_name);
 };
+
+

@@ -1,5 +1,4 @@
 #include "database_manager.h"
-#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -69,12 +68,32 @@ bool DatabaseManager::connect() {
                     id SERIAL PRIMARY KEY,
                     user_id INTEGER UNIQUE REFERENCES users(id),
                     balance INTEGER NOT NULL,
-                    daily_minimum INTEGER NOT NULL,
+                    monthly_minimumINTEGER NOT NULL,
                     savings INTEGER NOT NULL,
-                    debt INTEGER NOT NULL
+                    debt INTEGER NOT NULL,
+                    salary INTEGER NOT NULL,
+                    played_months INTEGER NOT NULL
                 );
             )");
             Logger::log(LogLevel::INFO, "Created table 'financial_profile'.");
+        }
+        #pragma GCC diagnostic pop
+
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        auto r3 = txn.exec("SELECT to_regclass('public.loans');");
+        if (r3[0][0].is_null()) {
+            txn.exec(R"(
+                CREATE TABLE loans (
+                    id SERIAL PRIMARY KEY,
+                    user_id INTEGER REFERENCES users(id),
+                    amount INTEGER NOT NULL,
+                    period INTEGER NOT NULL,
+                    rate DOUBLE PRECISION NOT NULL,
+                    passed_months INTEGER DEFAULT 0
+                );
+            )");
+            Logger::log(LogLevel::INFO, "Created table 'loans'.");
         }
         #pragma GCC diagnostic pop
 
@@ -150,6 +169,36 @@ std::optional<std::string> DatabaseManager::getPasswordByUsername(const std::str
     }
 }
 
+std::optional<int> DatabaseManager::getUserIdByUsername(const std::string& username) {
+    if (!conn || !conn->is_open()) {
+        Logger::log(LogLevel::ERROR, "Database not connected");
+        return std::nullopt;
+    }
+
+    try {
+        pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        pqxx::result result = txn.exec_params(
+            "SELECT id FROM users WHERE username = $1",
+            username
+        );
+        #pragma GCC diagnostic pop
+
+        if (result.empty()) {
+            return std::nullopt;
+        }
+
+        int user_id = result[0][0].as<int>();
+        return user_id;
+
+    } catch (const std::exception& e) {
+        Logger::log(LogLevel::ERROR, std::string("getUserIdByUsername failed: ") + e.what());
+        return std::nullopt;
+    }
+}
+
+
 bool DatabaseManager::authenticateUser(const std::string &username, const std::string &password) {
     if (!conn || !conn->is_open()) {
         Logger::log(LogLevel::ERROR, "No open DB connection for authenticateUser.");
@@ -171,117 +220,91 @@ bool DatabaseManager::authenticateUser(const std::string &username, const std::s
     }
 }
 
-bool DatabaseManager::createFinancialProfile(int user_id, int initial_balance,
-                                             int daily_minimum, int savings,
-                                             int debt) {
-    if (!conn || !conn->is_open()) {
-        Logger::log(LogLevel::ERROR, "No open DB connection for createFinancialProfile.");
-        return false;
-    }
-    try {
-        pqxx::work txn(*conn);
-        #pragma GCC diagnostic push
-        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-        auto r = txn.exec_params(
-            "INSERT INTO financial_profile (user_id, balance, daily_minimum, savings, debt) "
-            "VALUES ($1, $2, $3, $4, $5) ON CONFLICT (user_id) DO NOTHING RETURNING id;",
-            user_id, initial_balance, daily_minimum, savings, debt
-        );
-        #pragma GCC diagnostic pop
-        txn.commit();
-        if (r.empty()) {
-            Logger::log(LogLevel::WARNING, "Profile exists for user_id: " + std::to_string(user_id));
-            return false;
-        }
-        Logger::log(LogLevel::INFO, "Created financial profile for user_id: " + std::to_string(user_id));
-        return true;
-    } catch (const std::exception &e) {
-        Logger::log(LogLevel::ERROR, std::string("createFinancialProfile error: ") + e.what());
-        return false;
-    }
-}
 
-bool DatabaseManager::update_financial_profile(const std::string &column_name, int user_id, int new_value) {
-    if (!conn || !conn->is_open()) {
-        Logger::log(LogLevel::ERROR, "No open DB connection for update_financial_profile.");
-        return false;
-    }
+std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id) {
+    if (!conn || !conn->is_open()) return std::nullopt;
+    
     try {
-        FinancialProfile col = financial_profile_column(column_name);
-        std::string field;
-        switch (col) {
-            case FinancialProfile::BALANCE:       field = "balance"; break;
-            case FinancialProfile::DAILY_MINIMUM: field = "daily_minimum"; break;
-            case FinancialProfile::SAVINGS:       field = "savings"; break;
-            case FinancialProfile::DEBT:          field = "debt"; break;
-            default:
-                Logger::log(LogLevel::WARNING, "Unknown column: " + column_name);
-                return false;
-        }
-        pqxx::work txn(*conn);
-        #pragma GCC diagnostic push
+        #pragma GCC diagnostic push //игнорировать устаревший метод exec
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-        auto r = txn.exec_params(
-            "UPDATE financial_profile SET " + field + " = $2 WHERE user_id = $1 RETURNING id;",
-            user_id, new_value
-        );
-        #pragma GCC diagnostic pop
-        txn.commit();
-        if (r.empty()) {
-            Logger::log(LogLevel::WARNING, "No profile for user_id: " + std::to_string(user_id));
-            return false;
-        }
-        Logger::log(LogLevel::INFO, "Updated " + column_name + " for user_id: " + std::to_string(user_id));
-        return true;
-    } catch (const std::exception &e) {
-        Logger::log(LogLevel::ERROR, std::string("update_financial_profile error: ") + e.what());
-        return false;
-    }
-}
-
-int DatabaseManager::get_value_from_financial_profile(const std::string &column_name, int user_id) {
-    if (!conn || !conn->is_open()) {
-        Logger::log(LogLevel::ERROR, "No open DB connection for get_value_from_financial_profile.");
-        return 0;
-    }
-    try {
-        FinancialProfile col = financial_profile_column(column_name);
-        std::string field;
-        switch (col) {
-            case FinancialProfile::BALANCE:       field = "balance"; break;
-            case FinancialProfile::DAILY_MINIMUM: field = "daily_minimum"; break;
-            case FinancialProfile::SAVINGS:       field = "savings"; break;
-            case FinancialProfile::DEBT:          field = "debt"; break;
-            default:
-                Logger::log(LogLevel::WARNING, "Unknown column: " + column_name);
-                return 0;
-        }
         pqxx::work txn(*conn);
-        #pragma GCC diagnostic push
-        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec_params(
-            "SELECT " + field + " FROM financial_profile WHERE user_id = $1;",
+            "SELECT balance, monthly_minimum, savings, debt, salary, played_months "
+            "FROM financial_profile WHERE user_id = $1;",
             user_id
         );
         #pragma GCC diagnostic pop
-        txn.commit();
-        if (r.empty()) {
-            Logger::log(LogLevel::WARNING, "No profile for user_id: " + std::to_string(user_id));
-            return 0;
-        }
-        return r[0][0].as<int>();
-    } catch (const std::exception &e) {
-        Logger::log(LogLevel::ERROR, std::string("get_value_from_financial_profile error: ") + e.what());
-        return 0;
+        
+        if (r.empty()) return std::nullopt;
+        
+        FinancialProfile profile;
+        profile.balance = r[0][0].as<int>();
+        profile.monthly_minimum = r[0][1].as<int>();
+        profile.savings = r[0][2].as<int>();
+        profile.debt = r[0][3].as<int>();
+        profile.salary = r[0][4].as<int>();
+        profile.played_months = r[0][5].as<int>();
+        
+        return profile;
+    } catch (const std::exception& e) {
+        Logger::log(LogLevel::ERROR, "getFinancialProfile error: " + std::string(e.what()));
+        return std::nullopt;
     }
 }
 
-FinancialProfile DatabaseManager::financial_profile_column(const std::string &column_name) {
-    std::string col = column_name;
-    std::transform(col.begin(), col.end(), col.begin(), ::tolower);
-    if (col == "balance")        return FinancialProfile::BALANCE;
-    if (col == "daily_minimum")  return FinancialProfile::DAILY_MINIMUM;
-    if (col == "savings")        return FinancialProfile::SAVINGS;
-    if (col == "debt")           return FinancialProfile::DEBT;
-    return FinancialProfile::UNKNOWN_COLUMN;
+bool DatabaseManager::updateFinancialProfile(int user_id, const FinancialProfile& profile) {
+    if (!conn || !conn->is_open()) return false;
+    
+    try {
+        #pragma GCC diagnostic push //игнорировать устаревший метод exec
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        pqxx::work txn(*conn);
+        txn.exec_params(
+            "UPDATE financial_profile SET "
+            "balance = $1, monthly_minimum = $2, savings = $3, debt = $4, "
+            "salary = $5, played_months = $6 "
+            "WHERE user_id = $7;",
+            profile.balance, profile.monthly_minimum, profile.savings, 
+            profile.debt, profile.salary, profile.played_months, user_id
+        );
+        #pragma GCC diagnostic pop
+        txn.commit();
+        return true;
+    } catch (const std::exception& e) {
+        Logger::log(LogLevel::ERROR, "updateFinancialProfile error: " + std::string(e.what()));
+        return false;
+    }
+}
+
+bool DatabaseManager::createLoan(int user_id, int amount, int period, double rate) {
+    if (!conn || !conn->is_open()) return false;
+    
+    try {
+        #pragma GCC diagnostic push //игнорировать устаревший метод exec
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        pqxx::work txn(*conn);
+        txn.exec_params(
+            "INSERT INTO loans (user_id, amount, period, rate, passed_months) "
+            "VALUES ($1, $2, $3, $4, 0);",
+            user_id, amount, period, rate
+        );
+        #pragma GCC diagnostic pop
+        txn.commit();
+        
+        // Увеличиваем баланс при получении кредита
+        FinancialProfile profile = *getFinancialProfile(user_id);
+        profile.balance += amount;
+        profile.debt += amount;
+        updateFinancialProfile(user_id, profile);
+        
+        return true;
+    } catch (const std::exception& e) {
+        Logger::log(LogLevel::ERROR, "createLoan error: " + std::string(e.what()));
+        return false;
+    }
+}
+
+LoanInfo DatabaseManager::getLoanInfo() {
+    // Хардкод значений согласно требованиям
+    return {15.0, 1, 12, 1000, 100000};
 }
