@@ -3,13 +3,13 @@
 #include "http_client.h"
 
 reg_window::reg_window(QWidget *parent)
-    : QDialog(parent), ui(new Ui::reg_window), http_client(new httpClient(this))
+    : QDialog(parent), ui(new Ui::reg_window), http_client_reg(new httpClient(this))
 {
     ui->setupUi(this);
     this->setWindowTitle("Регистрация");
 
-    connect(http_client, &httpClient::registration_finished, this, &reg_window::handle_registration_result);
-    connect(http_client, &httpClient::error_occurred, this, &reg_window::handle_network_error);
+    connect(http_client_reg, &httpClient::registration_finished, this, &reg_window::handle_registration_result);
+    connect(http_client_reg, &httpClient::error_occurred, this, &reg_window::handle_network_error);
 
 
     ui->pushButton_create_account->setStyleSheet(
@@ -27,7 +27,7 @@ reg_window::reg_window(QWidget *parent)
     ui->lineEdit_password->setEchoMode(QLineEdit::Password);
     ui->lineEdit_confirmation->setEchoMode(QLineEdit::Password);
 
-    // Максимальная длина имени пользователя и пароля
+    // максимальная длина имени пользователя и пароля
     ui->lineEdit_login->setMaxLength(20);
     ui->lineEdit_password->setMaxLength(20);
     ui->lineEdit_confirmation->setMaxLength(20);
@@ -38,7 +38,8 @@ reg_window::~reg_window() {
     delete ui;
 }
 
-void reg_window::show_message(const QString &message, int message_type)
+
+void reg_window::show_message(const QString &message)
 {
     const int timeout_ms = 2500;
 
@@ -47,36 +48,14 @@ void reg_window::show_message(const QString &message, int message_type)
     label->setText(message);
     label->setAlignment(Qt::AlignCenter);
 
-    if (message_type == ERROR){
-        label->setStyleSheet(
-            "background-color: rgb(216, 58, 47);"
-            "color: rgb(255, 255, 255);"
-            "border-radius: 5px;"
-            "padding: 10px;"
-            "font-family: 'Gill Sans', sans-serif;"
-            "font-size: 14px;"
-            );
-    } else if (message_type == SUCCESS){
-        label->setStyleSheet(
-            "background-color: rgb(97, 197, 84);"
-            "color: rgb(255, 255, 255);"
-            "border-radius: 5px;"
-            "padding: 10px;"
-            "font-family: 'Gill Sans', sans-serif;"
-            "font-size: 14px;"
-            );
-    } else if (message_type == NETWORK_ERROR){
-        label->setStyleSheet(
-            "background-color: rgb(155, 155, 155);"
-            "color: rgb(255, 255, 255);"
-            "border-radius: 5px;"
-            "padding: 10px;"
-            "font-family: 'Gill Sans', sans-serif;"
-            "font-size: 14px;"
-            );
-    } else {
-        return;
-    }
+    label->setStyleSheet(
+        "background-color: rgb(216, 58, 47);"
+        "color: rgb(255, 255, 255);"
+        "border-radius: 5px;"
+        "padding: 10px;"
+        "font-family: 'Gill Sans', sans-serif;"
+        "font-size: 14px;"
+        );
 
     int x = (this->width() - label->sizeHint().width()) / 2;
     int y = (this->height() - label->sizeHint().height()) / 10;
@@ -85,25 +64,6 @@ void reg_window::show_message(const QString &message, int message_type)
     label->show();
 
     QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
-}
-
-void reg_window::handle_registration_result(int status_code, const QString &error_msg){
-    if (status_code == 200){
-        show_message("Вы успешно зарегистрировались!", SUCCESS);
-
-        QTimer::singleShot(2500 + 200, this, [this]{
-            this->hide();
-        });
-
-    }
-    else {
-        show_message("Ошибка регистрации: " + error_msg, ERROR);
-    }
-}
-
-
-void reg_window::handle_network_error(const QString &error){
-    show_message("Ошибка сети: " + error, NETWORK_ERROR);
 }
 
 
@@ -146,20 +106,42 @@ bool reg_window::check_password_confirmation()
 }
 
 
+void reg_window::handle_registration_result(int status_code, const QString &error_msg){
+    if (status_code == 200){
+        http_client_reg->show_result("Вы успешно зарегестрировались!", httpClient::Status::OK, this);
+
+        QTimer::singleShot(2500 + 200, this, [this]{
+            this->hide();
+        });
+
+    }
+    else if (status_code >= 400){
+        http_client_reg->show_result("Пользователь с таким логином уже существует", httpClient::Status::ERROR, this);
+    } else {
+        http_client_reg->show_result("Ошибка: ", httpClient::Status::ERROR, this);
+    }
+}
+
+
+void reg_window::handle_network_error(const QString &error){
+    http_client_reg->show_result("Ошибка сети: " + error, httpClient::Status::NETWORK_ERROR, this);
+}
+
+
 void reg_window::on_pushButton_create_account_clicked() {
     if (get_nickname().length() < 3) {
-        show_message("Логин должен содержать минимум 3 символа", ERROR);
+        show_message("Логин должен содержать минимум 3 символа");
         return;
     }
     if (get_password().length() < 6){
-        show_message("Пароль должен содержать минимум 6 символов", ERROR);
+        show_message("Пароль должен содержать минимум 6 символов");
         return;
     }
     if (!check_password_confirmation()){
-        show_message("Подтверждение пароля не совпадает с исходным", ERROR);
+        show_message("Подтверждение пароля не совпадает с исходным");
         return;
     }
 
 
-    http_client->registrate(get_nickname(), get_password());
+    http_client_reg->registrate(get_nickname(), get_password());
 }

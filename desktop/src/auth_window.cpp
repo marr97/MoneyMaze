@@ -2,12 +2,16 @@
 #include "ui_auth_window.h"
 #include "ui_reg_window.h"
 #include "reg_window.h"
+#include "http_client.h"
 
 auth_window::auth_window(QWidget *parent)
-    : QDialog(parent), ui(new Ui::auth_window)
+    : QDialog(parent), ui(new Ui::auth_window), http_client_auth(new httpClient(this))
 {
   ui->setupUi(this);
   this->setWindowTitle("Вход");
+
+  connect(http_client_auth, &httpClient::authorization_finished, this, &auth_window::handle_authorization_result);
+  connect(http_client_auth, &httpClient::error_occurred, this, &auth_window::handle_network_error);
 
 
   ui->sign_in_pushButton->setStyleSheet(
@@ -58,9 +62,33 @@ QString auth_window::get_password()
 }
 
 
-void auth_window::on_sign_in_pushButton_clicked() {
-  this->hide();
-  ui_Home.show();
+void auth_window::handle_authorization_result(int status_code, const QString &error_msg)
+{
+    if (status_code == 200){
+        http_client_auth->show_result("Вход в аккаунт выполнен успешно!", httpClient::Status::OK, this);
+
+        QTimer::singleShot(2500 + 200, this, [this]{
+            this->hide();
+            ui_Home.set_username(get_login());
+            ui_Home.load_financial_profile();
+            ui_Home.show();
+        });
+    }
+    else if (status_code >= 400){
+        http_client_auth->show_result("Неверный логин или пароль", httpClient::Status::ERROR, this);
+    } else {
+        http_client_auth->show_result("Ошибка: " + error_msg, httpClient::Status::ERROR, this);
+    }
+}
+
+void auth_window::handle_network_error(const QString &error){
+    http_client_auth->show_result("Ошибка сети: " + error, httpClient::Status::NETWORK_ERROR, this);
+}
+
+
+void auth_window::on_sign_in_pushButton_clicked()
+{
+    http_client_auth->authorize(get_login(), get_password());
 }
 
 

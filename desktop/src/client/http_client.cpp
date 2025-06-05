@@ -3,6 +3,9 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QByteArray>
+#include <QLabel>
+#include <QDialog>
+#include <QTimer>
 
 httpClient::httpClient(QObject *parent): QObject(parent) {
     manager = new QNetworkAccessManager(this);
@@ -12,30 +15,55 @@ httpClient::~httpClient(){
     delete manager;
 }
 
-void httpClient::handle_server_response(QNetworkReply* reply)
+void httpClient::show_result(const QString &message, Status status, QDialog *object)
 {
-    if (reply->error() == QNetworkReply::NetworkError::NoError) {
-        QString response = reply->readAll();
-        qDebug() << "Ответ сервера: " << response;
+    const int timeout_ms = 2500;
 
-        emit registration_finished(200, response);
-     }
-    else if (reply->error() ==  QNetworkReply::NetworkError::ProtocolInvalidOperationError ||
-               reply->error() ==  QNetworkReply::NetworkError::ProtocolUnknownError ||
-               reply->error() ==  QNetworkReply::NetworkError::ProtocolFailure) {
+    QLabel* label = new QLabel(object);
+    label->setFixedHeight(40);
+    label->setText(message);
+    label->setAlignment(Qt::AlignCenter);
 
-        QString response = reply->readAll();
-        qDebug() << "Ошибка: " << response;
-
-        emit registration_finished(400, response);
+    if (status == Status::ERROR){
+        label->setStyleSheet(
+            "background-color: rgb(216, 58, 47);"
+            "color: rgb(255, 255, 255);"
+            "border-radius: 5px;"
+            "padding: 10px;"
+            "font-family: 'Gill Sans', sans-serif;"
+            "font-size: 14px;"
+            );
+    } else if (status == Status::OK){
+        label->setStyleSheet(
+            "background-color: rgb(97, 197, 84);"
+            "color: rgb(255, 255, 255);"
+            "border-radius: 5px;"
+            "padding: 10px;"
+            "font-family: 'Gill Sans', sans-serif;"
+            "font-size: 14px;"
+            );
+    } else if (status == Status::NETWORK_ERROR){
+        label->setStyleSheet(
+            "background-color: rgb(155, 155, 155);"
+            "color: rgb(255, 255, 255);"
+            "border-radius: 5px;"
+            "padding: 10px;"
+            "font-family: 'Gill Sans', sans-serif;"
+            "font-size: 14px;"
+            );
+    } else {
+        return;
     }
-     else {
-        qDebug() << "Ошибка сети: " << reply->errorString();
-        emit error_occurred(reply->errorString());
-    }
 
-    reply->deleteLater();
+    int x = (object->width() - label->sizeHint().width()) / 2;
+    int y = (object->height() - label->sizeHint().height()) / 10;
+
+    label->move(x, y);
+    label->show();
+
+    QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
 }
+
 
 
 void httpClient::registrate(const QString &nickname, const QString &password)
@@ -55,14 +83,103 @@ void httpClient::registrate(const QString &nickname, const QString &password)
     QJsonDocument json_doc(json_data);
     QByteArray registration_data = json_doc.toJson();
 
-
-    qDebug() << "------------ отправка данных ------------";
-
-
     QNetworkReply *reply = manager->post(request, registration_data);
 
 
     connect(reply, &QNetworkReply::finished, this, [=](){
-        handle_server_response(reply);
+        int status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+        if (status_code == 200 || status_code >= 400) {
+            QString response = reply->readAll();
+            emit registration_finished(status_code, response);
+
+        }
+        else {
+            emit error_occurred(reply->errorString());
+        }
+
+        reply->deleteLater();
+    });
+}
+
+
+void httpClient::authorize(const QString &login, const QString &password)
+{
+    QNetworkRequest request;
+
+    QUrl url("http://89.169.154.118:9090");
+    url.setPath("/login");
+    request.setUrl(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json_data;
+    json_data["login"] = login;
+    json_data["password"] = password;
+
+    QJsonDocument json_doc(json_data);
+    QByteArray auth_data = json_doc.toJson();
+
+    QNetworkReply *reply = manager->post(request, auth_data);
+
+
+    connect(reply, &QNetworkReply::finished, this, [=](){
+        int status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+        if (status_code == 200 || status_code >= 400) {
+            QString response = reply->readAll();
+            emit authorization_finished(status_code, response);
+
+        }
+        else {
+            emit error_occurred(reply->errorString());
+        }
+
+        reply->deleteLater();
+    });
+}
+
+
+void httpClient::get_financial_profile(const QString &username)
+{
+    QNetworkRequest request;
+
+    QUrl url("http://89.169.154.118:9090");
+    url.setPath("/financial-profile");
+    request.setUrl(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json_data;
+    json_data["username"] = username;
+
+    QJsonDocument json_doc(json_data);
+    QByteArray data = json_doc.toJson();
+
+    QNetworkReply* reply = manager->post(request, data);
+
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray response_data = reply->readAll();
+            QJsonDocument json_response = QJsonDocument::fromJson(response_data);
+            QJsonObject response_obj = json_response.object();
+
+            double balance = response_obj["balance"].toInt();
+            double monthly_minimum = response_obj["monthly_minimum"].toInt();
+            double total_loans = response_obj["total_loans"].toInt();
+            double interest_due = response_obj["interest_due"].toInt();
+            double salary = response_obj["salary"].toInt();
+            int current_month = response_obj["current_month"].toInt();
+            QString status = response_obj["status"].toString();
+
+            emit financial_profile_received(balance, monthly_minimum, total_loans,
+                                          interest_due, salary, current_month, status);
+        } else {
+            qDebug() << "Error:" << reply->errorString();
+            emit error_occurred(reply->errorString());
+        }
+
+        reply->deleteLater();
     });
 }
