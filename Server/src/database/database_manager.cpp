@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 
+
 void Logger::log(LogLevel level, const std::string &message) {
     std::string levelStr;
     switch (level) {
@@ -400,6 +401,29 @@ bool DatabaseManager::createLoan(int user_id, int amount, int period, double rat
         return false;
     }
 }
+
+
+std::optional<double> DatabaseManager::getUserDeposit(int user_id) {
+    if (!conn || !conn->is_open()) return std::nullopt;
+
+    try {
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        pqxx::work txn(*conn);
+        pqxx::result r = txn.exec_params(
+            "SELECT amount FROM deposits WHERE user_id = $1 LIMIT 1",
+            user_id
+        );
+        #pragma GCC diagnostic pop
+        if (r.empty()) return std::nullopt;
+        return r[0][0].as<double>();
+    } catch (const std::exception &e) {
+        Logger::log(LogLevel::ERROR, std::string("getUserDeposit error: ") + e.what());
+        return std::nullopt;
+    }
+}
+
+
 
 LoanInfo DatabaseManager::getLoanInfo() {
     // Хардкод значений согласно требованиям

@@ -128,6 +128,13 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             } else {
                 int user_id = user_id_opt.value();
                 auto profile = dbManager.getFinancialProfile(user_id);
+                auto depositOpt = dbManager.getUserDeposit(user_id);
+                if (depositOpt.has_value()) {
+                    responseObj->set("deposits", depositOpt.value());
+                } else {
+                    responseObj->set("deposits", 0);
+                }
+
 
                 if (profile) {
                     responseObj->set("balance", profile->balance);
@@ -177,6 +184,13 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             } else {
                 int user_id = user_id_opt.value();
                 auto profile = dbManager.getFinancialProfile(user_id);
+                auto depositOpt = dbManager.getUserDeposit(user_id);
+                if (depositOpt.has_value()) {
+                    responseObj->set("deposits", depositOpt.value());
+                } else {
+                    responseObj->set("deposits", 0);
+                }
+
 
                 if (profile) {
                     double interest_due = profile->debt * 0.15 / 12;
@@ -215,6 +229,13 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             } else {
                 int user_id = user_id_opt.value();
                 auto profile = dbManager.getFinancialProfile(user_id);
+                auto depositOpt = dbManager.getUserDeposit(user_id);
+                if (depositOpt.has_value()) {
+                    responseObj->set("deposits", depositOpt.value());
+                } else {
+                    responseObj->set("deposits", 0);
+                }
+
 
                 if (profile) {
                     double interest_due = profile->debt * 0.15 / 12;
@@ -255,6 +276,13 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             } else {
                 int user_id = user_id_opt.value();
                 auto profile = dbManager.getFinancialProfile(user_id);
+                auto depositOpt = dbManager.getUserDeposit(user_id);
+                if (depositOpt.has_value()) {
+                    responseObj->set("deposits", depositOpt.value());
+                } else {
+                    responseObj->set("deposits", 0);
+                }
+
                 if (profile) {
                     profile->balance += amount;
                     dbManager.updateFinancialProfile(user_id, *profile);

@@ -50,6 +50,7 @@ public:
     std::optional<FinancialProfile> getFinancialProfile(int user_id);
     bool updateFinancialProfile(int user_id, const FinancialProfile& profile);
     bool createLoan(int user_id, int amount, int period, double rate);
+    std::optional<double> getUserDeposit(int user_id);
     LoanInfo getLoanInfo();
 
     std::optional<int> getUserIdByUsername(const std::string& username);
