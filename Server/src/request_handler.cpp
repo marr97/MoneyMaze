@@ -126,7 +126,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         } else if (request.getURI() == "/financial-profile") {
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
-            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>()
             
             std::string username = json->getValue<std::string>("username");
             std::string RequestBody = "Body: { username: " + username + " }";
@@ -179,6 +179,10 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 // Обработка ошибки
             }
         } else if (request.getURI() == "/next-month") {
+            Poco::JSON::Parser parser;
+            Poco::Dynamic::Var result = parser.parse(request.stream());
+            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            
             std::string username = json->getValue<std::string>("username");
             auto user_id_opt = dbManager.getUserIdByUsername(username);
             if (!user_id_opt) {
@@ -215,6 +219,10 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             std::ostream& out = response.send();
             Poco::JSON::Stringifier::stringify(responseObj, out);
         } else if (request.getURI() == "/take-loan") {
+            Poco::JSON::Parser parser;
+            Poco::Dynamic::Var result = parser.parse(request.stream());
+            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            
             std::string username = json->getValue<std::string>("username");
             int period = json->getValue<int>("loan_period");
             int amount = json->getValue<int>("loan_amount");
