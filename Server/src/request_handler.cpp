@@ -64,6 +64,11 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
 
             bool ok = dbManager.createUser(login, password);
             if (ok) {
+                auto user_id_opt = dbManager.getUserIdByUsername(login);
+                if (user_id_opt) {
+                    dbManager.createFinancialProfile(user_id_opt.value());
+                }
+
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                 responseObj->set("success", true);
 
