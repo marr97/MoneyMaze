@@ -72,7 +72,8 @@ bool DatabaseManager::connect() {
                     savings INTEGER NOT NULL,
                     debt INTEGER NOT NULL,
                     salary INTEGER NOT NULL,
-                    played_months INTEGER NOT NULL
+                    played_months INTEGER NOT NULL,
+                    deposits INTEGER NOT NULL DEFAULT 0
                 );
             )");
             Logger::log(LogLevel::INFO, "Created table 'financial_profile'.");
@@ -121,6 +122,20 @@ bool DatabaseManager::connect() {
                 )");
                 Logger::log(LogLevel::WARNING, "Added missing column 'played_months' to financial_profile.");
             }
+
+            auto checkDeposits = txn.exec(R"(
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_name = 'financial_profile'
+                AND column_name = 'deposits';
+            )");
+            if (checkDeposits.empty()) {
+                txn.exec(R"(
+                    ALTER TABLE financial_profile
+                    ADD COLUMN deposits INTEGER NOT NULL DEFAULT 0;
+                )");
+                Logger::log(LogLevel::WARNING, "Added missing column 'deposits' to financial_profile.");
+            }
         }
         #pragma GCC diagnostic pop
 
@@ -159,6 +174,28 @@ bool DatabaseManager::disconnect() {
     return false;
 }
 
+bool DatabaseManager::createFinancialProfile(int user_id) {
+    if (!conn || !conn->is_open()) return false;
+
+    try {
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        pqxx::work txn(*conn);
+        txn.exec_params(
+            "INSERT INTO financial_profile (user_id, balance, monthly_minimum, savings, debt, salary, played_months, deposits) "
+            "VALUES ($1, 0, 0, 0, 0, 0, 0, 0);",
+            user_id
+        );
+        txn.commit();
+        #pragma GCC diagnostic pop
+        Logger::log(LogLevel::INFO, "Created financial profile for user_id: " + std::to_string(user_id));
+        return true;
+    } catch (const std::exception& e) {
+        Logger::log(LogLevel::ERROR, "createFinancialProfile error: " + std::string(e.what()));
+        return false;
+    }
+}
+
 bool DatabaseManager::createUser(const std::string &username, const std::string &password) {
     if (!conn || !conn->is_open()) {
         Logger::log(LogLevel::ERROR, "No open DB connection for createUser.");
@@ -176,12 +213,22 @@ bool DatabaseManager::createUser(const std::string &username, const std::string 
         #pragma GCC diagnostic pop
 
         txn.commit();
-        if (r.empty()) {
+                if (r.empty()) {
             Logger::log(LogLevel::WARNING, "User already exists: " + username);
             return false;
         }
+
+        int user_id = r[0][0].as<int>();
+
+        if (!createFinancialProfile(user_id)) {
+            Logger::log(LogLevel::ERROR, "Failed to create financial profile for new user.");
+            return false;
+        }
+
         Logger::log(LogLevel::INFO, "Created user: " + username);
         return true;
+
+
     } catch (const std::exception &e) {
         Logger::log(LogLevel::ERROR, std::string("createUser error: ") + e.what());
         return false;
@@ -266,6 +313,7 @@ bool DatabaseManager::authenticateUser(const std::string &username, const std::s
 }
 
 
+
 std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id) {
     if (!conn || !conn->is_open()) return std::nullopt;
     
@@ -274,7 +322,7 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         pqxx::work txn(*conn);
         auto r = txn.exec_params(
-            "SELECT balance, monthly_minimum, savings, debt, salary, played_months "
+            "SELECT balance, monthly_minimum, savings, debt, salary, played_months, deposits "
             "FROM financial_profile WHERE user_id = $1;",
             user_id
         );
@@ -289,6 +337,7 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
         profile.debt = r[0][3].as<int>();
         profile.salary = r[0][4].as<int>();
         profile.played_months = r[0][5].as<int>();
+        profile.deposits = r[0][6].as<int>();
         
         return profile;
     } catch (const std::exception& e) {
@@ -307,10 +356,10 @@ bool DatabaseManager::updateFinancialProfile(int user_id, const FinancialProfile
         txn.exec_params(
             "UPDATE financial_profile SET "
             "balance = $1, monthly_minimum = $2, savings = $3, debt = $4, "
-            "salary = $5, played_months = $6 "
-            "WHERE user_id = $7;",
+            "salary = $5, played_months = $6, deposits = $7 "
+            "WHERE user_id = $8;",
             profile.balance, profile.monthly_minimum, profile.savings, 
-            profile.debt, profile.salary, profile.played_months, user_id
+            profile.debt, profile.salary, profile.played_months, profile.deposits, user_id
         );
         #pragma GCC diagnostic pop
         txn.commit();
@@ -337,7 +386,10 @@ bool DatabaseManager::createLoan(int user_id, int amount, int period, double rat
         txn.commit();
         
         // Увеличиваем баланс при получении кредита
-        FinancialProfile profile = *getFinancialProfile(user_id);
+        auto profileOpt = getFinancialProfile(user_id);
+        if (!profileOpt) return false;
+        FinancialProfile profile = *profileOpt;
+
         profile.balance += amount;
         profile.debt += amount;
         updateFinancialProfile(user_id, profile);
