@@ -54,5 +54,10 @@ install(TARGETS money_maze
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-qt_generate_deploy_app_script(deploy_script $<TARGET_FILE:money_maze> NO_UNSUPPORTED_PLATFORM_ERROR)
+qt_generate_deploy_app_script(
+    TARGET money_maze
+    OUTPUT_SCRIPT deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+)
 install(SCRIPT ${deploy_script})
+
