@@ -68,7 +68,7 @@ bool DatabaseManager::connect() {
                     id SERIAL PRIMARY KEY,
                     user_id INTEGER UNIQUE REFERENCES users(id),
                     balance INTEGER NOT NULL,
-                    monthly_minimumINTEGER NOT NULL,
+                    monthly_minimum INTEGER NOT NULL,
                     savings INTEGER NOT NULL,
                     debt INTEGER NOT NULL,
                     salary INTEGER NOT NULL,
