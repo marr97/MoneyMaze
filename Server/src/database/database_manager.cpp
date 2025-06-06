@@ -77,25 +77,49 @@ bool DatabaseManager::connect() {
             )");
             Logger::log(LogLevel::INFO, "Created table 'financial_profile'.");
         } else {
-            // Проверка и исправление структуры
-            auto checkCol = txn.exec("SELECT 1 FROM information_schema.columns "
-                                    "WHERE table_name='financial_profile' "
-                                    "AND column_name='monthly_minimum'");
-            
-            if (checkCol.empty()) {
-                auto checkBadCol = txn.exec("SELECT 1 FROM information_schema.columns "
-                                            "WHERE table_name='financial_profile' "
-                                            "AND column_name='monthly_minimumINTEGER'");
-                
-                if (!checkBadCol.empty()) {
-                    txn.exec("ALTER TABLE financial_profile "
-                            "RENAME COLUMN \"monthly_minimumINTEGER\" TO \"monthly_minimum\"");
-                    Logger::log(LogLevel::INFO, "Fixed column name in financial_profile");
-                } else {
-                    txn.exec("ALTER TABLE financial_profile "
-                            "ADD COLUMN monthly_minimum INTEGER NOT NULL DEFAULT 0");
-                    Logger::log(LogLevel::WARNING, "Added missing column to financial_profile");
-                }
+            auto checkMonthly = txn.exec(R"(
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_name = 'financial_profile'
+                    AND column_name = 'monthly_minimum';
+            )");
+            if (checkMonthly.empty()) {
+                // аналогично вашему коду: проверка на некорректное имя и т.д.
+                txn.exec(R"(
+                    ALTER TABLE financial_profile
+                    ADD COLUMN monthly_minimum INTEGER NOT NULL DEFAULT 0;
+                )");
+                Logger::log(LogLevel::WARNING, "Added missing column 'monthly_minimum' to financial_profile.");
+            }
+
+            // 2) проверка salary
+            auto checkSalary = txn.exec(R"(
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_name = 'financial_profile'
+                AND column_name = 'salary';
+            )");
+            if (checkSalary.empty()) {
+                txn.exec(R"(
+                    ALTER TABLE financial_profile
+                    ADD COLUMN salary INTEGER NOT NULL DEFAULT 0;
+                )");
+                Logger::log(LogLevel::WARNING, "Added missing column 'salary' to financial_profile.");
+            }
+
+            // 3) проверка played_months
+            auto checkPlayed = txn.exec(R"(
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_name = 'financial_profile'
+                AND column_name = 'played_months';
+            )");
+            if (checkPlayed.empty()) {
+                txn.exec(R"(
+                    ALTER TABLE financial_profile
+                    ADD COLUMN played_months INTEGER NOT NULL DEFAULT 0;
+                )");
+                Logger::log(LogLevel::WARNING, "Added missing column 'played_months' to financial_profile.");
             }
         }
         #pragma GCC diagnostic pop
