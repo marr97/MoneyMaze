@@ -52,15 +52,15 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         Poco::Dynamic::Var result = parser.parse(request.stream());
         Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
 
-        std::string login = json->getValue<std::string>("login");
-        std::string password = json->getValue<std::string>("password");
-
         Poco::JSON::Object::Ptr responseObj = new Poco::JSON::Object;
-        
-        std::string RequestBody = "Body: { login: " + login + ",  password: " + password + " }";
         std::string ReplyBody;
 
         if (request.getURI() == "/register") {
+            std::string login = json->getValue<std::string>("login");
+            std::string password = json->getValue<std::string>("password");
+
+            std::string RequestBody = "Body: { login: " + login + ",  password: " + password + " }";
+            
             std::string RequestInfo = "Endpoint: '/register' | " + RequestBody;
             RequestLogger::logRequest(RequestLogLevel::INFO, RequestInfo);
 
@@ -87,6 +87,11 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             }
 
         } else if (request.getURI() == "/login") {
+            std::string login = json->getValue<std::string>("login");
+            std::string password = json->getValue<std::string>("password");
+
+            std::string RequestBody = "Body: { login: " + login + ",  password: " + password + " }";
+            
             auto dbPass = dbManager.getPasswordByUsername(login);
             bool ok = dbPass.has_value() && dbPass.value() == password;
             
@@ -116,6 +121,11 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             }
         } else if (request.getURI() == "/financial-profile") {
             std::string username = json->getValue<std::string>("username");
+            std::string RequestBody = "Body: { username: " + username + " }";
+
+            std::string RequestInfo = "Endpoint: '/financial-profile' | " + RequestBody;
+            RequestLogger::logRequest(RequestLogLevel::INFO, RequestInfo);
+
             auto user_id_opt = dbManager.getUserIdByUsername(username);
             if (!user_id_opt) {
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
@@ -150,6 +160,13 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                 std::ostream& out = response.send();
                 Poco::JSON::Stringifier::stringify(responseObj, out);
+                
+                LogMessage = "Financial profile '" + login + "' successfully send";
+                RequestLogger::logRequest(RequestLogLevel::INFO, LogMessage);
+
+                ReplyBody = " OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK);
+                RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
+                
             } else {
                 // Обработка ошибки
             }
