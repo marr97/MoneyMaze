@@ -126,7 +126,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         } else if (request.getURI() == "/financial-profile") {
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
-            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>()
+            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
             
             std::string username = json->getValue<std::string>("username");
             std::string RequestBody = "Body: { username: " + username + " }";
