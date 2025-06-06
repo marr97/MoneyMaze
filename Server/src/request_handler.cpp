@@ -48,14 +48,14 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
     std::string LogMessage;
 
     try {
-        Poco::JSON::Parser parser;
-        Poco::Dynamic::Var result = parser.parse(request.stream());
-        Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
-
         Poco::JSON::Object::Ptr responseObj = new Poco::JSON::Object;
         std::string ReplyBody;
 
         if (request.getURI() == "/register") {
+            Poco::JSON::Parser parser;
+            Poco::Dynamic::Var result = parser.parse(request.stream());
+            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            
             std::string login = json->getValue<std::string>("login");
             std::string password = json->getValue<std::string>("password");
 
@@ -87,6 +87,10 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             }
 
         } else if (request.getURI() == "/login") {
+            Poco::JSON::Parser parser;
+            Poco::Dynamic::Var result = parser.parse(request.stream());
+            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            
             std::string login = json->getValue<std::string>("login");
             std::string password = json->getValue<std::string>("password");
 
@@ -120,6 +124,10 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 RequestLogger::logRequest(RequestLogLevel::REPLYINFO, ReplyBody);
             }
         } else if (request.getURI() == "/financial-profile") {
+            Poco::JSON::Parser parser;
+            Poco::Dynamic::Var result = parser.parse(request.stream());
+            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            
             std::string username = json->getValue<std::string>("username");
             std::string RequestBody = "Body: { username: " + username + " }";
 
