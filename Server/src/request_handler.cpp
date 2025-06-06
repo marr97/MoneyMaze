@@ -161,7 +161,7 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 std::ostream& out = response.send();
                 Poco::JSON::Stringifier::stringify(responseObj, out);
                 
-                LogMessage = "Financial profile '" + login + "' successfully send";
+                LogMessage = "Financial profile '" + username + "' successfully send";
                 RequestLogger::logRequest(RequestLogLevel::INFO, LogMessage);
 
                 ReplyBody = " OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK);
