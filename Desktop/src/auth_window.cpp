@@ -69,6 +69,8 @@ void auth_window::handle_authorization_result(int status_code, const QString &er
 
         QTimer::singleShot(2500 + 200, this, [this]{
             this->hide();
+            ui_Home.set_username(get_login());
+            ui_Home.load_financial_profile();
             ui_Home.show();
         });
     }

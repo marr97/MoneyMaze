@@ -1,13 +1,18 @@
 #include "home_screen.h"
 #include "ui_home_screen.h"
+#include "http_client.h"
 #include <QToolButton>
+#include <QLabel>
 #include <QPropertyAnimation>
 #include <QTimer>
 
 home_screen::home_screen(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::home_screen) {
+    : QMainWindow(parent), ui(new Ui::home_screen), http_client_home(new httpClient(this)) {
   ui->setupUi(this);
   this->setWindowTitle("Главная");
+
+  connect(this, &home_screen::profile_requested, http_client_home, &httpClient::get_financial_profile);
+  connect(http_client_home, &httpClient::financial_profile_received, this, &home_screen::show_financial_profile);
 
   // Имя пользователя
 
@@ -19,6 +24,7 @@ home_screen::home_screen(QWidget *parent)
       "   padding: 5px;"
       "}"
       );
+
 
   // Финансовые данные пользователя
 
@@ -32,6 +38,13 @@ home_screen::home_screen(QWidget *parent)
   ui->ql_balance->setStyleSheet(qlStyle_1);
   ui->ql_monthly_min->setStyleSheet(qlStyle_1);
   ui->ql_debt->setStyleSheet(qlStyle_1);
+
+  ui->ql_balance->setTextFormat(Qt::RichText);
+  ui->ql_monthly_min->setTextFormat(Qt::RichText);
+  ui->ql_debt->setTextFormat(Qt::RichText);
+  ui->ql_month->setTextFormat(Qt::RichText);
+  ui->ql_month->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+
 
   // Стрелочки
 
@@ -102,10 +115,10 @@ home_screen::home_screen(QWidget *parent)
 
   QString buttonStyle_3 =
       "QPushButton {"
-      "   background-color: rgba(174, 208, 180, 0.6);"
+      "   background-color: rgba(174, 208, 180, 0.7);"
       "   border-top: none;"
       "   text-align: center;"
-      "   color: grey;"
+      "   color: white;"
       "   border-radius: 8px;"
       "   padding: 5px;"
       "}"
@@ -121,7 +134,6 @@ home_screen::home_screen(QWidget *parent)
       "   padding: 5px;"
       "}"
       );
-
 
 
 
@@ -156,7 +168,6 @@ home_screen::home_screen(QWidget *parent)
 
   animation_modules = new QPropertyAnimation(ui->widget_modules, "maximumHeight");
   animation_modules->setDuration(250);
-
 }
 
 
@@ -231,6 +242,7 @@ void home_screen::tb_modules_down()
 
 void home_screen::on_pb_next_month_clicked()
 {
+    http_client_home->next_month(username);
 }
 
 
@@ -248,4 +260,96 @@ void home_screen::on_pb_mod_savings_clicked()
         ui_savings_module.show();
     });
 }
+
+
+void home_screen::set_username(const QString &name)
+{
+    this->username = name;
+    ui->ql_username->setText(username);
+}
+
+void home_screen::load_financial_profile()
+{
+    if (!username.isEmpty()) {
+        emit profile_requested(username);
+    }
+}
+
+void home_screen::show_game_result(GameStatus status)
+{
+    const int timeout_ms = 2500;
+
+    QLabel* label = new QLabel(this);
+    label->setFixedHeight(40);
+    label->setAlignment(Qt::AlignCenter);
+
+    if (status == GameStatus::WIN){
+        label->setStyleSheet(
+            "background-color: rgb(97, 197, 84);"
+            "color: rgb(255, 255, 255);"
+            "border-radius: 5px;"
+            "padding: 10px;"
+            "font-family: 'Gill Sans', sans-serif;"
+            "font-size: 14px;"
+            );
+        label->setText("Поздравляем с успешным завершением игры!");
+    } else {
+        label->setStyleSheet(
+            "background-color: rgb(216, 58, 47);"
+            "color: rgb(255, 255, 255);"
+            "border-radius: 5px;"
+            "padding: 10px;"
+            "font-family: 'Gill Sans', sans-serif;"
+            "font-size: 14px;"
+            );
+        label->setText("К сожалению, вы проиграли :( \n"
+            "Сумма долга превысила ваш текущий баланс");
+    }
+
+    int x = (this->width() - label->sizeHint().width()) / 2;
+    int y = (this->height() - label->sizeHint().height()) / 10;
+
+    label->move(x, y);
+    label->show();
+
+    QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
+}
+
+
+void home_screen::show_financial_profile(int balance, int monthly_minimum, int total_loans,
+                                        int interest_due, int salary, int current_month,
+                                        const QString &status)
+{
+    if (status == "in_progress"){
+        QString balance_str = "<div style='font-family: Gill Sans; font-size: 15pt; line-height: 1.5; margin: 0;'>"
+            "Баланс<br>"
+            "<br>"
+            "</div>" + QLocale().toString(balance);
+
+        QString motnthly_min_str = "<div style='font-family: Gill Sans; font-size: 15pt; line-height: 1.5; margin: 0;'>"
+            "Месячный минимум<br>"
+            "<br>"
+            "</div>" + QLocale().toString(monthly_minimum);
+
+        QString salary_str = "<div style='font-family: Gill Sans; font-size: 15pt; line-height: 1.5; margin: 0;'>"
+            "Зарплата<br>"
+            "<br>"
+            "</div>" + QLocale().toString(salary);
+
+
+        ui->ql_balance->setText(balance_str);
+        ui->ql_monthly_min->setText(motnthly_min_str);
+        ui->ql_debt->setText(salary_str);
+
+        QString current_month_str = " Текущий месяц:  "+ QLocale().toString(current_month);
+
+        ui->ql_month->setText(current_month_str);
+
+    } else if (status == "win"){
+        show_game_result(GameStatus::WIN);
+    } else {
+        show_game_result(GameStatus::LOSE);
+    }
+}
+
 

@@ -139,3 +139,80 @@ void httpClient::authorize(const QString &login, const QString &password)
     });
 }
 
+
+void httpClient::get_financial_profile(const QString &username)
+{
+    QNetworkRequest request;
+
+    QUrl url("http://89.169.154.118:9090");
+    url.setPath("/financial-profile");
+    request.setUrl(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json_data;
+    json_data["username"] = username;
+
+    QJsonDocument json_doc(json_data);
+    QByteArray data = json_doc.toJson();
+
+    QNetworkReply* reply = manager->post(request, data);
+
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray response_data = reply->readAll();
+            QJsonDocument json_response = QJsonDocument::fromJson(response_data);
+            QJsonObject response_obj = json_response.object();
+
+            double balance = response_obj["balance"].toInt();
+            double monthly_minimum = response_obj["monthly_minimum"].toInt();
+            double total_loans = response_obj["total_loans"].toInt();
+            double interest_due = response_obj["interest_due"].toInt();
+            double salary = response_obj["salary"].toInt();
+            int current_month = response_obj["current_month"].toInt();
+            QString status = response_obj["status"].toString();
+
+            emit financial_profile_received(balance, monthly_minimum, total_loans,
+                                          interest_due, salary, current_month, status);
+        } else {
+            qDebug() << "Error:" << reply->errorString();
+            emit error_occurred(reply->errorString());
+        }
+
+        reply->deleteLater();
+    });
+}
+
+
+void httpClient::next_month(const QString &username)
+{
+    QNetworkRequest request;
+
+    QUrl url("http://89.169.154.118:9090");
+    url.setPath("/next-month");
+    request.setUrl(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json_data;
+    json_data["username"] = username;
+
+    QJsonDocument json_doc(json_data);
+    QByteArray data = json_doc.toJson();
+
+    QNetworkReply* reply = manager->post(request, data);
+
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            get_financial_profile(username);
+        } else {
+            qDebug() << "Error:" << reply->errorString();
+            emit error_occurred(reply->errorString());
+        }
+
+        reply->deleteLater();
+    });
+}
+

@@ -29,5 +29,6 @@ MainWindow::~MainWindow() { delete ui; }
 void MainWindow::on_pushButton_start_clicked()
 {
   ui_Auth.show();
+  this->hide();
 }
 
