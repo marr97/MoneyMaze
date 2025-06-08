@@ -165,11 +165,11 @@ void httpClient::get_financial_profile(const QString &username)
             QJsonDocument json_response = QJsonDocument::fromJson(response_data);
             QJsonObject response_obj = json_response.object();
 
-            double balance = response_obj["balance"].toInt();
-            double monthly_minimum = response_obj["monthly_minimum"].toInt();
-            double total_loans = response_obj["total_loans"].toInt();
-            double interest_due = response_obj["interest_due"].toInt();
-            double salary = response_obj["salary"].toInt();
+            int balance = response_obj["balance"].toInt();
+            int monthly_minimum = response_obj["monthly_minimum"].toInt();
+            int total_loans = response_obj["total_loans"].toInt();
+            int interest_due = response_obj["interest_due"].toInt();
+            int salary = response_obj["salary"].toInt();
             int current_month = response_obj["current_month"].toInt();
             QString status = response_obj["status"].toString();
 
@@ -216,3 +216,44 @@ void httpClient::next_month(const QString &username)
     });
 }
 
+
+void httpClient::get_loan_info(const QString &username)
+{
+    QNetworkRequest request;
+
+    QUrl url("http://89.169.154.118:9090");
+    url.setPath("/loan-info");
+    request.setUrl(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json_data;
+    json_data["username"] = username;
+
+    QJsonDocument json_doc(json_data);
+    QByteArray data = json_doc.toJson();
+
+    QNetworkReply* reply = manager->post(request, data);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray response_data = reply->readAll();
+            QJsonDocument json_response = QJsonDocument::fromJson(response_data);
+            QJsonObject response_obj = json_response.object();
+
+
+            int min_loan_amount = response_obj["min_loan_amount"].toInt();
+            int max_loan_amount = response_obj["max_loan_amount"].toInt();
+            int interest_rate = response_obj["interest_rate"].toInt();
+
+            emit loan_info_received(min_loan_amount, max_loan_amount, interest_rate);
+
+        } else {
+            QString error = reply->errorString();
+            qDebug() << "Error:" << error;
+            emit error_occurred(error);
+        }
+
+        reply->deleteLater();
+    });
+}

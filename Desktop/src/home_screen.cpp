@@ -13,6 +13,7 @@ home_screen::home_screen(QWidget *parent)
 
   connect(this, &home_screen::profile_requested, http_client_home, &httpClient::get_financial_profile);
   connect(http_client_home, &httpClient::financial_profile_received, this, &home_screen::show_financial_profile);
+  connect(http_client_home, &httpClient::loan_info_received, this, &home_screen::loan_info);
 
   // Имя пользователя
 
@@ -103,7 +104,8 @@ home_screen::home_screen(QWidget *parent)
       "   background-color: rgb(225, 211, 255)"
       "}";
 
-
+  ui->pb_my_loans->setStyleSheet(buttonStyle_2);
+  ui->pb_my_savings->setStyleSheet(buttonStyle_2);
 
   ui->pb_make_loan->setStyleSheet(buttonStyle_1);
   ui->pb_make_deposit->setStyleSheet(buttonStyle_1);
@@ -353,3 +355,17 @@ void home_screen::show_financial_profile(int balance, int monthly_minimum, int t
 }
 
 
+void home_screen::loan_info(int min_loan_amount, int max_loan_amount, int interest_rate)
+{
+  ui_loan.set_loan_info(min_loan_amount, max_loan_amount, interest_rate, username);
+}
+
+
+void home_screen::on_pb_make_loan_clicked()
+{
+    http_client_home->get_loan_info(username);
+
+    QTimer::singleShot(600, this, [this]{
+        ui_loan.show();
+    });
+}

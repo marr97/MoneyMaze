@@ -7,6 +7,7 @@
 #include <QWidget>
 #include "loan_module.h"
 #include "savings_module.h"
+#include "loan.h"
 
 class httpClient;
 
@@ -42,16 +43,19 @@ private slots:
   void show_financial_profile(int balance, int monthly_minimum, int total_loans,
                                     int interest_due, int salary, int current_month,
                                     const QString &status);
+  void loan_info(int min_loan_amount, int max_loan_amount, int interest_rate);
 
-signals:
+  void on_pb_make_loan_clicked();
+
+  signals:
   void profile_requested(const QString &username);
-
 
   private:
   Ui::home_screen *ui;
   loan_module ui_loan_module;
   savings_module ui_savings_module;
   httpClient *http_client_home;
+  loan ui_loan;
 
   QPropertyAnimation *animation_modules;
   QPropertyAnimation *animation_savings;
