@@ -5,6 +5,8 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui Network)
 
 ## Qt6 Widgets (замена Qt5 на Qt6 для доступа к QPalette::Accent и др.)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
+
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Charts)
 find_package(Poco REQUIRED COMPONENTS Net Util Foundation)
 
 qt_standard_project_setup()
@@ -35,13 +37,11 @@ target_link_libraries(money_maze
         Qt::Gui
         Qt::Widgets
         Qt6::Network
+        Qt6::Charts
 )
 
 target_link_libraries(money_maze
     PRIVATE
-        Qt::Core
-        Qt::Gui
-        Qt::Widgets
         Poco::Net
         Poco::Util
         Poco::Foundation

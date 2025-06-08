@@ -5,6 +5,9 @@
 #include <QLabel>
 #include <QPropertyAnimation>
 #include <QTimer>
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QColor>
 
 home_screen::home_screen(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::home_screen), http_client_home(new httpClient(this)) {
@@ -66,15 +69,15 @@ home_screen::home_screen(QWidget *parent)
 
   // Лейблы
 
-  QString qlStyle_2 = "QLabel {"
+  QString qlStyle_3 = "QLabel {"
                     "   color: black;"
                     "   border-radius: 10px;"
                     "   padding: 5px;"
                     "}";
 
-  ui->ql_modules->setStyleSheet(qlStyle_2);
-  ui->ql_savings->setStyleSheet(qlStyle_2);
-  ui->ql_loans->setStyleSheet(qlStyle_2);
+  ui->ql_modules->setStyleSheet(qlStyle_3);
+  ui->ql_savings->setStyleSheet(qlStyle_3);
+  ui->ql_loans->setStyleSheet(qlStyle_3);
 
   // Кнопки под лейблами
 
@@ -113,6 +116,51 @@ home_screen::home_screen(QWidget *parent)
   ui->pb_mod_loans->setStyleSheet(buttonStyle_2);
   ui->pb_mod_savings->setStyleSheet(buttonStyle_2);
 
+
+  // Подписи под диаграммой
+
+  QString qlStyle_2 = "QLabel {"
+      "   background-color: rgb(245, 245, 245);"
+      "   color: grey;"
+      "   border-radius: 10px;"
+      "   padding: 5px;"
+      "}";
+
+  ui->ql_chart_balance->setStyleSheet(qlStyle_2);
+
+  ui->ql_chart_debt->setStyleSheet(qlStyle_2);
+
+  ui->ql_chart_savings->setStyleSheet(qlStyle_2);
+
+
+  ui->ql_chart_balance_value->setStyleSheet(
+      "QLabel {"
+      "   background-color: rgba(174, 208, 180, 0.6);"
+      "   color: grey;"
+      "   border-radius: 10px;"
+      "   padding: 5px;"
+      "}"
+      );
+
+  ui->ql_chart_debt_value->setStyleSheet(
+      "QLabel {"
+      "   background-color: rgba(217, 108, 103, 0.5);"
+      "   color: grey;"
+      "   border-radius: 10px;"
+      "   padding: 5px;"
+      "}"
+      );
+
+  ui->ql_chart_savings_value->setStyleSheet(
+      "QLabel {"
+      "   background-color: rgba(225, 211, 255, 0.6);"
+      "   color: grey;"
+      "   border-radius: 10px;"
+      "   padding: 5px;"
+      "}"
+      );
+
+
   // Информация о текущем месяце игры
 
   QString buttonStyle_3 =
@@ -125,7 +173,7 @@ home_screen::home_screen(QWidget *parent)
       "   padding: 5px;"
       "}"
       "QPushButton:hover {"
-      "   background-color: rgb(151, 207, 169)"
+      "   background-color: rgb(174, 208, 180)"
       "}";
 
   ui->pb_next_month->setStyleSheet(buttonStyle_3);
@@ -321,6 +369,70 @@ void home_screen::show_game_result(GameStatus status)
 }
 
 
+void home_screen::update_financial_chart(int balance, int debt, int savings)
+{
+    // очищение старой диаграммы
+    QLayoutItem* item;
+    while ((item = ui->chart_layout->takeAt(0))) {
+        delete item->widget();
+        delete item;
+    }
+
+    QPieSeries *series = new QPieSeries();
+
+    series->append("", balance);
+    series->append("", debt);
+     series->append("", savings);
+
+    if (balance > 0) {
+        ui->ql_chart_balance_value->setText(QLocale().toString(balance));
+
+    } else {
+        ui->ql_chart_balance->setVisible(false);
+        ui->ql_chart_balance_value->setVisible(false);
+    }
+    if (debt > 0) {
+        ui->ql_chart_debt_value->setText(QLocale().toString(debt));
+    } else {
+        ui->ql_chart_debt->setVisible(false);
+        ui->ql_chart_debt_value->setVisible(false);
+    }
+    if (savings > 0) {
+        ui->ql_chart_savings_value->setText(QLocale().toString(savings));
+    } else {
+        ui->ql_chart_savings->setVisible(false);
+        ui->ql_chart_savings_value->setVisible(false);
+    }
+
+
+    if (series->slices().size() > 0) { series->slices().at(0)->setColor(QColor(174, 208, 180, 180)); }
+    if (series->slices().size() > 1) { series->slices().at(1)->setColor(QColor(217, 108, 103, 110)); }
+    if (series->slices().size() > 2) { series->slices().at(2)->setColor(QColor(225, 211, 255, 180)); }
+
+    for (auto slice : series->slices()) {
+        slice->setLabelVisible(false);
+    }
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("");
+    chart->legend()->setVisible(false);
+
+    chart->setBackgroundBrush(Qt::transparent);
+    chart->setMargins(QMargins(0, 0, 0, 0));
+
+    chart->setContentsMargins(-10, -10, -10, -10);
+    series->setPieSize(0.7);
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setStyleSheet("background: transparent");
+    chartView->setFrameShape(QFrame::NoFrame);
+
+    ui->chart_layout->addWidget(chartView);
+}
+
+
 void home_screen::show_financial_profile(int balance, int monthly_minimum, int total_loans,
                                         int interest_due, int salary, int current_month,
                                         const QString &status)
@@ -349,6 +461,8 @@ void home_screen::show_financial_profile(int balance, int monthly_minimum, int t
         QString current_month_str = " Текущий месяц:  "+ QLocale().toString(current_month);
 
         ui->ql_month->setText(current_month_str);
+
+        update_financial_chart(balance, total_loans, 0);
 
     } else if (status == "win"){
         show_game_result(GameStatus::WIN);

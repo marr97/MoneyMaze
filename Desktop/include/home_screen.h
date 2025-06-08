@@ -43,6 +43,8 @@ private slots:
   void show_financial_profile(int balance, int monthly_minimum, int total_loans,
                                     int interest_due, int salary, int current_month,
                                     const QString &status);
+
+  void update_financial_chart(int balance, int debt, int savings);
   void loan_info(int min_loan_amount, int max_loan_amount, int interest_rate);
 
   void on_pb_make_loan_clicked();

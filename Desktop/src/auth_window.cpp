@@ -3,6 +3,7 @@
 #include "ui_reg_window.h"
 #include "reg_window.h"
 #include "http_client.h"
+#include <QTimer>
 
 auth_window::auth_window(QWidget *parent)
     : QDialog(parent), ui(new Ui::auth_window), http_client_auth(new httpClient(this))
@@ -67,11 +68,11 @@ void auth_window::handle_authorization_result(int status_code, const QString &er
     if (status_code == 200){
         http_client_auth->show_result("Вход в аккаунт выполнен успешно!", httpClient::Status::OK, this);
 
-        QTimer::singleShot(2500 + 200, this, [this]{
-            this->hide();
+        QTimer::singleShot(2500 + 1200, this, [this]{
             ui_Home.set_username(get_login());
             ui_Home.load_financial_profile();
             ui_Home.show();
+            this->hide();
         });
     }
     else if (status_code >= 400){
