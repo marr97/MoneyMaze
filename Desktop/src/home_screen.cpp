@@ -279,10 +279,13 @@ void home_screen::load_financial_profile()
 
 void home_screen::show_game_result(GameStatus status)
 {
-    const int timeout_ms = 2500;
+    const int timeout_ms = 5000;
 
     QLabel* label = new QLabel(this);
-    label->setFixedHeight(40);
+    label->setFixedHeight(90);
+    label->setFixedWidth(420);
+    label->setWordWrap(true);
+    label->setMargin(5);
     label->setAlignment(Qt::AlignCenter);
 
     if (status == GameStatus::WIN){
@@ -309,7 +312,7 @@ void home_screen::show_game_result(GameStatus status)
     }
 
     int x = (this->width() - label->sizeHint().width()) / 2;
-    int y = (this->height() - label->sizeHint().height()) / 10;
+    int y = (this->height() - label->sizeHint().height()) / 2;
 
     label->move(x, y);
     label->show();
