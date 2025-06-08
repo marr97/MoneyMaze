@@ -43,8 +43,7 @@ bool DatabaseManager::connect() {
 
         pqxx::work txn(*conn);
 
-        // Проверка/создание таблицы users
-        #pragma GCC diagnostic push //игнорировать устаревший метод exec
+        #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec("SELECT to_regclass('public.users');");
         if (r[0][0].is_null()) {
@@ -59,7 +58,6 @@ bool DatabaseManager::connect() {
         }
         #pragma GCC diagnostic pop
 
-        // Проверка/создание таблицы financial_profile
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r2 = txn.exec("SELECT to_regclass('public.financial_profile');");
@@ -86,7 +84,6 @@ bool DatabaseManager::connect() {
                     AND column_name = 'monthly_minimum';
             )");
             if (checkMonthly.empty()) {
-                // аналогично вашему коду: проверка на некорректное имя и т.д.
                 txn.exec(R"(
                     ALTER TABLE financial_profile
                     ADD COLUMN monthly_minimum INTEGER NOT NULL DEFAULT 0;
@@ -94,7 +91,6 @@ bool DatabaseManager::connect() {
                 Logger::log(LogLevel::WARNING, "Added missing column 'monthly_minimum' to financial_profile.");
             }
 
-            // 2) проверка salary
             auto checkSalary = txn.exec(R"(
                 SELECT 1
                 FROM information_schema.columns
@@ -109,7 +105,6 @@ bool DatabaseManager::connect() {
                 Logger::log(LogLevel::WARNING, "Added missing column 'salary' to financial_profile.");
             }
 
-            // 3) проверка played_months
             auto checkPlayed = txn.exec(R"(
                 SELECT 1
                 FROM information_schema.columns
@@ -184,7 +179,7 @@ bool DatabaseManager::createFinancialProfile(int user_id) {
         pqxx::work txn(*conn);
         txn.exec_params(
             "INSERT INTO financial_profile (user_id, balance, monthly_minimum, savings, debt, salary, played_months, deposits) "
-            "VALUES ($1, 0, 0, 0, 0, 0, 0, 0);",
+            "VALUES ($1, 0, 0, 0, 0, 0, 1, 0);",
             user_id
         );
         txn.commit();
@@ -235,8 +230,6 @@ bool DatabaseManager::createUser(const std::string &username, const std::string 
         return false;
     }
 }
-
-// новый метод для входа(получение пароля)
 
 std::optional<std::string> DatabaseManager::getPasswordByUsername(const std::string& username) {
     if (!conn || !conn->is_open()) {
@@ -319,7 +312,7 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
     if (!conn || !conn->is_open()) return std::nullopt;
     
     try {
-        #pragma GCC diagnostic push //игнорировать устаревший метод exec
+        #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         pqxx::work txn(*conn);
         auto r = txn.exec_params(
@@ -351,7 +344,7 @@ bool DatabaseManager::updateFinancialProfile(int user_id, const FinancialProfile
     if (!conn || !conn->is_open()) return false;
     
     try {
-        #pragma GCC diagnostic push //игнорировать устаревший метод exec
+        #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         pqxx::work txn(*conn);
         txn.exec_params(
@@ -375,7 +368,7 @@ bool DatabaseManager::createLoan(int user_id, int amount, int period, double rat
     if (!conn || !conn->is_open()) return false;
     
     try {
-        #pragma GCC diagnostic push //игнорировать устаревший метод exec
+        #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         pqxx::work txn(*conn);
         txn.exec_params(
@@ -386,7 +379,6 @@ bool DatabaseManager::createLoan(int user_id, int amount, int period, double rat
         #pragma GCC diagnostic pop
         txn.commit();
         
-        // Увеличиваем баланс при получении кредита
         auto profileOpt = getFinancialProfile(user_id);
         if (!profileOpt) return false;
         FinancialProfile profile = *profileOpt;
@@ -402,30 +394,17 @@ bool DatabaseManager::createLoan(int user_id, int amount, int period, double rat
     }
 }
 
+LoanInfo DatabaseManager::getLoanInfo(int user_id) {
+    constexpr int DEFAULT_MIN_LOAN = 1000;
 
-std::optional<double> DatabaseManager::getUserDeposit(int user_id) {
-    if (!conn || !conn->is_open()) return std::nullopt;
-
-    try {
-        #pragma GCC diagnostic push
-        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-        pqxx::work txn(*conn);
-        pqxx::result r = txn.exec_params(
-            "SELECT amount FROM deposits WHERE user_id = $1 LIMIT 1",
-            user_id
-        );
-        #pragma GCC diagnostic pop
-        if (r.empty()) return std::nullopt;
-        return r[0][0].as<double>();
-    } catch (const std::exception &e) {
-        Logger::log(LogLevel::ERROR, std::string("getUserDeposit error: ") + e.what());
-        return std::nullopt;
+    auto profileOpt = getFinancialProfile(user_id);
+    if (!profileOpt) {
+        return {15.0, 1, 12, DEFAULT_MIN_LOAN, DEFAULT_MIN_LOAN};
     }
-}
-
-
-
-LoanInfo DatabaseManager::getLoanInfo() {
-    // Хардкод значений согласно требованиям
-    return {15.0, 1, 12, 1000, 100000};
+    const FinancialProfile &p = *profileOpt;
+    int maxLoan = p.salary - p.monthly_minimum;
+    if (maxLoan < DEFAULT_MIN_LOAN) {
+        maxLoan = DEFAULT_MIN_LOAN;
+    }
+    return {15.0, 1, 12, DEFAULT_MIN_LOAN, maxLoan};
 }

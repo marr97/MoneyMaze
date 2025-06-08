@@ -51,281 +51,202 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         const std::string& uri = request.getURI();
 
         if (uri == "/register") {
+            // --- REGISTER ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
-            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            auto json = result.extract<Poco::JSON::Object::Ptr>();
 
             std::string login = json->getValue<std::string>("login");
             std::string password = json->getValue<std::string>("password");
-
-            std::string RequestBody = "Body: { login: " + login + ", password: " + password + " }";
-            std::string RequestInfo = "Endpoint: '/register' | " + RequestBody;
-            RequestLogger::logRequest(RequestLogLevel::INFO, RequestInfo);
+            RequestLogger::logRequest(RequestLogLevel::INFO,
+                "Endpoint: '/register' | Body: { login: " + login + ", password: " + password + " }");
 
             bool ok = dbManager.createUser(login, password);
-            if (ok) {
-                auto user_id_opt = dbManager.getUserIdByUsername(login);
-                if (user_id_opt) {
-                    dbManager.createFinancialProfile(user_id_opt.value());
-                }
+            response.setStatus(ok ? Poco::Net::HTTPResponse::HTTP_OK
+                                  : Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
+            responseObj->set("success", ok);
+            if (!ok) responseObj->set("error", "User already exists");
 
-                response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
-                responseObj->set("success", true);
-
-                RequestLogger::logRequest(RequestLogLevel::INFO, "User '" + login + "' successfully registered");
-                RequestLogger::logRequest(RequestLogLevel::REPLYINFO, "OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK));
-            } else {
-                response.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
-                responseObj->set("success", false);
-                responseObj->set("error", "User already exists");
-
-                RequestLogger::logRequest(RequestLogLevel::ERROR, "Couldn't register user: '" + login + "'");
-                RequestLogger::logRequest(RequestLogLevel::REPLYINFO, "'User already exists' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST));
-            }
-        }
-        else if (uri == "/login") {
+        } else if (uri == "/login") {
+            // --- LOGIN ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
-            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            auto json = result.extract<Poco::JSON::Object::Ptr>();
 
             std::string login = json->getValue<std::string>("login");
             std::string password = json->getValue<std::string>("password");
-
-            std::string RequestBody = "Body: { login: " + login + ", password: " + password + " }";
-            std::string RequestInfo = "Endpoint: '/login' | " + RequestBody;
-            RequestLogger::logRequest(RequestLogLevel::INFO, RequestInfo);
+            RequestLogger::logRequest(RequestLogLevel::INFO,
+                "Endpoint: '/login' | Body: { login: " + login + " }");
 
             auto dbPass = dbManager.getPasswordByUsername(login);
             bool ok = dbPass.has_value() && dbPass.value() == password;
+            response.setStatus(ok ? Poco::Net::HTTPResponse::HTTP_OK
+                                  : Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED);
+            responseObj->set("success", ok);
+            if (!ok) responseObj->set("error", "Invalid login or password");
 
-            if (ok) {
-                response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
-                responseObj->set("success", true);
-
-                RequestLogger::logRequest(RequestLogLevel::INFO, "User '" + login + "' successfully logged in");
-                RequestLogger::logRequest(RequestLogLevel::REPLYINFO, "OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK));
-            } else {
-                response.setStatus(Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED);
-                responseObj->set("success", false);
-                responseObj->set("error", "Invalid login or password");
-
-                RequestLogger::logRequest(RequestLogLevel::ERROR, "Couldn't authorize user: '" + login + "'");
-                RequestLogger::logRequest(RequestLogLevel::REPLYINFO, "'Invalid login or password' | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED));
-            }
-        }
-        else if (uri == "/financial-profile") {
+        } else if (uri == "/financial-profile") {
+            // --- FINANCIAL PROFILE ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
-            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            auto json = result.extract<Poco::JSON::Object::Ptr>();
 
             std::string username = json->getValue<std::string>("username");
-            std::string RequestBody = "Body: { username: " + username + " }";
-            std::string RequestInfo = "Endpoint: '/financial-profile' | " + RequestBody;
-            RequestLogger::logRequest(RequestLogLevel::INFO, RequestInfo);
+            RequestLogger::logRequest(RequestLogLevel::INFO,
+                "Endpoint: '/financial-profile' | Body: { username: " + username + " }");
 
-            auto user_id_opt = dbManager.getUserIdByUsername(username);
-            if (!user_id_opt) {
+            auto uid = dbManager.getUserIdByUsername(username);
+            if (!uid) {
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
                 responseObj->set("success", false);
                 responseObj->set("error", "User not found");
-
-                RequestLogger::logRequest(RequestLogLevel::ERROR, "User not found: '" + username + "'");
             } else {
-                int user_id = user_id_opt.value();
-                auto profile = dbManager.getFinancialProfile(user_id);
-                auto depositOpt = dbManager.getUserDeposit(user_id);
-                if (depositOpt.has_value()) {
-                    responseObj->set("deposits", depositOpt.value());
+                auto optProfile = dbManager.getFinancialProfile(*uid);
+                if (!optProfile) {
+                    response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+                    responseObj->set("success", false);
+                    responseObj->set("error", "Financial profile not found");
                 } else {
-                    responseObj->set("deposits", 0);
-                }
+                    const auto& p = *optProfile;
+                    responseObj->set("deposits", p.deposits);
+                    responseObj->set("balance", p.balance);
+                    responseObj->set("monthly_minimum", p.monthly_minimum);
+                    responseObj->set("total_loans", p.debt);
 
-
-                if (profile) {
-                    responseObj->set("balance", profile->balance);
-                    responseObj->set("monthly_minimum", profile->monthly_minimum);
-                    responseObj->set("total_loans", profile->debt);
-
-                    double interest_due = profile->debt * 0.15 / 12;
+                    double interest_due = p.debt * 0.15 / 12;
                     responseObj->set("interest_due", interest_due);
-                    responseObj->set("salary", profile->salary);
-                    responseObj->set("current_month", profile->played_months);
+                    responseObj->set("salary", p.salary);
+                    responseObj->set("current_month", p.played_months);
 
-                    if (profile->balance < 0) {
+                    if (p.balance < 0) {
                         responseObj->set("status", "lose");
-                        responseObj->set("score", profile->played_months);
-                    } else if (profile->played_months >= 12) {
+                        responseObj->set("score", p.played_months);
+                    } else if (p.played_months >= 12) {
                         responseObj->set("status", "win");
-                        responseObj->set("score", profile->balance + profile->savings - profile->debt);
+                        responseObj->set("score", p.balance + p.savings - p.debt);
                     } else {
                         responseObj->set("status", "in_progress");
                     }
                     response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
-
-                    RequestLogger::logRequest(RequestLogLevel::INFO, "Financial profile '" + username + "' successfully sent");
-                    RequestLogger::logRequest(RequestLogLevel::REPLYINFO, "OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK));
-                } else {
-                    response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
-                    responseObj->set("success", false);
-                    responseObj->set("error", "Financial profile not found");
-
-                    RequestLogger::logRequest(RequestLogLevel::ERROR, "Financial profile not found for user: '" + username + "'");
                 }
             }
-        }
-        else if (uri == "/next-month") {
+
+        } else if (uri == "/next-month") {
+            // --- NEXT MONTH ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
-            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            auto json = result.extract<Poco::JSON::Object::Ptr>();
 
             std::string username = json->getValue<std::string>("username");
-            auto user_id_opt = dbManager.getUserIdByUsername(username);
-            if (!user_id_opt) {
+            RequestLogger::logRequest(RequestLogLevel::INFO,
+                "Endpoint: '/next-month' | Body: { username: " + username + " }");
+
+            auto uid = dbManager.getUserIdByUsername(username);
+            if (!uid) {
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
                 responseObj->set("success", false);
                 responseObj->set("error", "User not found");
-
-                RequestLogger::logRequest(RequestLogLevel::ERROR, "User not found: '" + username + "'");
             } else {
-                int user_id = user_id_opt.value();
-                auto profile = dbManager.getFinancialProfile(user_id);
-                auto depositOpt = dbManager.getUserDeposit(user_id);
-                if (depositOpt.has_value()) {
-                    responseObj->set("deposits", depositOpt.value());
+                auto optProfile = dbManager.getFinancialProfile(*uid);
+                if (!optProfile) {
+                    response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+                    responseObj->set("success", false);
+                    responseObj->set("error", "Financial profile not found");
                 } else {
-                    responseObj->set("deposits", 0);
-                }
+                    auto p = *optProfile;
+                    double interest_due = p.debt * 0.15 / 12;
+                    p.balance = p.balance - p.monthly_minimum - interest_due + p.salary;
+                    p.played_months += 1;
+                    p.deposits = p.deposits;  // unchanged
 
+                    dbManager.updateFinancialProfile(*uid, p);
 
-                if (profile) {
-                    double interest_due = profile->debt * 0.15 / 12;
-                    profile->balance = profile->balance - profile->monthly_minimum - interest_due + profile->salary;
-                    profile->played_months++;
-
-                    dbManager.updateFinancialProfile(user_id, *profile);
                     response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                     responseObj->set("success", true);
-
-                    RequestLogger::logRequest(RequestLogLevel::INFO, "Next month updated for user '" + username + "'");
-                    RequestLogger::logRequest(RequestLogLevel::REPLYINFO, "OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK));
-                } else {
-                    response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
-                    responseObj->set("success", false);
-                    responseObj->set("error", "Financial profile not found");
-
-                    RequestLogger::logRequest(RequestLogLevel::ERROR, "Financial profile not found for user: '" + username + "'");
                 }
             }
-        }
-        else if (uri == "/loan-info") {
+
+        } else if (uri == "/loan-info") {
+            // --- LOAN INFO ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
-            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            auto json = result.extract<Poco::JSON::Object::Ptr>();
 
             std::string username = json->getValue<std::string>("username");
-            auto user_id_opt = dbManager.getUserIdByUsername(username);
+            RequestLogger::logRequest(RequestLogLevel::INFO,
+                "Endpoint: '/loan-info' | Body: { username: " + username + " }");
 
-            if (!user_id_opt) {
+            auto uid = dbManager.getUserIdByUsername(username);
+            if (!uid) {
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
                 responseObj->set("success", false);
                 responseObj->set("error", "User not found");
-
-                RequestLogger::logRequest(RequestLogLevel::ERROR, "User not found: '" + username + "'");
             } else {
-                int user_id = user_id_opt.value();
-                auto profile = dbManager.getFinancialProfile(user_id);
-                auto depositOpt = dbManager.getUserDeposit(user_id);
-                if (depositOpt.has_value()) {
-                    responseObj->set("deposits", depositOpt.value());
-                } else {
-                    responseObj->set("deposits", 0);
-                }
-
-
-                if (profile) {
-                    double interest_due = profile->debt * 0.15 / 12;
-
-                    responseObj->set("loan_amount", profile->debt);
-                    responseObj->set("interest_due", interest_due);
-                    responseObj->set("loan_term", 12);
-                    responseObj->set("loan_repayment_status", profile->played_months);
-
-                    response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
-
-                    RequestLogger::logRequest(RequestLogLevel::INFO, "Loan info sent for user '" + username + "'");
-                    RequestLogger::logRequest(RequestLogLevel::REPLYINFO, "OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK));
-                } else {
-                    response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
-                    responseObj->set("success", false);
-                    responseObj->set("error", "Financial profile not found");
-
-                    RequestLogger::logRequest(RequestLogLevel::ERROR, "Financial profile not found for user: '" + username + "'");
-                }
+                LoanInfo info = dbManager.getLoanInfo(*uid);
+                responseObj->set("min_loan_amount",    info.min_loan_amount);
+                responseObj->set("max_loan_amount",    info.max_loan_amount);
+                responseObj->set("interest_rate",      info.interest_rate);
+                responseObj->set("min_loan_month",     info.min_loan_month);
+                responseObj->set("max_loan_month",     info.max_loan_month);
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
             }
-        }
-        else if (uri == "/deposit") {
+
+        } else if (uri == "/deposit") {
+            // --- DEPOSIT ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
-            Poco::JSON::Object::Ptr json = result.extract<Poco::JSON::Object::Ptr>();
+            auto json = result.extract<Poco::JSON::Object::Ptr>();
 
             std::string username = json->getValue<std::string>("username");
             double amount = json->getValue<double>("amount");
+            RequestLogger::logRequest(RequestLogLevel::INFO,
+                "Endpoint: '/deposit' | Body: { username: " + username +
+                ", amount: " + std::to_string(amount) + " }");
 
-            auto user_id_opt = dbManager.getUserIdByUsername(username);
-            if (!user_id_opt) {
+            auto uid = dbManager.getUserIdByUsername(username);
+            if (!uid) {
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
                 responseObj->set("success", false);
                 responseObj->set("error", "User not found");
-
-                RequestLogger::logRequest(RequestLogLevel::ERROR, "User not found: '" + username + "'");
             } else {
-                int user_id = user_id_opt.value();
-                auto profile = dbManager.getFinancialProfile(user_id);
-                auto depositOpt = dbManager.getUserDeposit(user_id);
-                if (depositOpt.has_value()) {
-                    responseObj->set("deposits", depositOpt.value());
-                } else {
-                    responseObj->set("deposits", 0);
-                }
-
-                if (profile) {
-                    profile->balance += amount;
-                    dbManager.updateFinancialProfile(user_id, *profile);
-
-                    response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
-                    responseObj->set("success", true);
-
-                    RequestLogger::logRequest(RequestLogLevel::INFO, "Deposit successful for user '" + username + "'");
-                    RequestLogger::logRequest(RequestLogLevel::REPLYINFO, "OK | HTTP status code = " + std::to_string(Poco::Net::HTTPResponse::HTTP_OK));
-                } else {
+                auto optProfile = dbManager.getFinancialProfile(*uid);
+                if (!optProfile) {
                     response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
                     responseObj->set("success", false);
                     responseObj->set("error", "Financial profile not found");
+                } else {
+                    auto p = *optProfile;
+                    p.balance += static_cast<int>(amount);
+                    p.deposits += 1;
+                    dbManager.updateFinancialProfile(*uid, p);
 
-                    RequestLogger::logRequest(RequestLogLevel::ERROR, "Financial profile not found for user: '" + username + "'");
+                    responseObj->set("deposits", p.deposits);
+                    responseObj->set("balance",  p.balance);
+                    responseObj->set("success",  true);
+                    response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                 }
             }
-        }
-        else {
+
+        } else {
             response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
             responseObj->set("success", false);
             responseObj->set("error", "Unknown endpoint");
-
-            RequestLogger::logRequest(RequestLogLevel::WARNING, "Unknown endpoint requested: '" + uri + "'");
         }
 
+        // ЕДИНЫЙ вызов отправки JSON
         std::ostream& out = response.send();
         Poco::JSON::Stringifier::stringify(responseObj, out);
 
     } catch (const std::exception& e) {
+        // Ошибка сервера — отправляем JSON с ошибкой
         response.setStatus(Poco::Net::HTTPResponse::HTTP_INTERNAL_SERVER_ERROR);
         Poco::JSON::Object::Ptr errorObj = new Poco::JSON::Object;
         errorObj->set("success", false);
-        errorObj->set("error", e.what());
+        errorObj->set("error",   e.what());
+        RequestLogger::logRequest(RequestLogLevel::ERROR,
+            std::string("Exception caught: ") + e.what());
 
         std::ostream& out = response.send();
         Poco::JSON::Stringifier::stringify(errorObj, out);
-
-        RequestLogger::logRequest(RequestLogLevel::ERROR, std::string("Exception caught: ") + e.what());
     }
 }
