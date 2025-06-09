@@ -186,3 +186,6 @@ void loan_module::loan_module_finished()
         this->hide();
     });
 }
+
+
+

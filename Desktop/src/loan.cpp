@@ -8,6 +8,9 @@ loan::loan(QWidget *parent) : QWidget(parent), ui(new Ui::loan), http_client_loa
     ui->setupUi(this);
     this->setWindowTitle("Оформление кредита");
 
+    connect(http_client_loan, &httpClient::loan_taken, this, &loan::loan_taken_message);
+    connect(http_client_loan, &httpClient::error_occurred, this, &loan::error_message);
+
     // кнопка взять кредит
     ButtonStyle = "QPushButton {"
         "   background-color: rgba(73, 179, 78, 0.7);"
@@ -122,6 +125,7 @@ loan::~loan() {
 void loan::set_loan_info(int min_amount, int max_amount, int rate, const QString &name)
 {
     username = name;
+    interest_rate = rate;
 
     ui->ql_rate_value->setText(QString::number(rate) + " %");
 
@@ -139,7 +143,7 @@ void loan::set_loan_info(int min_amount, int max_amount, int rate, const QString
 
 int loan::count_monthly_payment(int amount, int period, int rate)
 {
-    // равные дифференцированные платежи
+    // дифференцированные платежи
     int x = amount / period;
 
     int k = amount * (rate / 100) * 30 / 365;
@@ -147,6 +151,65 @@ int loan::count_monthly_payment(int amount, int period, int rate)
     return (x + k);
 }
 
+
+void loan::loan_taken_message()
+{
+    const int timeout_ms = 2500;
+
+    QLabel* label = new QLabel(this);
+    label->setFixedHeight(40);
+    label->setFixedWidth(190);
+    label->setAlignment(Qt::AlignCenter);
+
+    label->setStyleSheet(
+        "background-color: rgb(97, 197, 84);"
+        "color: rgb(255, 255, 255);"
+        "border-radius: 5px;"
+        "padding: 10px;"
+        "font-family: 'Gill Sans', sans-serif;"
+        "font-size: 14px;"
+        );
+    label->setText("Кредит успешно оформлен!");
+
+    int x = (this->width() - label->sizeHint().width()) / 2;
+    int y = (this->height() - label->sizeHint().height()) / 20;
+
+    label->move(x, y);
+    label->show();
+
+    emit update_profile();
+
+    QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
+}
+
+
+void loan::error_message(const QString &msg)
+{
+    const int timeout_ms = 2500;
+
+    QLabel* label = new QLabel(this);
+    label->setFixedHeight(40);
+
+    label->setAlignment(Qt::AlignCenter);
+    label->setText("Ошибка: " + msg);
+    label->setStyleSheet(
+        "background-color: rgb(155, 155, 155);"
+        "color: rgb(255, 255, 255);"
+        "border-radius: 5px;"
+        "padding: 10px;"
+        "font-family: 'Gill Sans', sans-serif;"
+        "font-size: 14px;"
+        );
+
+
+    int x = (this->width() - label->sizeHint().width()) / 2;
+    int y = (this->height() - label->sizeHint().height()) / 20;
+
+    label->move(x, y);
+    label->show();
+
+    QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
+}
 
 void loan::on_pb_take_clicked()
 {
@@ -177,12 +240,9 @@ void loan::on_pb_take_clicked()
         return;
     }
 
-    int rate = ui->ql_rate_value->text().toInt();
-    int monthly_payment = count_monthly_payment(amount, period, rate);
+    http_client_loan->take_loan(amount, period, interest_rate, username);
 
-    ui->ql_payment_value->setText(QString::number(monthly_payment));
-
-    QTimer::singleShot(2000, this, [this]{
+    QTimer::singleShot(3500, this, [this]{
         ui->loan_amount->clear();
         ui->rb_6months->setChecked(false);
         ui->rb_9months->setChecked(false);
@@ -196,5 +256,41 @@ void loan::on_pb_take_clicked()
 
         this->hide();
     });
+}
+
+
+void loan::on_rb_6months_clicked()
+{
+    if (!ui->loan_amount->text().isEmpty()){
+        int amount = ui->loan_amount->text().toInt();
+        if (amount > 0) {
+            int monthly_payment = count_monthly_payment(amount, 6, interest_rate);
+            ui->ql_payment_value->setText(QString::number(monthly_payment));
+        }
+    }
+}
+
+
+void loan::on_rb_9months_clicked()
+{
+    if (!ui->loan_amount->text().isEmpty()){
+        int amount = ui->loan_amount->text().toInt();
+        if (amount > 0) {
+            int monthly_payment = count_monthly_payment(amount, 9, interest_rate);
+            ui->ql_payment_value->setText(QString::number(monthly_payment));
+        }
+    }
+}
+
+
+void loan::on_rb_12months_clicked()
+{
+    if (!ui->loan_amount->text().isEmpty()){
+        int amount = ui->loan_amount->text().toInt();
+        if (amount > 0) {
+            int monthly_payment = count_monthly_payment(amount, 12, interest_rate);
+            ui->ql_payment_value->setText(QString::number(monthly_payment));
+        }
+    }
 }
 

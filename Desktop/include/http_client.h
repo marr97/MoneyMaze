@@ -26,6 +26,7 @@ public:
     void get_financial_profile(const QString &username);
     void next_month(const QString &username);
     void get_loan_info(const QString &username);
+    void take_loan(int amount, int period, int rate, const QString &username);
 
 signals:
     void registration_finished(int status_code, const QString &error_msg);
@@ -35,6 +36,7 @@ signals:
                                     int interest_due, int salary, int current_month,
                                     const QString &status);
     void loan_info_received(int min_loan_amount, int max_loan_amount, int interest_rate);
+    void loan_taken();
 
 private:
     QNetworkAccessManager *manager;

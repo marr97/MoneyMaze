@@ -1,6 +1,7 @@
 #include "home_screen.h"
 #include "ui_home_screen.h"
 #include "http_client.h"
+#include "loan.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QPropertyAnimation>
@@ -17,6 +18,7 @@ home_screen::home_screen(QWidget *parent)
   connect(this, &home_screen::profile_requested, http_client_home, &httpClient::get_financial_profile);
   connect(http_client_home, &httpClient::financial_profile_received, this, &home_screen::show_financial_profile);
   connect(http_client_home, &httpClient::loan_info_received, this, &home_screen::loan_info);
+  connect(&ui_loan, &loan::update_profile, this, &home_screen::update_financial_profile);
 
   // Имя пользователя
 
@@ -319,6 +321,13 @@ void home_screen::set_username(const QString &name)
 }
 
 void home_screen::load_financial_profile()
+{
+    if (!username.isEmpty()) {
+        emit profile_requested(username);
+    }
+}
+
+void home_screen::update_financial_profile()
 {
     if (!username.isEmpty()) {
         emit profile_requested(username);
