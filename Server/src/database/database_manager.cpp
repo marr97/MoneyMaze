@@ -68,6 +68,7 @@ bool DatabaseManager::connect() {
                     user_id INTEGER UNIQUE REFERENCES users(id),
                     balance INTEGER NOT NULL,
                     monthly_minimum INTEGER NOT NULL,
+                    savings INTEGER NOT NULL,
                     debt INTEGER NOT NULL,
                     salary INTEGER NOT NULL,
                     played_months INTEGER NOT NULL,
@@ -177,8 +178,8 @@ bool DatabaseManager::createFinancialProfile(int user_id) {
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         pqxx::work txn(*conn);
         txn.exec_params(
-            "INSERT INTO financial_profile (user_id, balance, monthly_minimum, debt, salary, played_months, deposits) "
-            "VALUES ($1, 1000, 500, 0, 1500, 1, 0);",
+            "INSERT INTO financial_profile (user_id, balance, monthly_minimum, savings, debt, salary, played_months, deposits) "
+            "VALUES ($1, 60000, 25000, 0, 0, 60000, 1, 0);",
             user_id
         );
         txn.commit();
@@ -326,10 +327,11 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
         FinancialProfile profile;
         profile.balance = r[0][0].as<int>();
         profile.monthly_minimum = r[0][1].as<int>();
-        profile.debt = r[0][2].as<int>();
-        profile.salary = r[0][3].as<int>();
-        profile.played_months = r[0][4].as<int>();
-        profile.deposits = r[0][5].as<int>();
+        profile.savings = r[0][2].as<int>();
+        profile.debt = r[0][3].as<int>();
+        profile.salary = r[0][4].as<int>();
+        profile.played_months = r[0][5].as<int>();
+        profile.deposits = r[0][6].as<int>();
         
         return profile;
     } catch (const std::exception& e) {
@@ -347,10 +349,10 @@ bool DatabaseManager::updateFinancialProfile(int user_id, const FinancialProfile
         pqxx::work txn(*conn);
         txn.exec_params(
             "UPDATE financial_profile SET "
-            "balance = $1, monthly_minimum = $2, debt = $3, "
-            "salary = $4, played_months = $5, deposits = $6 "
-            "WHERE user_id = $7;",
-            profile.balance, profile.monthly_minimum,
+            "balance = $1, monthly_minimum = $2, savings = $3, debt = $4, "
+            "salary = $5, played_months = $6, deposits = $7 "
+            "WHERE user_id = $8;",
+            profile.balance, profile.monthly_minimum, profile.savings, 
             profile.debt, profile.salary, profile.played_months, profile.deposits, user_id
         );
         #pragma GCC diagnostic pop
@@ -436,3 +438,25 @@ std::vector<LoanRecord> DatabaseManager::getUserLoans(int user_id) {
     return loans;
 }
 
+bool DatabaseManager::updateLoan(const LoanRecord& loan) {
+    if (!conn || !conn->is_open()) return false;
+    try {
+        pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        txn.exec_params(
+            "UPDATE loans "
+            "SET amount = $1, passed_months = $2 "
+            "WHERE id = $3;",
+            loan.amount,
+            loan.passed_months,
+            loan.id
+        );
+        #pragma GCC diagnostic pop
+        txn.commit();
+        return true;
+    } catch (const std::exception& e) {
+        Logger::log(LogLevel::ERROR, "updateLoan error: " + std::string(e.what()));
+        return false;
+    }
+}

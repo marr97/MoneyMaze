@@ -48,11 +48,9 @@ public:
     bool connect();
     bool disconnect();
 
-    // Методы для работы с пользователями
     bool createUser(const std::string &username, const std::string &password);
     bool authenticateUser(const std::string &username, const std::string &password);
 
-    // Методы для работы с финансовым профилем
     bool createFinancialProfile(int user_id);
     std::optional<std::string> getPasswordByUsername(const std::string& username);
 
@@ -61,6 +59,7 @@ public:
     bool createLoan(int user_id, int amount, int period, double rate);
     LoanInfo getLoanInfo(int user_id);
     std::vector<LoanRecord> getUserLoans(int user_id);
+    bool updateLoan(const LoanRecord& loan);
 
     std::optional<int> getUserIdByUsername(const std::string& username);
 

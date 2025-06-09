@@ -51,7 +51,6 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
         const std::string& uri = request.getURI();
 
         if (uri == "/register") {
-            // --- REGISTER ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
             auto json = result.extract<Poco::JSON::Object::Ptr>();
@@ -68,7 +67,6 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             if (!ok) responseObj->set("error", "User already exists");
 
         } else if (uri == "/login") {
-            // --- LOGIN ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
             auto json = result.extract<Poco::JSON::Object::Ptr>();
@@ -86,7 +84,6 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             if (!ok) responseObj->set("error", "Invalid login or password");
 
         } else if (uri == "/financial-profile") {
-            // --- FINANCIAL PROFILE ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
             auto json = result.extract<Poco::JSON::Object::Ptr>();
@@ -132,7 +129,6 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             }
 
         } else if (uri == "/next-month") {
-            // --- NEXT MONTH ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
             auto json = result.extract<Poco::JSON::Object::Ptr>();
@@ -162,44 +158,43 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                         Poco::JSON::Stringifier::stringify(responseObj, out);
                         return;
                     }
-                    double interest_due = p.debt * 0.15 / 12;
-                    p.balance = p.balance - p.monthly_minimum - interest_due + p.salary;
-                    p.played_months += 1;
-                    p.deposits = p.deposits;  // unchanged
 
+                    p.balance = p.balance - p.monthly_minimum + p.salary;
+                    p.played_months += 1;
+
+                    auto userLoans = dbManager.getUserLoans(*uid);
+
+                    double totalInterest = 0.0;
+                    for (auto& loan : userLoans) {
+                        if (loan.passed_months < loan.period) {
+                            double monthlyInterest = loan.amount * (loan.rate / 12.0);
+                            totalInterest += monthlyInterest;
+
+                            int monthsLeft = loan.period - loan.passed_months;
+                            double principalPayment = loan.amount / monthsLeft;
+                            loan.amount -= principalPayment;
+                            if (loan.amount < 0) loan.amount = 0;
+
+                            loan.passed_months += 1;
+
+                            dbManager.updateLoan(loan);
+                        }
+                    }
+
+                    p.balance -= static_cast<int>(totalInterest);
+
+                    int newDebt = 0;
+                    for (const auto& loan : userLoans) {
+                        newDebt += loan.amount;
+                    }
+                    p.debt = newDebt;
                     dbManager.updateFinancialProfile(*uid, p);
 
                     response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                     responseObj->set("success", true);
                 }
             }
-        } else if (uri == "/loan-info") {
-            // --- LOAN INFO ---
-            Poco::JSON::Parser parser;
-            Poco::Dynamic::Var result = parser.parse(request.stream());
-            auto json = result.extract<Poco::JSON::Object::Ptr>();
-
-            std::string username = json->getValue<std::string>("username");
-            RequestLogger::logRequest(RequestLogLevel::INFO,
-                "Endpoint: '/loan-info' | Body: { username: " + username + " }");
-
-            auto uid = dbManager.getUserIdByUsername(username);
-            if (!uid) {
-                response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
-                responseObj->set("success", false);
-                responseObj->set("error", "User not found");
-            } else {
-                LoanInfo info = dbManager.getLoanInfo(*uid);
-                responseObj->set("min_loan_amount",    info.min_loan_amount);
-                responseObj->set("max_loan_amount",    info.max_loan_amount);
-                responseObj->set("interest_rate",      info.interest_rate);
-                responseObj->set("min_loan_month",     info.min_loan_month);
-                responseObj->set("max_loan_month",     info.max_loan_month);
-                response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
-            }
-
         } else if (uri == "/deposit") {
-            // --- DEPOSIT ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
             auto json = result.extract<Poco::JSON::Object::Ptr>();
@@ -235,15 +230,14 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             }
 
         } else if (uri == "/take-loan") {
-            // --- TAKE LOAN ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
             auto json = result.extract<Poco::JSON::Object::Ptr>();
 
             std::string username = json->getValue<std::string>("username");
             int amount  = json->getValue<int>("amount");
-            int period  = json->getValue<int>("period");   // в месяцах
-            double rate = json->getValue<double>("rate");  // годовая ставка
+            int period  = json->getValue<int>("period");
+            double rate = json->getValue<double>("rate");
 
             RequestLogger::logRequest(RequestLogLevel::INFO,
                 "Endpoint: '/take-loan' | Body: { username: " + username +
@@ -279,7 +273,6 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 }
             }
         } else if (uri == "/user-loans") {
-            // --- USER LOANS ---
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
             auto json = result.extract<Poco::JSON::Object::Ptr>();
@@ -315,12 +308,10 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
             responseObj->set("error", "Unknown endpoint");
         }
 
-        // ЕДИНЫЙ вызов отправки JSON
         std::ostream& out = response.send();
         Poco::JSON::Stringifier::stringify(responseObj, out);
 
     } catch (const std::exception& e) {
-        // Ошибка сервера — отправляем JSON с ошибкой
         response.setStatus(Poco::Net::HTTPResponse::HTTP_INTERNAL_SERVER_ERROR);
         Poco::JSON::Object::Ptr errorObj = new Poco::JSON::Object;
         errorObj->set("success", false);
