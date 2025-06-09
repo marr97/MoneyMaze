@@ -316,10 +316,18 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         pqxx::work txn(*conn);
         auto r = txn.exec_params(
-            "SELECT balance, monthly_minimum, debt, salary, played_months, deposits "
+            "SELECT "
+            "  balance, "
+            "  monthly_minimum, "
+            "  COALESCE(savings, 0)   AS savings, "
+            "  debt, "
+            "  salary, "
+            "  played_months, "
+            "  deposits "
             "FROM financial_profile WHERE user_id = $1;",
             user_id
         );
+
         #pragma GCC diagnostic pop
         
         if (r.empty()) return std::nullopt;
