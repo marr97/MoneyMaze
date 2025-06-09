@@ -8,6 +8,7 @@
 #include "loan_module.h"
 #include "savings_module.h"
 #include "loan.h"
+#include "loan_info.h"
 
 class httpClient;
 
@@ -45,11 +46,12 @@ private slots:
                                     const QString &status);
 
   void update_financial_chart(int balance, int debt, int savings);
-  void loan_info(int min_loan_amount, int max_loan_amount, int interest_rate);
+  void loan_information(int min_loan_amount, int max_loan_amount, int interest_rate);
   void update_financial_profile();
+  void loan_data(int amount, int period, int rate, int passed_months);
 
   void on_pb_make_loan_clicked();
-
+  void on_pb_my_loans_clicked();
 
   signals:
   void profile_requested(const QString &username);
@@ -60,6 +62,7 @@ private slots:
   savings_module ui_savings_module;
   httpClient *http_client_home;
   loan ui_loan;
+  loan_info ui_loan_info;
 
   QPropertyAnimation *animation_modules;
   QPropertyAnimation *animation_savings;

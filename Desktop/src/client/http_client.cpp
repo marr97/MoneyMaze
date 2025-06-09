@@ -274,9 +274,9 @@ void httpClient::take_loan(int amount, int period, int rate, const QString &user
     json_data["rate"] = rate;
 
     QJsonDocument json_doc(json_data);
-    QByteArray data = json_doc.toJson();
+    QByteArray loan_data = json_doc.toJson();
 
-    QNetworkReply* reply = manager->post(request, data);
+    QNetworkReply* reply = manager->post(request, loan_data);
 
     connect(reply, &QNetworkReply::finished, this, [=]() {
         if (reply->error() == QNetworkReply::NoError) {
@@ -284,6 +284,48 @@ void httpClient::take_loan(int amount, int period, int rate, const QString &user
         } else {
             qDebug() << "Error:" << reply->errorString();
             emit error_occurred(reply->errorString());
+        }
+
+        reply->deleteLater();
+    });
+
+}
+
+
+void httpClient::user_loans(const QString &username)
+{
+    QNetworkRequest request;
+
+    QUrl url("http://89.169.154.118:9090");
+    url.setPath("/user-loans");
+    request.setUrl(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json_data;
+    json_data["username"] = username;
+
+    QJsonDocument json_doc(json_data);
+    QByteArray data = json_doc.toJson();
+
+    QNetworkReply* reply = manager->post(request, data);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray response_data = reply->readAll();
+            QJsonDocument json_response = QJsonDocument::fromJson(response_data);
+            QJsonObject response_obj = json_response.object();
+
+
+            int amount = response_obj["amount"].toInt();
+            int period = response_obj["period"].toInt();
+            int rate = response_obj["rate"].toInt();
+            int passed_months = response_obj["passed_months"].toInt();
+
+            emit loan_data_received(amount, period, rate, passed_months);
+
+        } else {
+            qDebug() << "Error:" << reply->errorString();
         }
 
         reply->deleteLater();

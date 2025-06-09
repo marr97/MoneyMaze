@@ -188,7 +188,6 @@ void loan::error_message(const QString &msg)
     const int timeout_ms = 2500;
 
     QLabel* label = new QLabel(this);
-    label->setFixedHeight(40);
 
     label->setAlignment(Qt::AlignCenter);
     label->setText("Ошибка: " + msg);

@@ -23,11 +23,8 @@ private slots:
     void loan_taken_message();
     void error_message(const QString &msg);
 
-
     void on_rb_6months_clicked();
-
     void on_rb_9months_clicked();
-
     void on_rb_12months_clicked();
 
 signals:
