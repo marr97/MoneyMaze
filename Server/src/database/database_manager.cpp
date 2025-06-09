@@ -132,6 +132,20 @@ bool DatabaseManager::connect() {
                 )");
                 Logger::log(LogLevel::WARNING, "Added missing column 'deposits' to financial_profile.");
             }
+
+            auto checkSavings = txn.exec(R"(
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_name = 'financial_profile'
+                AND column_name = 'savings';
+            )");
+            if (checkSavings.empty()) {
+                txn.exec(R"(
+                    ALTER TABLE financial_profile
+                    ADD COLUMN savings INTEGER NOT NULL DEFAULT 0;
+                )");
+                Logger::log(LogLevel::WARNING, "Added missing column 'savings' to financial_profile.");
+            }
         }
         #pragma GCC diagnostic pop
 
