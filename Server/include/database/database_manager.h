@@ -31,6 +31,15 @@ struct LoanInfo {
     int max_loan_amount;
 };
 
+struct LoanRecord {
+    int    id;
+    int    amount;
+    int    period;
+    double rate;
+    int    passed_months;
+};
+
+
 class DatabaseManager {
 public:
     DatabaseManager();
@@ -51,6 +60,7 @@ public:
     bool updateFinancialProfile(int user_id, const FinancialProfile& profile);
     bool createLoan(int user_id, int amount, int period, double rate);
     LoanInfo getLoanInfo(int user_id);
+    std::vector<LoanRecord> getUserLoans(int user_id);
 
     std::optional<int> getUserIdByUsername(const std::string& username);
 

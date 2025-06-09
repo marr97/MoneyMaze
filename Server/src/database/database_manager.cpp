@@ -68,7 +68,6 @@ bool DatabaseManager::connect() {
                     user_id INTEGER UNIQUE REFERENCES users(id),
                     balance INTEGER NOT NULL,
                     monthly_minimum INTEGER NOT NULL,
-                    savings INTEGER NOT NULL,
                     debt INTEGER NOT NULL,
                     salary INTEGER NOT NULL,
                     played_months INTEGER NOT NULL,
@@ -178,8 +177,8 @@ bool DatabaseManager::createFinancialProfile(int user_id) {
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         pqxx::work txn(*conn);
         txn.exec_params(
-            "INSERT INTO financial_profile (user_id, balance, monthly_minimum, savings, debt, salary, played_months, deposits) "
-            "VALUES ($1, 0, 0, 0, 0, 0, 1, 0);",
+            "INSERT INTO financial_profile (user_id, balance, monthly_minimum, debt, salary, played_months, deposits) "
+            "VALUES ($1, 1000, 500, 0, 1500, 1, 0);",
             user_id
         );
         txn.commit();
@@ -316,7 +315,7 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         pqxx::work txn(*conn);
         auto r = txn.exec_params(
-            "SELECT balance, monthly_minimum, savings, debt, salary, played_months, deposits "
+            "SELECT balance, monthly_minimum, debt, salary, played_months, deposits "
             "FROM financial_profile WHERE user_id = $1;",
             user_id
         );
@@ -327,11 +326,10 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
         FinancialProfile profile;
         profile.balance = r[0][0].as<int>();
         profile.monthly_minimum = r[0][1].as<int>();
-        profile.savings = r[0][2].as<int>();
-        profile.debt = r[0][3].as<int>();
-        profile.salary = r[0][4].as<int>();
-        profile.played_months = r[0][5].as<int>();
-        profile.deposits = r[0][6].as<int>();
+        profile.debt = r[0][2].as<int>();
+        profile.salary = r[0][3].as<int>();
+        profile.played_months = r[0][4].as<int>();
+        profile.deposits = r[0][5].as<int>();
         
         return profile;
     } catch (const std::exception& e) {
@@ -349,10 +347,10 @@ bool DatabaseManager::updateFinancialProfile(int user_id, const FinancialProfile
         pqxx::work txn(*conn);
         txn.exec_params(
             "UPDATE financial_profile SET "
-            "balance = $1, monthly_minimum = $2, savings = $3, debt = $4, "
-            "salary = $5, played_months = $6, deposits = $7 "
-            "WHERE user_id = $8;",
-            profile.balance, profile.monthly_minimum, profile.savings, 
+            "balance = $1, monthly_minimum = $2, debt = $3, "
+            "salary = $4, played_months = $5, deposits = $6 "
+            "WHERE user_id = $7;",
+            profile.balance, profile.monthly_minimum,
             profile.debt, profile.salary, profile.played_months, profile.deposits, user_id
         );
         #pragma GCC diagnostic pop
@@ -408,3 +406,33 @@ LoanInfo DatabaseManager::getLoanInfo(int user_id) {
     }
     return {15.0, 1, 12, DEFAULT_MIN_LOAN, maxLoan};
 }
+
+std::vector<LoanRecord> DatabaseManager::getUserLoans(int user_id) {
+    std::vector<LoanRecord> loans;
+    if (!conn || !conn->is_open()) return loans;
+
+    try {
+        pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        auto r = txn.exec_params(
+            "SELECT id, amount, period, rate, passed_months "
+            "FROM loans WHERE user_id = $1;",
+            user_id
+        );
+        #pragma GCC diagnostic pop
+        for (const auto &row : r) {
+            loans.push_back(LoanRecord{
+                row[0].as<int>(),
+                row[1].as<int>(),
+                row[2].as<int>(),
+                row[3].as<double>(),
+                row[4].as<int>()
+            });
+        }
+    } catch (const std::exception& e) {
+    Logger::log(LogLevel::ERROR, "getUserLoans error: " + std::string(e.what()));
+    }
+    return loans;
+}
+
