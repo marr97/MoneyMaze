@@ -7,13 +7,14 @@
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
-#include "database_manager.h" 
+#include "database_manager.h"
+#include "email_sender.h"
 
-enum class RequestLogLevel { 
+enum class RequestLogLevel {
     INFO,
-    REPLYINFO, 
-    WARNING, 
-    ERROR 
+    REPLYINFO,
+    WARNING,
+    ERROR
 };
 
 class RequestLogger {
@@ -21,23 +22,24 @@ public:
     static void logRequest(RequestLogLevel level, const std::string &message);
 };
 
-
 class RequestHandler : public Poco::Net::HTTPRequestHandler {
 public:
-    RequestHandler(DatabaseManager& dbManager);
+    RequestHandler(DatabaseManager& dbManager, EmailSender& emailSender);
     void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response) override;
 
 private:
     DatabaseManager& dbManager;
+    EmailSender& emailSender;
 };
 
 class RequestHandlerFactory : public Poco::Net::HTTPRequestHandlerFactory {
 public:
-    RequestHandlerFactory(DatabaseManager& dbManager);
+    RequestHandlerFactory(DatabaseManager& dbManager, EmailSender& emailSender);
     Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request) override;
 
 private:
     DatabaseManager& dbManager;
+    EmailSender& emailSender;
 };
 
 #endif // REQUEST_HANDLER_H

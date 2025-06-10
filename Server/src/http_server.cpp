@@ -2,11 +2,24 @@
 #include "request_handler.h"
 #include <Poco/Net/ServerSocket.h>
 #include <Poco/Net/HTTPServerParams.h>
-#include <Poco/Thread.h>
-#include <Poco/Net/HTTPRequestHandlerFactory.h>
 #include <Poco/Net/HTTPServer.h>
+#include <iostream>
 
-HttpServer::HttpServer(int port) : port(port), server(nullptr) {}
+HttpServer::HttpServer(int port)
+    : port(port),
+      server(nullptr),
+      emailSender_(initEmailSenderFromEnv())
+{}
+
+EmailSender HttpServer::initEmailSenderFromEnv() {
+    // Рекомендуется читать из окружения или конфигурации,
+    // здесь показан пример с жёстко заданными значениями:
+    std::string smtpHost = "smtp.yandex.ru";
+    int smtpPort = 465;
+    std::string smtpUser = "m0neymaze.project@yandex.ru";
+    std::string smtpPass = "hiuuerxjorpyrtzo";
+    return EmailSender(smtpHost, smtpPort, smtpUser, smtpPass);
+}
 
 void HttpServer::start() {
     try {
@@ -20,9 +33,10 @@ void HttpServer::start() {
         Poco::Net::HTTPServerParams* params = new Poco::Net::HTTPServerParams;
         params->setMaxThreads(16);
 
-        auto* factory = new RequestHandlerFactory(dbManager);
+        // Создаём фабрику с двумя аргументами
+        auto* factory = new RequestHandlerFactory(dbManager, emailSender_);
         server = new Poco::Net::HTTPServer(
-            new RequestHandlerFactory(dbManager),
+            factory,
             serverSocket,
             params
         );
@@ -37,6 +51,6 @@ void HttpServer::start() {
 void HttpServer::stop() {
     if (server) {
         server->stop();
-        std::cout << "Server stopped" << "\n";
+        std::cout << "Server stopped\n";
     }
 }

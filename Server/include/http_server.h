@@ -8,6 +8,7 @@
 #include <Poco/Thread.h>
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
 #include "database_manager.h"
+#include "email_sender.h"
 
 class HttpServer {
 public:
@@ -19,6 +20,9 @@ private:
     int port;
     Poco::Net::HTTPServer* server;
     DatabaseManager dbManager; 
+
+    EmailSender emailSender_;
+    EmailSender initEmailSenderFromEnv();
 };
 
 #endif // HTTP_SERVER_H

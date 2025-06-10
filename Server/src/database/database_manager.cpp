@@ -55,6 +55,12 @@ bool DatabaseManager::connect() {
                 );
             )");
             Logger::log(LogLevel::INFO, "Created table 'users'.");
+        } else {
+            auto emailCheck = txn.exec("SELECT 1 FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'email';");
+            if (emailCheck.empty()) {
+                txn.exec("ALTER TABLE users ADD COLUMN email VARCHAR(255) NOT NULL DEFAULT '';");
+                Logger::log(LogLevel::INFO, "Added column 'email' to table 'users'.");
+            }
         }
         #pragma GCC diagnostic pop
 
@@ -206,7 +212,7 @@ bool DatabaseManager::createFinancialProfile(int user_id) {
     }
 }
 
-bool DatabaseManager::createUser(const std::string &username, const std::string &password) {
+bool DatabaseManager::createUser(const std::string &username, const std::string &password,const std::string &email) {
     if (!conn || !conn->is_open()) {
         Logger::log(LogLevel::ERROR, "No open DB connection for createUser.");
         return false;
@@ -216,9 +222,9 @@ bool DatabaseManager::createUser(const std::string &username, const std::string 
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec_params(
-            "INSERT INTO users (username, password) VALUES ($1, $2) "
+            "INSERT INTO users (username, password, email) VALUES ($1, $2, $3) "
             "ON CONFLICT (username) DO NOTHING RETURNING id;",
-            username, password
+            username, password, email
         );
         #pragma GCC diagnostic pop
 
@@ -480,5 +486,26 @@ bool DatabaseManager::updateLoan(const LoanRecord& loan) {
     } catch (const std::exception& e) {
         Logger::log(LogLevel::ERROR, "updateLoan error: " + std::string(e.what()));
         return false;
+    }
+}
+
+std::optional<std::string> DatabaseManager::getPasswordByEmail(const std::string& username, const std::string& email) {
+    if (!conn || !conn->is_open()) return std::nullopt;
+    
+    try {
+        pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        auto r = txn.exec_params(
+            "SELECT password FROM users WHERE username = $1 AND email = $2;",
+            username, email
+        );
+        #pragma GCC diagnostic pop
+        
+        if (r.empty()) return std::nullopt;
+        return r[0][0].as<std::string>();
+    } catch (const std::exception &e) {
+        Logger::log(LogLevel::ERROR, "getPasswordByEmail error: " + std::string(e.what()));
+        return std::nullopt;
     }
 }

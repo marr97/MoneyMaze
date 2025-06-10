@@ -48,7 +48,7 @@ public:
     bool connect();
     bool disconnect();
 
-    bool createUser(const std::string &username, const std::string &password);
+    bool createUser(const std::string &username, const std::string &password, const std::string &email);
     bool authenticateUser(const std::string &username, const std::string &password);
 
     bool createFinancialProfile(int user_id);
@@ -62,6 +62,8 @@ public:
     bool updateLoan(const LoanRecord& loan);
 
     std::optional<int> getUserIdByUsername(const std::string& username);
+
+    std::optional<std::string> getPasswordByEmail(const std::string &username, const std::string &email);
 
 private:
     std::unique_ptr<pqxx::connection> conn;

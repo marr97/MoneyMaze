@@ -10,14 +10,14 @@
 #include <cstdlib>
 #include <ctime>
 
-RequestHandler::RequestHandler(DatabaseManager& dbManager)
-    : dbManager(dbManager) {}
+RequestHandler::RequestHandler(DatabaseManager& dbManager, EmailSender& emailSender)
+    : dbManager(dbManager), emailSender(emailSender) {}
 
-RequestHandlerFactory::RequestHandlerFactory(DatabaseManager& dbManager)
-    : dbManager(dbManager) {}
+RequestHandlerFactory::RequestHandlerFactory(DatabaseManager& dbManager, EmailSender& emailSender)
+    : dbManager(dbManager), emailSender(emailSender) {}
 
 Poco::Net::HTTPRequestHandler* RequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest& request) {
-    return new RequestHandler(dbManager);
+    return new RequestHandler(dbManager, emailSender);
 }
 
 void RequestLogger::logRequest(RequestLogLevel level, const std::string &message){
@@ -57,10 +57,14 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
 
             std::string login = json->getValue<std::string>("login");
             std::string password = json->getValue<std::string>("password");
+            std::string email = json->getValue<std::string>("email");
             RequestLogger::logRequest(RequestLogLevel::INFO,
-                "Endpoint: '/register' | Body: { login: " + login + ", password: " + password + " }");
+                "Endpoint: '/register' | Body: { login: " + login
+                + ", password: " + password
+                + ", email: " + email
+                + " }");
 
-            bool ok = dbManager.createUser(login, password);
+            bool ok = dbManager.createUser(login, password, email);
             response.setStatus(ok ? Poco::Net::HTTPResponse::HTTP_OK
                                   : Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
             responseObj->set("success", ok);
@@ -302,6 +306,32 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 responseObj->set("loans", arr);
                 response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
             }
+        } else if (uri == "/forgot_password") {
+            Poco::JSON::Parser parser;
+            Poco::Dynamic::Var result = parser.parse(request.stream());
+            auto json = result.extract<Poco::JSON::Object::Ptr>();
+
+            std::string login = json->getValue<std::string>("login");
+            std::string email = json->getValue<std::string>("email");
+            RequestLogger::logRequest(RequestLogLevel::INFO,
+                "Endpoint: '/forgot_password' | Body: { login: " + login + ", email: " + email + " }");
+
+            auto optPwd = dbManager.getPasswordByEmail(login, email);
+            if (optPwd) {
+                bool sent = emailSender.sendRecoveryEmail(email, *optPwd);
+                if (!sent) {
+                    RequestLogger::logRequest(RequestLogLevel::ERROR,
+                        "Failed to send recovery email to: " + email);
+                } else {
+                    RequestLogger::logRequest(RequestLogLevel::INFO,
+                        "Recovery email sent to: " + email);
+                }
+            } else {
+                RequestLogger::logRequest(RequestLogLevel::INFO,
+                    "Password recovery: user/email not found: " + login + "/" + email);
+            }
+            response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+            responseObj->set("message", "Если аккаунт существует, на указанный email отправлено письмо с паролем.");
         } else {
             response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
             responseObj->set("success", false);

@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS  OFF)
 
 find_package(Poco REQUIRED COMPONENTS Net Util JSON Foundation)
+find_package(Poco REQUIRED COMPONENTS Foundation Net NetSSL Util)
+
 
 file(GLOB_RECURSE SERVER_SOURCES CONFIGURE_DEPENDS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
@@ -31,6 +33,7 @@ target_link_libraries(MoneyMazeServer
         Poco::Util
         Poco::JSON
         Poco::Foundation
+        Poco::NetSSL
 )
 
 install(TARGETS MoneyMazeServer
