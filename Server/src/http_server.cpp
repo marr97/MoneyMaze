@@ -12,8 +12,6 @@ HttpServer::HttpServer(int port)
 {}
 
 EmailSender HttpServer::initEmailSenderFromEnv() {
-    // Рекомендуется читать из окружения или конфигурации,
-    // здесь показан пример с жёстко заданными значениями:
     std::string smtpHost = "smtp.yandex.ru";
     int smtpPort = 465;
     std::string smtpUser = "m0neymaze.project@yandex.ru";
@@ -33,7 +31,6 @@ void HttpServer::start() {
         Poco::Net::HTTPServerParams* params = new Poco::Net::HTTPServerParams;
         params->setMaxThreads(16);
 
-        // Создаём фабрику с двумя аргументами
         auto* factory = new RequestHandlerFactory(dbManager, emailSender_);
         server = new Poco::Net::HTTPServer(
             factory,
