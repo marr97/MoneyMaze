@@ -24,7 +24,9 @@
 
 * Финансовая диаграмма пользователя:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="60%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="80%"/>
 
 
-**Лицензия**: [`LICENSE`](https://github.com/marr97/MoneyMaze/blob/main/LICENSE)
+# Лицензия
+
+[`LICENSE`](https://github.com/marr97/MoneyMaze/blob/main/LICENSE)
