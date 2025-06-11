@@ -61,6 +61,6 @@ void loan_info::set_loan_data(int amount, int period, int rate, int passed_month
 {
     ui->amount_value->setText(QLocale().toString(amount));
     ui->period_value->setText(QLocale().toString(period));
-    ui->rate_value->setText(QLocale().toString(rate) + "%");
+    ui->rate_value->setText(QLocale().toString(rate) + " %");
     ui->payed_months_value->setText(QLocale().toString(passed_months) + " мес");
 }

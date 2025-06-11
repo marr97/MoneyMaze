@@ -8,6 +8,7 @@
 #include "loan_module.h"
 #include "savings_module.h"
 #include "loan.h"
+#include "deposit.h"
 #include "loan_info.h"
 
 class httpClient;
@@ -53,6 +54,8 @@ private slots:
   void on_pb_make_loan_clicked();
   void on_pb_my_loans_clicked();
 
+  void on_pb_make_deposit_clicked();
+
   signals:
   void profile_requested(const QString &username);
 
@@ -62,6 +65,7 @@ private slots:
   savings_module ui_savings_module;
   httpClient *http_client_home;
   loan ui_loan;
+  deposit ui_deposit;
   loan_info ui_loan_info;
 
   QPropertyAnimation *animation_modules;
@@ -73,6 +77,7 @@ private slots:
   bool is_loans_visible = false;
 
   QString username = "user";
+  int user_balance = 0;
   const int HEIGHT = 120;  // высота виджетов
 };
 

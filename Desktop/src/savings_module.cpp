@@ -182,5 +182,7 @@ void savings_module::savings_module_finished()
 
     QTimer::singleShot(timeout_ms, this, [this]{
         this->hide();
+        ui->pb_next->setText("Далее");
+        fade_out->start();
     });
 }

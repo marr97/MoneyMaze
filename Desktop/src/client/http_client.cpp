@@ -330,5 +330,24 @@ void httpClient::user_loans(const QString &username)
 
         reply->deleteLater();
     });
-
 }
+
+
+void httpClient::make_deposit(int amount, int period, int rate, const QString &username)
+{
+    QNetworkRequest request;
+
+    QUrl url("http://89.169.154.118:9090");
+    url.setPath("/deposit");
+    request.setUrl(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json_data;
+    json_data["username"] = username;
+    json_data["amount"] = amount;
+    json_data["period"] = period;
+    json_data["rate"] = rate;
+}
+
+

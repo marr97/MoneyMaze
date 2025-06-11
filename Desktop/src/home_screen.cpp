@@ -392,9 +392,12 @@ void home_screen::update_financial_chart(int balance, int debt, int savings)
 
     series->append("", balance);
     series->append("", debt);
-     series->append("", savings);
+    series->append("", savings);
 
     if (balance > 0) {
+        ui->ql_chart_balance->setVisible(true);
+        ui->ql_chart_balance_value->setVisible(true);
+
         ui->ql_chart_balance_value->setText(QLocale().toString(balance));
 
     } else {
@@ -402,12 +405,18 @@ void home_screen::update_financial_chart(int balance, int debt, int savings)
         ui->ql_chart_balance_value->setVisible(false);
     }
     if (debt > 0) {
+        ui->ql_chart_debt->setVisible(true);
+        ui->ql_chart_debt_value->setVisible(true);
+
         ui->ql_chart_debt_value->setText(QLocale().toString(debt));
     } else {
         ui->ql_chart_debt->setVisible(false);
         ui->ql_chart_debt_value->setVisible(false);
     }
     if (savings > 0) {
+        ui->ql_chart_savings->setVisible(true);
+        ui->ql_chart_savings_value->setVisible(true);
+
         ui->ql_chart_savings_value->setText(QLocale().toString(savings));
     } else {
         ui->ql_chart_savings->setVisible(false);
@@ -474,6 +483,8 @@ void home_screen::show_financial_profile(int balance, int monthly_minimum, int t
 
         update_financial_chart(balance, total_loans, 0);
 
+        user_balance = balance;
+
     } else if (status == "win"){
         show_game_result(GameStatus::WIN);
     } else {
@@ -507,6 +518,16 @@ void home_screen::on_pb_my_loans_clicked()
 
     QTimer::singleShot(900, this, [this]{
         ui_loan_info.show();
+    });
+}
+
+
+void home_screen::on_pb_make_deposit_clicked()
+{
+    ui_deposit.set_info(username, user_balance);
+
+    QTimer::singleShot(900, this, [this]{
+        ui_deposit.show();
     });
 }
 

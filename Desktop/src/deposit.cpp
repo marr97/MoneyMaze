@@ -1,17 +1,14 @@
-#include "loan.h"
-#include "ui_loan.h"
+#include "deposit.h"
+#include "ui_deposit.h"
 #include "http_client.h"
 #include <QIntValidator>
 #include <QTimer>
 
-loan::loan(QWidget *parent) : QWidget(parent), ui(new Ui::loan), http_client_loan(new httpClient(this)) {
+deposit::deposit(QWidget *parent) : QWidget(parent), ui(new Ui::deposit), http_client_deposit(new httpClient(this)) {
     ui->setupUi(this);
-    this->setWindowTitle("Оформление кредита");
+    this->setWindowTitle("Оформление вклада");
 
-    connect(http_client_loan, &httpClient::loan_taken, this, &loan::loan_taken_message);
-    connect(http_client_loan, &httpClient::error_occurred, this, &loan::error_message);
-
-    // кнопка взять кредит
+    // кнопка оформить вклад
     ButtonStyle = "QPushButton {"
         "   background-color: rgba(73, 179, 78, 0.7);"
         "   border-top: none;"
@@ -27,7 +24,7 @@ loan::loan(QWidget *parent) : QWidget(parent), ui(new Ui::loan), http_client_loa
     ui->pb_take->setStyleSheet(ButtonStyle);
 
 
-    // ввод суммы кредита
+    // ввод суммы вклада
     LineEditStyle = "QLineEdit {"
         "   border-radius: 10px;"
         "   padding: 5px;"
@@ -45,9 +42,10 @@ loan::loan(QWidget *parent) : QWidget(parent), ui(new Ui::loan), http_client_loa
         "   color: rgb(140, 140, 140);"
         "}";
 
-    ui->loan_amount->setStyleSheet(LineEditStyle);
+    ui->deposit_amount->setStyleSheet(LineEditStyle);
+    ui->deposit_amount->setPlaceholderText("Введите сумму от " + QLocale().toString(MIN_DEPOSIT));
 
-    // выбор количества месяцев
+    // выбор количества месяцев и условий выплат
     RadioButtonStyle =
         "QRadioButton {"
         "    padding: 8px;"
@@ -78,6 +76,9 @@ loan::loan(QWidget *parent) : QWidget(parent), ui(new Ui::loan), http_client_loa
     ui->rb_9months->setStyleSheet(RadioButtonStyle);
     ui->rb_12months->setStyleSheet(RadioButtonStyle);
 
+    ui->rb_payment_1->setStyleSheet(RadioButtonStyle);
+    ui->rb_payment_2->setStyleSheet(RadioButtonStyle);
+
     errorRadioButtonStyle =
         "QRadioButton {"
         "    padding: 8px;"
@@ -105,7 +106,7 @@ loan::loan(QWidget *parent) : QWidget(parent), ui(new Ui::loan), http_client_loa
         "}";
 
 
-    // ставка и сумма ежемесячного платежа
+    // ставка
     QString qlStyle = "QLabel {"
         "   background-color: rgba(225, 211, 255, 0.3);"
         "   color: black;"
@@ -114,106 +115,45 @@ loan::loan(QWidget *parent) : QWidget(parent), ui(new Ui::loan), http_client_loa
         "}";
 
     ui->ql_rate_value->setStyleSheet(qlStyle);
-    ui->ql_payment_value->setStyleSheet(qlStyle);
 }
 
-loan::~loan() {
+deposit::~deposit() {
     delete ui;
 }
 
 
-void loan::set_loan_info(int min_amount, int max_amount, int rate, const QString &name)
+void deposit::set_info(const QString &name, int balance)
 {
     username = name;
-    interest_rate = rate;
+    user_balance = balance;
 
-    ui->ql_rate_value->setText(QString::number(rate) + " %");
+    int max_deposit = user_balance;
+    if (max_deposit < MIN_DEPOSIT){
+        max_deposit = MIN_DEPOSIT;
+    }
 
-    MIN_AMOUNT = min_amount;
-    MAX_AMOUNT = max_amount;
-
-    QString message = "Введите сумму от " + QLocale().toString(MIN_AMOUNT) +
-                      " до " + QLocale().toString(MAX_AMOUNT);
-
-    ui->loan_amount->setPlaceholderText(message);
-
-    QIntValidator *validator = new QIntValidator(MIN_AMOUNT, MAX_AMOUNT, this);
-    ui->loan_amount->setValidator(validator);
+    QIntValidator *validator = new QIntValidator(MIN_DEPOSIT, max_deposit, this);
+    ui->deposit_amount->setValidator(validator);
 }
 
 
-int loan::count_monthly_payment(int amount, int period, int rate)
+// выплата в конце срока
+void deposit::on_rb_payment_1_clicked()
 {
-    // дифференцированные платежи
-    int x = amount / period;
-
-    int k = amount * (rate / 100) * 30 / 365;
-
-    return (x + k);
+    interest_rate = 18;
+    ui->ql_rate_value->setText(QString::number(interest_rate) + " %");
 }
 
 
-void loan::loan_taken_message()
+// выплата каждый месяц
+void deposit::on_rb_payment_2_clicked()
 {
-    const int timeout_ms = 2500;
-
-    QLabel* label = new QLabel(this);
-    label->setFixedHeight(40);
-    label->setFixedWidth(190);
-    label->setAlignment(Qt::AlignCenter);
-
-    label->setStyleSheet(
-        "background-color: rgb(97, 197, 84);"
-        "color: rgb(255, 255, 255);"
-        "border-radius: 5px;"
-        "padding: 10px;"
-        "font-family: 'Gill Sans', sans-serif;"
-        "font-size: 14px;"
-        );
-    label->setText("Кредит успешно оформлен!");
-
-    int x = (this->width() - label->sizeHint().width()) / 2;
-    int y = (this->height() - label->sizeHint().height()) / 20;
-
-    label->move(x, y);
-    label->show();
-
-    emit update_profile();
-
-    QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
+    interest_rate = 15;
+    ui->ql_rate_value->setText(QString::number(interest_rate) + " %");
 }
 
 
-void loan::error_message(const QString &msg)
-{
-    const int timeout_ms = 2500;
-
-    QLabel* label = new QLabel(this);
-    label->setFixedWidth(400);
-    label->setAlignment(Qt::AlignCenter);
-    label->setWordWrap(true);
-    label->setText("Ошибка: " + msg);
-    label->setStyleSheet(
-        "background-color: rgb(155, 155, 155);"
-        "color: rgb(255, 255, 255);"
-        "border-radius: 5px;"
-        "padding: 10px;"
-        "font-family: 'Gill Sans', sans-serif;"
-        "font-size: 14px;"
-        );
-
-
-    int x = (this->width() - label->sizeHint().width()) / 2;
-    int y = (this->height() - label->sizeHint().height()) / 20;
-
-    label->move(x, y);
-    label->show();
-
-    QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
-}
-
-
-void loan::show_message(MessageType msg_type, const QString &message)
+void deposit::show_message(MessageType msg_type, const QString &message)
 {
     const int timeout_ms = 2500;
 
@@ -246,7 +186,7 @@ void loan::show_message(MessageType msg_type, const QString &message)
     }
 
     int x = (this->width() - label->sizeHint().width()) / 2;
-    int y = (this->height() - label->sizeHint().height()) / 20;
+    int y = (this->height() - label->sizeHint().height()) / 23;
 
     label->move(x, y);
     label->show();
@@ -255,12 +195,13 @@ void loan::show_message(MessageType msg_type, const QString &message)
 }
 
 
-void loan::on_pb_take_clicked()
-{
-    int amount = ui->loan_amount->text().toInt();
 
-    if (amount == 0 || ui->loan_amount->text().isEmpty()) {
-        ui->loan_amount->setStyleSheet("border: 2px solid red;"
+void deposit::on_pb_take_clicked()
+{
+    int amount = ui->deposit_amount->text().toInt();
+
+    if (amount == 0 || ui->deposit_amount->text().isEmpty()) {
+        ui->deposit_amount->setStyleSheet("border: 2px solid red;"
             "   border-radius: 10px;"
             "   padding: 5px;"
             "   font-size: 18px;"
@@ -268,15 +209,14 @@ void loan::on_pb_take_clicked()
         return;
     }
 
-    if (amount > MAX_AMOUNT){
-        show_message(ERROR, "Вы не можете взять в кредит такую большую сумму");
+    if (amount > user_balance){
+        show_message(ERROR, "Сумма вклада не может превышать ваш текущий баланс");
         return;
     }
-    if (amount < MIN_AMOUNT){
-        show_message(ERROR, "Вы не можете взять в кредит такую маленькую сумму");
+    if (amount < MIN_DEPOSIT){
+        show_message(ERROR, "Сумма вклада не может быть меньше " + QLocale().toString(MIN_DEPOSIT));
         return;
     }
-
 
     int period = 0;
     if (ui->rb_6months->isChecked()) {
@@ -294,57 +234,24 @@ void loan::on_pb_take_clicked()
         return;
     }
 
-    http_client_loan->take_loan(amount, period, interest_rate, username);
+    http_client_deposit->make_deposit(amount, period, interest_rate, username);
 
     QTimer::singleShot(3500, this, [this]{
-        ui->loan_amount->clear();
+        ui->deposit_amount->clear();
         ui->rb_6months->setChecked(false);
         ui->rb_9months->setChecked(false);
         ui->rb_12months->setChecked(false);
-        ui->ql_payment_value->clear();
+        ui->rb_payment_1->setChecked(false);
+        ui->rb_payment_2->setChecked(false);
 
-        ui->loan_amount->setStyleSheet(LineEditStyle);
+        ui->deposit_amount->setStyleSheet(LineEditStyle);
         ui->rb_6months->setStyleSheet(RadioButtonStyle);
         ui->rb_9months->setStyleSheet(RadioButtonStyle);
         ui->rb_12months->setStyleSheet(RadioButtonStyle);
+        ui->rb_payment_1->setStyleSheet(RadioButtonStyle);
+        ui->rb_payment_2->setStyleSheet(RadioButtonStyle);
 
         this->hide();
     });
-}
-
-
-void loan::on_rb_6months_clicked()
-{
-    if (!ui->loan_amount->text().isEmpty()){
-        int amount = ui->loan_amount->text().toInt();
-        if (amount > 0) {
-            int monthly_payment = count_monthly_payment(amount, 6, interest_rate);
-            ui->ql_payment_value->setText(QString::number(monthly_payment));
-        }
-    }
-}
-
-
-void loan::on_rb_9months_clicked()
-{
-    if (!ui->loan_amount->text().isEmpty()){
-        int amount = ui->loan_amount->text().toInt();
-        if (amount > 0) {
-            int monthly_payment = count_monthly_payment(amount, 9, interest_rate);
-            ui->ql_payment_value->setText(QString::number(monthly_payment));
-        }
-    }
-}
-
-
-void loan::on_rb_12months_clicked()
-{
-    if (!ui->loan_amount->text().isEmpty()){
-        int amount = ui->loan_amount->text().toInt();
-        if (amount > 0) {
-            int monthly_payment = count_monthly_payment(amount, 12, interest_rate);
-            ui->ql_payment_value->setText(QString::number(monthly_payment));
-        }
-    }
 }
 

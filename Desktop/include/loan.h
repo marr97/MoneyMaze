@@ -17,6 +17,12 @@ public:
     void set_loan_info(int min_amount, int max_amount, int rate, const QString &name);
     ~loan();
 
+    enum MessageType {
+        OK,
+        ERROR
+    };
+    Q_ENUM(MessageType)
+
 private slots:
     void on_pb_take_clicked();
     int count_monthly_payment(int amount, int period, int rate);
@@ -27,6 +33,8 @@ private slots:
     void on_rb_9months_clicked();
     void on_rb_12months_clicked();
 
+    void show_message(MessageType msg_type, const QString &message);
+
 signals:
     void update_profile();
 
@@ -36,6 +44,8 @@ private:
 
     QString username = "user";
     int interest_rate = 0;
+    int MIN_AMOUNT = 0;
+    int MAX_AMOUNT = 0;
 
     QString ButtonStyle;
     QString LineEditStyle;

@@ -28,6 +28,7 @@ public:
     void get_loan_info(const QString &username);
     void take_loan(int amount, int period, int rate, const QString &username);
     void user_loans(const QString &username);
+    void make_deposit(int amount, int period, int rate, const QString &username);
 
 signals:
     void registration_finished(int status_code, const QString &error_msg);

@@ -155,7 +155,6 @@ void loan_module::fade_out_text_finished()
 
 void loan_module::loan_module_finished()
 {
-
     const int timeout_ms = 3600;
 
     QLabel* label = new QLabel(this);
@@ -184,6 +183,8 @@ void loan_module::loan_module_finished()
 
     QTimer::singleShot(timeout_ms, this, [this]{
         this->hide();
+        ui->pb_next->setText("Далее");
+        fade_out->start();
     });
 }
 
