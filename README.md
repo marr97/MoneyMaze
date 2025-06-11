@@ -16,17 +16,12 @@
 
 * Обучающие модули:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/module.png" width="50%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/module.png" width="60%"/>
 
 * Возможность оформить кредит или вклад:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/deposit.png" width="50%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/deposit.png" width="60%"/>
 
 * Финансовая диаграмма пользователя:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="80%"/>
-
-
-# Лицензия
-
-[`LICENSE`](https://github.com/marr97/MoneyMaze/blob/main/LICENSE)
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="100%"/>
