@@ -190,6 +190,7 @@ void loan::error_message(const QString &msg)
     QLabel* label = new QLabel(this);
 
     label->setAlignment(Qt::AlignCenter);
+    label->setWordWrap(true);
     label->setText("Ошибка: " + msg);
     label->setStyleSheet(
         "background-color: rgb(155, 155, 155);"
