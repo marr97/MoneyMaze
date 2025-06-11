@@ -5,6 +5,8 @@
 #include <QByteArray>
 #include <QLabel>
 #include <QDialog>
+#include <QJsonArray>
+#include <QVector>
 #include <QTimer>
 
 httpClient::httpClient(QObject *parent): QObject(parent) {
@@ -316,13 +318,14 @@ void httpClient::user_loans(const QString &username)
             QJsonDocument json_response = QJsonDocument::fromJson(response_data);
             QJsonObject response_obj = json_response.object();
 
+            QJsonArray loans = response_obj["loans"].toArray();
+            QVector<QJsonObject> loans_list;
 
-            int amount = response_obj["amount"].toInt();
-            int period = response_obj["period"].toInt();
-            int rate = response_obj["rate"].toInt();
-            int passed_months = response_obj["passed_months"].toInt();
+            for (const auto& loan: loans) {
+                loans_list.append(loan.toObject());
+            }
 
-            emit loan_data_received(amount, period, rate, passed_months);
+            emit loans_received(loans_list);
 
         } else {
             qDebug() << "Error:" << reply->errorString();

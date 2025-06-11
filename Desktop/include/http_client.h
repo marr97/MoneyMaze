@@ -5,6 +5,8 @@
 #include <QNetworkReply>
 #include <QObject>
 #include <QDialog>
+#include <QJsonObject>
+#include <QVector>
 
 class httpClient: public QObject {
     Q_OBJECT
@@ -38,7 +40,7 @@ signals:
                                     int interest_due, int salary, int current_month,
                                     const QString &status);
     void loan_info_received(int min_loan_amount, int max_loan_amount, int interest_rate);
-    void loan_data_received(int amount, int period, int rate, int passed_months);
+    void loans_received(const QVector<QJsonObject> &loans_list);
     void loan_taken();
 
 private:

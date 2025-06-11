@@ -49,7 +49,6 @@ private slots:
   void update_financial_chart(int balance, int debt, int savings);
   void loan_information(int min_loan_amount, int max_loan_amount, int interest_rate);
   void update_financial_profile();
-  void loan_data(int amount, int period, int rate, int passed_months);
 
   void on_pb_make_loan_clicked();
   void on_pb_my_loans_clicked();

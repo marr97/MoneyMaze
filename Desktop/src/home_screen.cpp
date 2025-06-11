@@ -18,7 +18,6 @@ home_screen::home_screen(QWidget *parent)
   connect(this, &home_screen::profile_requested, http_client_home, &httpClient::get_financial_profile);
   connect(http_client_home, &httpClient::financial_profile_received, this, &home_screen::show_financial_profile);
   connect(http_client_home, &httpClient::loan_info_received, this, &home_screen::loan_information);
-  connect(http_client_home, &httpClient::loan_data_received, this, &home_screen::loan_data);
   connect(&ui_loan, &loan::update_profile, this, &home_screen::update_financial_profile);
 
   // Имя пользователя
@@ -498,10 +497,6 @@ void home_screen::loan_information(int min_loan_amount, int max_loan_amount, int
   ui_loan.set_loan_info(min_loan_amount, max_loan_amount, interest_rate, username);
 }
 
-void home_screen::loan_data(int amount, int period, int rate, int passed_months){
-    ui_loan_info.set_loan_data(amount, period, rate, passed_months);
-}
-
 
 void home_screen::on_pb_make_loan_clicked()
 {
@@ -514,7 +509,7 @@ void home_screen::on_pb_make_loan_clicked()
 
 void home_screen::on_pb_my_loans_clicked()
 {
-    http_client_home->user_loans(username);
+    ui_loan_info.get_loan_data(username);
 
     QTimer::singleShot(900, this, [this]{
         ui_loan_info.show();
