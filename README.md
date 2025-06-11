@@ -16,11 +16,11 @@
 
 * Обучающие модули:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/module.png" width="60%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/module.png" width="50%"/>
 
 * Возможность оформить кредит или вклад:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/deposit.png" width="60%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/deposit.png" width="50%"/>
 
 * Финансовая диаграмма пользователя:
 
