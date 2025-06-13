@@ -34,7 +34,7 @@ bool EmailSender::sendRecoveryEmail(const std::string& to, const std::string& pa
 
         std::string body =
             "Здравствуйте,\n\n"
-            "Ваш новый пароль: " + passwordPlain + "\n\n"
+            "Ваш пароль: " + passwordPlain + "\n\n"
             "С уважением,\nКоманда поддержки";
         message.setContentType("text/plain; charset=UTF-8");
         message.setContent(body, Poco::Net::MailMessage::ENCODING_8BIT);
