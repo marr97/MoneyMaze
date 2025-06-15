@@ -168,35 +168,50 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                     p.played_months += 1;
 
                     auto userLoans = dbManager.getUserLoans(*uid);
-
+                    Poco::JSON::Array::Ptr paymentsArr = new Poco::JSON::Array;
                     double totalInterest = 0.0;
+                    int totalPrincipal = 0;
+
                     for (auto& loan : userLoans) {
                         if (loan.passed_months < loan.period) {
-                            double monthlyInterest = loan.amount * (loan.rate / 12.0);
+                            double monthlyInterest = loan.amount * (loan.rate / 100 / 12);
                             totalInterest += monthlyInterest;
 
                             int monthsLeft = loan.period - loan.passed_months;
                             double principalPayment = loan.amount / monthsLeft;
+                            totalPrincipal += static_cast<int>(principalPayment);
+
                             loan.amount -= principalPayment;
                             if (loan.amount < 0) loan.amount = 0;
-
                             loan.passed_months += 1;
+
+                            Poco::JSON::Object::Ptr payment = new Poco::JSON::Object;
+                            payment->set("loan_id", loan.id);
+                            payment->set("principal", static_cast<int>(principalPayment));
+                            payment->set("interest", monthlyInterest);
+                            paymentsArr->add(payment);
 
                             dbManager.updateLoan(loan);
                         }
                     }
 
-                    p.balance -= static_cast<int>(totalInterest);
+                    int totalPayment = static_cast<int>(totalInterest) + totalPrincipal;
+                    p.balance -= totalPayment;
 
                     int newDebt = 0;
                     for (const auto& loan : userLoans) {
-                        newDebt += loan.amount;
+                        newDebt += static_cast<int>(loan.amount);
                     }
                     p.debt = newDebt;
                     dbManager.updateFinancialProfile(*uid, p);
 
-                    response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+                    responseObj->set("payments", paymentsArr);
+                    responseObj->set("total_interest", totalInterest);
+                    responseObj->set("total_principal", totalPrincipal);
+                    responseObj->set("new_balance", p.balance);
+                    responseObj->set("new_debt", p.debt);
                     responseObj->set("success", true);
+                    response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                 }
             }
         } else if (uri == "/loan-info") {
@@ -281,16 +296,26 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 responseObj->set("success", false);
                 responseObj->set("error", "User not found");
             } else {
-                auto depositOpt = dbManager.getUserDeposit(*uid);
-                if (!depositOpt) {
+                auto deposits = dbManager.getUserDeposits(*uid);
+                if (deposits.empty()) {
                     response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
                     responseObj->set("success", false);
-                    responseObj->set("error", "Deposit not found");
+                    responseObj->set("error", "No active deposits found");
                 } else {
-                    const auto& deposit = *depositOpt;
-                    responseObj->set("current_amount", deposit.current_amount);
-                    responseObj->set("rate", deposit.rate);
-                    responseObj->set("term_months", deposit.term_months);
+                    Poco::JSON::Array::Ptr depositsArr = new Poco::JSON::Array;
+                    for (const auto& deposit : deposits) {
+                        Poco::JSON::Object::Ptr depositObj = new Poco::JSON::Object;
+                        depositObj->set("id", deposit.id);
+                        depositObj->set("principal", deposit.principal);
+                        depositObj->set("current_amount", deposit.current_amount);
+                        depositObj->set("rate", deposit.rate);
+                        depositObj->set("term_months", deposit.term_months);
+                        depositObj->set("passed_months", deposit.passed_months);
+                        depositObj->set("start_date", deposit.start_date);
+                        depositsArr->add(depositObj);
+                    }
+                    
+                    responseObj->set("deposits", depositsArr);
                     responseObj->set("success", true);
                     response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                 }

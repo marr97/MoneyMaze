@@ -603,43 +603,40 @@ bool DatabaseManager::createDeposit(int user_id, long long principal, int term_m
     }
 }
 
-std::optional<DepositInfo> DatabaseManager::getUserDeposit(int user_id) {
-    if (!conn || !conn->is_open()) {
-        Logger::log(LogLevel::ERROR, "No DB connection in getUserDeposit");
-        return std::nullopt;
-    }
+std::vector<DepositInfo> DatabaseManager::getUserDeposits(int user_id) {
+    std::vector<DepositInfo> deposits;
+    if (!conn || !conn->is_open()) return deposits;
 
     try {
         pqxx::work txn(*conn);
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         auto r = txn.exec_params(
-            "SELECT principal, rate, term_months, passed_months "
-            "FROM deposits WHERE user_id = $1 LIMIT 1;",
+            "SELECT id, principal, rate, term_months, passed_months, start_date "
+            "FROM deposits WHERE user_id = $1 AND status = 'active';",
             user_id
         );
         #pragma GCC diagnostic pop
-
-        if (r.empty()) {
-            return std::nullopt;
+        
+        for (const auto &row : r) {
+            DepositInfo deposit;
+            deposit.id = row[0].as<int>();
+            deposit.principal = row[1].as<long long>();
+            deposit.rate = row[2].as<double>();
+            deposit.term_months = row[3].as<int>();
+            deposit.passed_months = row[4].as<int>();
+            deposit.start_date = row[5].as<std::string>();
+            
+            deposit.current_amount = static_cast<long long>(
+                deposit.principal * pow(1 + deposit.rate/100/12, deposit.passed_months)
+            );
+            
+            deposits.push_back(deposit);
         }
-
-        int principal = r[0][0].as<int>();
-        double rate = r[0][1].as<double>();
-        int term_months = r[0][2].as<int>();
-        int passed_months = r[0][3].as<int>();
-
-        int current_amount = static_cast<int>(
-            principal * pow(1 + rate/100.0/12, passed_months)
-        );
-
-        return DepositInfo{current_amount, rate, term_months};
-
     } catch (const std::exception& e) {
-        Logger::log(LogLevel::ERROR, 
-            std::string("getUserDeposit error: ") + e.what());
-        return std::nullopt;
+        Logger::log(LogLevel::ERROR, "getUserDeposits error: " + std::string(e.what()));
     }
+    return deposits;
 }
 
 std::optional<int> DatabaseManager::getUserDepositSum(int user_id) {
