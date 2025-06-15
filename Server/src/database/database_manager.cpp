@@ -126,13 +126,6 @@ bool DatabaseManager::connect() {
                 WHERE table_name = 'financial_profile'
                 AND column_name = 'deposits';
             )");
-            if (checkDeposits.empty()) {
-                txn.exec(R"(
-                    ALTER TABLE financial_profile
-                    ADD COLUMN deposits INTEGER NOT NULL DEFAULT 0;
-                )");
-                Logger::log(LogLevel::WARNING, "Added missing column 'deposits' to financial_profile.");
-            }
 
             auto checkTotalDeposit = txn.exec(R"(
                 SELECT 1 FROM information_schema.columns
