@@ -663,4 +663,6 @@ std::optional<int> DatabaseManager::getUserDepositSum(int user_id) {
             std::string("getUserDepositSum error: ") + e.what());
         return std::nullopt;
     }
+
+    return deposits;
 }
