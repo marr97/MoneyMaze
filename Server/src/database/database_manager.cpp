@@ -5,6 +5,7 @@
 #include <optional>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 
 
 void Logger::log(LogLevel level, const std::string &message) {
@@ -60,8 +61,8 @@ bool DatabaseManager::connect() {
 
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-        auto r2 = txn.exec("SELECT to_regclass('public.financial_profile');");
-        if (r2[0][0].is_null()) {
+        auto r3 = txn.exec("SELECT to_regclass('public.financial_profile');");
+        if (r3[0][0].is_null()) {
             txn.exec(R"(
                 CREATE TABLE financial_profile (
                     id SERIAL PRIMARY KEY,
@@ -76,7 +77,7 @@ bool DatabaseManager::connect() {
                 );
             )");
             Logger::log(LogLevel::INFO, "Created table 'financial_profile'.");
-        } else {
+        }
             auto checkMonthly = txn.exec(R"(
                 SELECT 1
                 FROM information_schema.columns
@@ -133,6 +134,17 @@ bool DatabaseManager::connect() {
                 Logger::log(LogLevel::WARNING, "Added missing column 'deposits' to financial_profile.");
             }
 
+            auto checkTotalDeposit = txn.exec(R"(
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name = 'financial_profile' AND column_name = 'total_deposit';
+            )");
+            if (checkTotalDeposit.empty()) {
+                txn.exec(R"(
+                    ALTER TABLE financial_profile ADD COLUMN total_deposit INTEGER NOT NULL DEFAULT 0;
+                )");
+                Logger::log(LogLevel::WARNING, "Added missing column 'total_deposit' to financial_profile.");
+            }
+
             auto checkSavings = txn.exec(R"(
                 SELECT 1
                 FROM information_schema.columns
@@ -146,13 +158,30 @@ bool DatabaseManager::connect() {
                 )");
                 Logger::log(LogLevel::WARNING, "Added missing column 'savings' to financial_profile.");
             }
-        }
+
+            auto r4 = txn.exec("SELECT to_regclass('public.deposits');");
+            if (r4.size() && r4[0][0].is_null()) {
+                txn.exec(R"(
+                    CREATE TABLE deposits (
+                        id SERIAL PRIMARY KEY,
+                        user_id INTEGER REFERENCES users(id),
+                        principal BIGINT NOT NULL,
+                        rate DOUBLE PRECISION NOT NULL,
+                        term_months INTEGER NOT NULL,
+                        start_date DATE NOT NULL,
+                        status VARCHAR(20) NOT NULL DEFAULT 'active',
+                        passed_months INTEGER NOT NULL DEFAULT 0,
+                        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                    );
+                )");
+                Logger::log(LogLevel::INFO, "Created table 'deposits'.");
+            }
         #pragma GCC diagnostic pop
 
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-        auto r3 = txn.exec("SELECT to_regclass('public.loans');");
-        if (r3[0][0].is_null()) {
+        auto r2 = txn.exec("SELECT to_regclass('public.loans');");
+        if (r2[0][0].is_null()) {
             txn.exec(R"(
                 CREATE TABLE loans (
                     id SERIAL PRIMARY KEY,
@@ -192,8 +221,8 @@ bool DatabaseManager::createFinancialProfile(int user_id) {
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         pqxx::work txn(*conn);
         txn.exec_params(
-            "INSERT INTO financial_profile (user_id, balance, monthly_minimum, savings, debt, salary, played_months, deposits) "
-            "VALUES ($1, 60000, 25000, 0, 0, 60000, 1, 0);",
+            "INSERT INTO financial_profile (user_id, balance, monthly_minimum, savings, debt, salary, played_months, deposits, total_deposit) "
+            "VALUES ($1, 60000, 25000, 0, 0, 60000, 1, 0, 0);",
             user_id
         );
         txn.commit();
@@ -341,10 +370,16 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
             "FROM financial_profile WHERE user_id = $1;",
             user_id
         );
-
-        #pragma GCC diagnostic pop
         
         if (r.empty()) return std::nullopt;
+
+        auto depositSum = txn.exec_params(
+            "SELECT COALESCE(SUM(principal * POW(1 + rate/100/12, passed_months)), 0) "
+            "FROM deposits WHERE user_id = $1 AND status = 'active';",
+            user_id
+        );
+
+        
         
         FinancialProfile profile;
         profile.balance = r[0][0].as<int>();
@@ -354,6 +389,14 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
         profile.salary = r[0][4].as<int>();
         profile.played_months = r[0][5].as<int>();
         profile.deposits = r[0][6].as<int>();
+        profile.total_deposit = depositSum[0][0].as<int>();
+
+
+        txn.exec_params(
+            "UPDATE financial_profile SET total_deposit = $1 WHERE user_id = $2;",
+            profile.total_deposit, user_id
+        );
+        #pragma GCC diagnostic pop
         
         return profile;
     } catch (const std::exception& e) {
@@ -480,5 +523,140 @@ bool DatabaseManager::updateLoan(const LoanRecord& loan) {
     } catch (const std::exception& e) {
         Logger::log(LogLevel::ERROR, "updateLoan error: " + std::string(e.what()));
         return false;
+    }
+}
+
+bool DatabaseManager::createDeposit(int user_id, long long principal, int term_months, double rate) {
+    if (!conn || !conn->is_open()) {
+        Logger::log(LogLevel::ERROR, "createDeposit: no open DB connection");
+        return false;
+    }
+    if (principal <= 0) {
+        Logger::log(LogLevel::WARNING, "createDeposit: principal must be positive");
+        return false;
+    }
+    if (term_months <= 0) {
+        Logger::log(LogLevel::WARNING, "createDeposit: term_months must be positive");
+        return false;
+    }
+    if (rate < 0.0) {
+        Logger::log(LogLevel::WARNING, "createDeposit: rate must be non-negative");
+        return false;
+    }
+
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    try {
+        pqxx::work txn(*conn);
+
+        pqxx::result r = txn.exec_params(
+            "SELECT balance FROM financial_profile WHERE user_id = $1 FOR UPDATE;",
+            user_id
+        );
+        if (r.empty()) {
+            Logger::log(LogLevel::WARNING, "createDeposit: financial_profile not found for user_id " + std::to_string(user_id));
+            return false;
+        }
+
+        long long current_balance = r[0][0].as<long long>();
+
+        if (principal > current_balance) {
+            Logger::log(LogLevel::WARNING,
+                "createDeposit: insufficient balance. user_id=" + std::to_string(user_id)
+                + ", principal=" + std::to_string(principal)
+                + ", balance=" + std::to_string(current_balance));
+            return false;
+        }
+
+        txn.exec_params(
+            "INSERT INTO deposits (user_id, principal, rate, term_months, start_date, status) "
+            "VALUES ($1, $2, $3, $4, CURRENT_DATE, 'active');",
+            user_id, principal, rate, term_months
+        );
+
+        long long new_balance = current_balance - principal;
+        txn.exec_params(
+            "UPDATE financial_profile SET balance = $1 WHERE user_id = $2;",
+            new_balance, user_id
+        );
+        #pragma GCC diagnostic pop
+
+        txn.commit();
+
+        Logger::log(LogLevel::INFO,
+            "createDeposit: success for user_id=" + std::to_string(user_id)
+            + ", principal=" + std::to_string(principal)
+            + ", term_months=" + std::to_string(term_months)
+            + ", rate=" + std::to_string(rate));
+        return true;
+    }
+    catch (const std::exception& e) {
+        Logger::log(LogLevel::ERROR, "createDeposit error: " + std::string(e.what()));
+        return false;
+    }
+}
+
+std::optional<DepositInfo> DatabaseManager::getUserDeposit(int user_id) {
+    if (!conn || !conn->is_open()) {
+        Logger::log(LogLevel::ERROR, "No DB connection in getUserDeposit");
+        return std::nullopt;
+    }
+
+    try {
+        pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        auto r = txn.exec_params(
+            "SELECT principal, rate, term_months, passed_months "
+            "FROM deposits WHERE user_id = $1 LIMIT 1;",
+            user_id
+        );
+        #pragma GCC diagnostic pop
+
+        if (r.empty()) {
+            return std::nullopt;
+        }
+
+        int principal = r[0][0].as<int>();
+        double rate = r[0][1].as<double>();
+        int term_months = r[0][2].as<int>();
+        int passed_months = r[0][3].as<int>();
+
+        int current_amount = static_cast<int>(
+            principal * pow(1 + rate/100.0/12, passed_months)
+        );
+
+        return DepositInfo{current_amount, rate, term_months};
+
+    } catch (const std::exception& e) {
+        Logger::log(LogLevel::ERROR, 
+            std::string("getUserDeposit error: ") + e.what());
+        return std::nullopt;
+    }
+}
+
+std::optional<int> DatabaseManager::getUserDepositSum(int user_id) {
+    if (!conn || !conn->is_open()) {
+        Logger::log(LogLevel::ERROR, "No DB connection in getUserDepositSum");
+        return std::nullopt;
+    }
+
+    try {
+        pqxx::work txn(*conn);
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        auto r = txn.exec_params(
+            "SELECT COALESCE(SUM(principal * POW(1 + rate/100/12, passed_months)), 0) "
+            "FROM deposits WHERE user_id = $1 AND status = 'active';",
+            user_id
+        );
+        #pragma GCC diagnostic pop
+
+        return r[0][0].as<int>();
+
+    } catch (const std::exception& e) {
+        Logger::log(LogLevel::ERROR, 
+            std::string("getUserDepositSum error: ") + e.what());
+        return std::nullopt;
     }
 }

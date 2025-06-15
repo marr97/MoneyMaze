@@ -105,10 +105,15 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                     responseObj->set("error", "Financial profile not found");
                 } else {
                     const auto& p = *optProfile;
+
+                    auto depositSum = dbManager.getUserDepositSum(*uid);
+                    int totalDeposit = depositSum.value_or(0);
+
                     responseObj->set("deposits", p.deposits);
                     responseObj->set("balance", p.balance);
                     responseObj->set("monthly_minimum", p.monthly_minimum);
                     responseObj->set("total_loans", p.debt);
+                    responseObj->set("total_deposit", totalDeposit);
 
                     double interest_due = p.debt * 0.15 / 12;
                     responseObj->set("interest_due", interest_due);
@@ -252,6 +257,35 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 }
             }
 
+        }  else if (uri == "/user-deposit") {
+            Poco::JSON::Parser parser;
+            Poco::Dynamic::Var result = parser.parse(request.stream());
+            auto json = result.extract<Poco::JSON::Object::Ptr>();
+
+            std::string username = json->getValue<std::string>("username");
+            RequestLogger::logRequest(RequestLogLevel::INFO,
+                "Endpoint: '/user-deposit' | Body: { username: " + username + " }");
+
+            auto uid = dbManager.getUserIdByUsername(username);
+            if (!uid) {
+                response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+                responseObj->set("success", false);
+                responseObj->set("error", "User not found");
+            } else {
+                auto depositOpt = dbManager.getUserDeposit(*uid);
+                if (!depositOpt) {
+                    response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+                    responseObj->set("success", false);
+                    responseObj->set("error", "Deposit not found");
+                } else {
+                    const auto& deposit = *depositOpt;
+                    responseObj->set("current_amount", deposit.current_amount);
+                    responseObj->set("rate", deposit.rate);
+                    responseObj->set("term_months", deposit.term_months);
+                    responseObj->set("success", true);
+                    response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+                }
+            }
         } else if (uri == "/take-loan") {
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());

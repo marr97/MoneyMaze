@@ -21,6 +21,7 @@ struct FinancialProfile {
     int salary;
     int played_months;
     int deposits;
+    int total_deposit;
 };
 
 struct LoanInfo {
@@ -39,6 +40,11 @@ struct LoanRecord {
     int    passed_months;
 };
 
+struct DepositInfo {
+    int current_amount;
+    double rate;
+    int term_months;
+};
 
 class DatabaseManager {
 public:
@@ -56,10 +62,15 @@ public:
 
     std::optional<FinancialProfile> getFinancialProfile(int user_id);
     bool updateFinancialProfile(int user_id, const FinancialProfile& profile);
+
     bool createLoan(int user_id, int amount, int period, double rate);
     LoanInfo getLoanInfo(int user_id);
     std::vector<LoanRecord> getUserLoans(int user_id);
     bool updateLoan(const LoanRecord& loan);
+
+    std::optional<DepositInfo> getUserDeposit(int user_id);
+    std::optional<int> getUserDepositSum(int user_id);
+    bool createDeposit(int user_id, long long principal, int term_months, double rate);
 
     std::optional<int> getUserIdByUsername(const std::string& username);
 
