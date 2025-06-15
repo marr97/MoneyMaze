@@ -374,12 +374,19 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
         if (r.empty()) return std::nullopt;
 
         auto depositSum = txn.exec_params(
-            "SELECT COALESCE(SUM(principal * POW(1 + rate/100/12, passed_months)), 0) "
+            "SELECT COALESCE(SUM(\"principal\" * POW(1 + rate/100/12, passed_months)), 0) "
             "FROM deposits WHERE user_id = $1 AND status = 'active';",
             user_id
         );
 
-        
+        auto checkColumn = txn.exec(
+            "SELECT 1 FROM information_schema.columns "
+            "WHERE table_name = 'deposits' AND column_name = 'principal'");
+            
+        if (checkColumn.empty()) {
+            Logger::log(LogLevel::ERROR, "Column 'principal' does not exist in deposits table");
+            throw std::runtime_error("Database schema error: missing principal column");
+        }
         
         FinancialProfile profile;
         profile.balance = r[0][0].as<int>();

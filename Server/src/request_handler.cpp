@@ -229,9 +229,14 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
 
             std::string username = json->getValue<std::string>("username");
             double amount = json->getValue<double>("amount");
+            double rate = json->getValue<double>("rate");
+            int period = json->getValue<int>("period");
+            
             RequestLogger::logRequest(RequestLogLevel::INFO,
                 "Endpoint: '/deposit' | Body: { username: " + username +
-                ", amount: " + std::to_string(amount) + " }");
+                ", amount: " + std::to_string(amount) +
+                ", rate: " + std::to_string(rate) +
+                ", period: " + std::to_string(period) + " }");
 
             auto uid = dbManager.getUserIdByUsername(username);
             if (!uid) {
@@ -239,25 +244,29 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                 responseObj->set("success", false);
                 responseObj->set("error", "User not found");
             } else {
-                auto optProfile = dbManager.getFinancialProfile(*uid);
-                if (!optProfile) {
-                    response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+                bool depositCreated = dbManager.createDeposit(*uid, static_cast<long long>(amount), period, rate);
+                
+                if (!depositCreated) {
+                    response.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
                     responseObj->set("success", false);
-                    responseObj->set("error", "Financial profile not found");
+                    responseObj->set("error", "Failed to create deposit");
                 } else {
-                    auto p = *optProfile;
-                    p.balance += static_cast<int>(amount);
-                    p.deposits += 1;
-                    dbManager.updateFinancialProfile(*uid, p);
-
-                    responseObj->set("deposits", p.deposits);
-                    responseObj->set("balance",  p.balance);
-                    responseObj->set("success",  true);
-                    response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+                    auto optProfile = dbManager.getFinancialProfile(*uid);
+                    if (!optProfile) {
+                        response.setStatus(Poco::Net::HTTPResponse::HTTP_INTERNAL_SERVER_ERROR);
+                        responseObj->set("success", false);
+                        responseObj->set("error", "Failed to get updated profile");
+                    } else {
+                        const auto& p = *optProfile;
+                        responseObj->set("deposits", p.deposits);
+                        responseObj->set("balance", p.balance);
+                        responseObj->set("total_deposit", p.total_deposit);
+                        responseObj->set("success", true);
+                        response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+                    }
                 }
             }
-
-        }  else if (uri == "/user-deposit") {
+        } else if (uri == "/user-deposit") {
             Poco::JSON::Parser parser;
             Poco::Dynamic::Var result = parser.parse(request.stream());
             auto json = result.extract<Poco::JSON::Object::Ptr>();
