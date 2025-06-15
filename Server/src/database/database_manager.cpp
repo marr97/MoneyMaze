@@ -398,6 +398,21 @@ std::optional<FinancialProfile> DatabaseManager::getFinancialProfile(int user_id
         profile.deposits = r[0][6].as<int>();
         profile.total_deposit = depositSum[0][0].as<int>();
 
+        auto hasDeposits = txn.exec_params(
+            "SELECT 1 FROM deposits WHERE user_id = $1 AND status = 'active' LIMIT 1;",
+            user_id
+        );
+
+        if (hasDeposits.empty()) {
+            profile.total_deposit = 0;
+        } else {
+            auto depositSum = txn.exec_params(
+                "SELECT COALESCE(SUM(\"principal\" * POW(1 + rate/100/12, passed_months)), 0) "
+                "FROM deposits WHERE user_id = $1 AND status = 'active';",
+                user_id
+            );
+            profile.total_deposit = depositSum[0][0].as<int>();
+        }
 
         txn.exec_params(
             "UPDATE financial_profile SET total_deposit = $1 WHERE user_id = $2;",
@@ -649,6 +664,15 @@ std::optional<int> DatabaseManager::getUserDepositSum(int user_id) {
         pqxx::work txn(*conn);
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        auto check = txn.exec_params(
+            "SELECT 1 FROM deposits WHERE user_id = $1 AND status = 'active' LIMIT 1;",
+            user_id
+        );
+        
+        if (check.empty()) {
+            return std::nullopt;
+        }
+
         auto r = txn.exec_params(
             "SELECT COALESCE(SUM(principal * POW(1 + rate/100/12, passed_months)), 0) "
             "FROM deposits WHERE user_id = $1 AND status = 'active';",
@@ -663,6 +687,5 @@ std::optional<int> DatabaseManager::getUserDepositSum(int user_id) {
             std::string("getUserDepositSum error: ") + e.what());
         return std::nullopt;
     }
-
-    return deposits;
 }
+

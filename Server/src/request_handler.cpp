@@ -205,11 +205,51 @@ void RequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                     p.debt = newDebt;
                     dbManager.updateFinancialProfile(*uid, p);
 
+                    auto deposits = dbManager.getUserDeposits(*uid);
+                    double totalDepositInterest = 0.0;
+                    long long newTotalDeposit = 0;
+
+                    for (auto& deposit : deposits) {
+                        if (deposit.passed_months < deposit.term_months) {
+                            double monthlyInterest = deposit.principal * (deposit.rate / 100 / 12);
+                            totalDepositInterest += monthlyInterest;
+                            deposit.passed_months += 1;
+                            
+                            deposit.current_amount = static_cast<long long>(
+                                deposit.principal * pow(1 + deposit.rate/100/12, deposit.passed_months)
+                            );
+                            
+                            bool depositUpdated = dbManager.createDeposit(
+                                *uid, 
+                                deposit.current_amount, 
+                                deposit.term_months - deposit.passed_months, 
+                                deposit.rate
+                            );
+                                    
+                            if (!depositUpdated) {
+                                Logger::log(LogLevel::ERROR, "Failed to update deposit for user " + std::to_string(*uid));
+                            }
+                        }
+                        newTotalDeposit += deposit.current_amount;
+                    }
+
+                    p.balance += static_cast<int>(totalDepositInterest);
+                    p.total_deposit = newTotalDeposit;
+
+                    p.debt = std::accumulate(userLoans.begin(), userLoans.end(), 0,
+                        [](int sum, const LoanRecord& loan) {
+                            return sum + static_cast<int>(loan.amount);
+                        });
+
+                    dbManager.updateFinancialProfile(*uid, p);
+
                     responseObj->set("payments", paymentsArr);
                     responseObj->set("total_interest", totalInterest);
                     responseObj->set("total_principal", totalPrincipal);
+                    responseObj->set("deposit_interest", totalDepositInterest);
                     responseObj->set("new_balance", p.balance);
                     responseObj->set("new_debt", p.debt);
+                    responseObj->set("new_total_deposit", p.total_deposit);
                     responseObj->set("success", true);
                     response.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
                 }
