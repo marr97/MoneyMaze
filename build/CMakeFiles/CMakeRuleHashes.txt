@@ -1,0 +1,3 @@
+# Hashes of file build rules.
+20d6e7c18253170dd64325829eedfce6 Desktop/CMakeFiles/money_maze_autogen
+0c9fea6119b1795d3e18e375c27e8388 Desktop/money_maze_autogen/timestamp
