@@ -8,6 +8,9 @@ deposit::deposit(QWidget *parent) : QWidget(parent), ui(new Ui::deposit), http_c
     ui->setupUi(this);
     this->setWindowTitle("Оформление вклада");
 
+    connect(http_client_deposit, &httpClient::deposit_taken, this, &deposit::deposit_taken_message);
+    connect(http_client_deposit, &httpClient::error_occurred, this, &deposit::error_message);
+
     // кнопка оформить вклад
     ButtonStyle = "QPushButton {"
         "   background-color: rgba(73, 179, 78, 0.7);"
@@ -194,6 +197,66 @@ void deposit::show_message(MessageType msg_type, const QString &message)
     QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
 }
 
+
+
+void deposit::deposit_taken_message()
+{
+    const int timeout_ms = 2500;
+
+    QLabel* label = new QLabel(this);
+    label->setFixedHeight(40);
+    label->setFixedWidth(190);
+    label->setAlignment(Qt::AlignCenter);
+
+    label->setStyleSheet(
+        "background-color: rgb(97, 197, 84);"
+        "color: rgb(255, 255, 255);"
+        "border-radius: 5px;"
+        "padding: 10px;"
+        "font-family: 'Gill Sans', sans-serif;"
+        "font-size: 14px;"
+        );
+    label->setText("Вклад успешно оформлен!");
+
+    int x = (this->width() - label->sizeHint().width()) / 2;
+    int y = (this->height() - label->sizeHint().height()) / 20;
+
+    label->move(x, y);
+    label->show();
+
+    emit update_profile();
+
+    QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
+}
+
+
+void deposit::error_message(const QString &msg)
+{
+    const int timeout_ms = 2500;
+
+    QLabel* label = new QLabel(this);
+    label->setFixedWidth(400);
+    label->setAlignment(Qt::AlignCenter);
+    label->setWordWrap(true);
+    label->setText("Ошибка: " + msg);
+    label->setStyleSheet(
+        "background-color: rgb(155, 155, 155);"
+        "color: rgb(255, 255, 255);"
+        "border-radius: 5px;"
+        "padding: 10px;"
+        "font-family: 'Gill Sans', sans-serif;"
+        "font-size: 14px;"
+        );
+
+
+    int x = (this->width() - label->sizeHint().width()) / 2;
+    int y = (this->height() - label->sizeHint().height()) / 20;
+
+    label->move(x, y);
+    label->show();
+
+    QTimer::singleShot(timeout_ms, label, &QLabel::deleteLater);
+}
 
 
 void deposit::on_pb_take_clicked()

@@ -31,6 +31,12 @@ private slots:
 
     void show_message(MessageType msg_type, const QString &message);
 
+    void error_message(const QString &msg);
+    void deposit_taken_message();
+
+signals:
+    void update_profile();
+
 private:
     Ui::deposit *ui;
     httpClient *http_client_deposit;

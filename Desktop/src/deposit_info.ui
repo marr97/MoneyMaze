@@ -1,24 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>loan_info</class>
- <widget class="QWidget" name="loan_info">
+ <class>deposit_info</class>
+ <widget class="QWidget" name="deposit_info">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>424</width>
-    <height>340</height>
+    <width>356</width>
+    <height>341</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <widget class="QWidget" name="horizontalLayoutWidget_6">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>200</y>
+     <width>182</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_15">
+    <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
+     <widget class="QLabel" name="period">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>180</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>200</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Gill Sans</family>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string> Оставшийся период</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QWidget" name="verticalLayoutWidget_5">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>10</y>
-     <width>381</width>
+     <width>311</width>
      <height>31</height>
     </rect>
    </property>
@@ -77,18 +120,31 @@
        </font>
       </property>
       <property name="text">
-       <string> Кредиты</string>
+       <string> Вклады</string>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="widget_amount" native="true">
+  <widget class="QToolButton" name="tb_prev">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>310</y>
+     <width>25</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QWidget" name="widget_deposit" native="true">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>60</y>
-     <width>171</width>
+     <width>311</width>
      <height>71</height>
     </rect>
    </property>
@@ -97,13 +153,13 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>171</width>
+      <width>311</width>
       <height>71</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
-      <widget class="QLabel" name="ql_amount">
+      <widget class="QLabel" name="ql_deposit">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -123,7 +179,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Сумма долга</string>
+        <string>Текущая сумма вклада</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -131,61 +187,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="amount_value">
-       <property name="font">
-        <font>
-         <family>Gill Sans</family>
-         <pointsize>16</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QWidget" name="widget_payment" native="true">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>60</y>
-     <width>171</width>
-     <height>71</height>
-    </rect>
-   </property>
-   <widget class="QWidget" name="verticalLayoutWidget_6">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>171</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_9">
-     <item>
-      <widget class="QLabel" name="ql_next_payment">
-       <property name="font">
-        <font>
-         <family>Gill Sans</family>
-         <pointsize>16</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Следующий платеж</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="next_payment_value">
+      <widget class="QLabel" name="deposit_value">
        <property name="font">
         <font>
          <family>Gill Sans</family>
@@ -208,7 +210,7 @@
     <rect>
      <x>20</x>
      <y>150</y>
-     <width>172</width>
+     <width>182</width>
      <height>42</height>
     </rect>
    </property>
@@ -223,13 +225,13 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>170</width>
+        <width>180</width>
         <height>30</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>200</width>
+        <width>100</width>
         <height>16777215</height>
        </size>
       </property>
@@ -246,50 +248,10 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="horizontalLayoutWidget_7">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>150</y>
-     <width>92</width>
-     <height>42</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_16">
-    <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
-     <widget class="QLabel" name="rate_value">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>90</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Gill Sans</family>
-        <pointsize>14</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>0</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_8">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>240</x>
      <y>200</y>
      <width>92</width>
      <height>42</height>
@@ -326,61 +288,18 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="horizontalLayoutWidget_6">
+  <widget class="QWidget" name="horizontalLayoutWidget_7">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>200</y>
-     <width>172</width>
-     <height>42</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_15">
-    <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
-     <widget class="QLabel" name="period">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>170</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>200</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Gill Sans</family>
-        <pointsize>14</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string> Период</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="horizontalLayoutWidget_9">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>250</y>
+     <x>240</x>
+     <y>150</y>
      <width>92</width>
      <height>42</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_18">
+   <layout class="QHBoxLayout" name="horizontalLayout_16">
     <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
-     <widget class="QLabel" name="payed_months_value">
+     <widget class="QLabel" name="rate_value">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -409,66 +328,10 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="horizontalLayoutWidget_10">
+  <widget class="QLabel" name="ql_deposit_id">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>250</y>
-     <width>172</width>
-     <height>42</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_19">
-    <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
-     <widget class="QLabel" name="payed_months">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>170</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>200</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Gill Sans</family>
-        <pointsize>14</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string> Выплаченные месяцы</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QToolButton" name="tb_prev">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>310</y>
-     <width>25</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="ql_loan_id">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
+     <x>130</x>
      <y>310</y>
      <width>111</width>
      <height>20</height>
@@ -481,7 +344,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Номер кредита: 1 </string>
+    <string>Номер вклада: 1 </string>
    </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -490,7 +353,7 @@
   <widget class="QToolButton" name="tb_next">
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>320</x>
      <y>310</y>
      <width>25</width>
      <height>25</height>

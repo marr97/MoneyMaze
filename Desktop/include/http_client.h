@@ -31,6 +31,7 @@ public:
     void take_loan(int amount, int period, int rate, const QString &username);
     void user_loans(const QString &username);
     void make_deposit(int amount, int period, int rate, const QString &username);
+    void user_deposits(const QString &username);
 
 signals:
     void registration_finished(int status_code, const QString &error_msg);
@@ -42,6 +43,9 @@ signals:
     void loan_info_received(int min_loan_amount, int max_loan_amount, int interest_rate);
     void loans_received(const QVector<QJsonObject> &loans_list);
     void loan_taken();
+
+    void deposits_received(const QVector<QJsonObject> &deposits_list);
+    void deposit_taken();
 
 private:
     QNetworkAccessManager *manager;

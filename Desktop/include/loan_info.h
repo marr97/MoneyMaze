@@ -24,6 +24,7 @@ private slots:
     void on_tb_next_clicked();
 
     void update_loan_display();
+    int count_next_payment(int amount, int rate, int period);
 
 private:
     Ui::loan_info *ui;

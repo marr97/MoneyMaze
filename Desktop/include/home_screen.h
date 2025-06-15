@@ -10,6 +10,7 @@
 #include "loan.h"
 #include "deposit.h"
 #include "loan_info.h"
+#include "deposit_info.h"
 
 class httpClient;
 
@@ -55,6 +56,8 @@ private slots:
 
   void on_pb_make_deposit_clicked();
 
+  void on_pb_my_savings_clicked();
+
   signals:
   void profile_requested(const QString &username);
 
@@ -66,6 +69,7 @@ private slots:
   loan ui_loan;
   deposit ui_deposit;
   loan_info ui_loan_info;
+  deposit_info ui_deposit_info;
 
   QPropertyAnimation *animation_modules;
   QPropertyAnimation *animation_savings;

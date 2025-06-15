@@ -144,12 +144,11 @@ void loan::set_loan_info(int min_amount, int max_amount, int rate, const QString
 
 int loan::count_monthly_payment(int amount, int period, int rate)
 {
-    // дифференцированные платежи
-    int x = amount / period;
+    double principal_part = static_cast<double>(amount) / period;
+    double interest_part = amount * (rate / 100.0 / 12.0);
+    int payment = static_cast<int>(principal_part + interest_part + 0.5);
 
-    int k = amount * (rate / 100) * 30 / 365;
-
-    return (x + k);
+    return payment;
 }
 
 

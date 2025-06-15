@@ -95,7 +95,7 @@ void loan_info::set_loan_data(const QVector<QJsonObject> &loans)
     if (loans.isEmpty()) {
         QLabel* label = new QLabel(this);
         label->setText("У вас нет кредитов");
-        label->setFixedSize(430, 340);
+        label->setFixedSize(430, 360);
         label->setAlignment(Qt::AlignCenter);
 
 
@@ -124,10 +124,18 @@ void loan_info::update_loan_display() {
 
     const QJsonObject& current = m_loans[loan_id];
 
-    ui->amount_value->setText(QLocale().toString(current["amount"].toInt()));
-    ui->period_value->setText(QLocale().toString(current["period"].toInt()) + " мес");
-    ui->rate_value->setText(QLocale().toString(current["rate"].toInt()) + " %");
-    ui->payed_months_value->setText(QLocale().toString(current["passed_months"].toInt()) + " мес");
+    int amount = current["amount"].toInt();
+    int rate = current["rate"].toInt();
+    int period = current["period"].toInt();
+    int passed_months = current["passed_months"].toInt();
+
+    ui->amount_value->setText(QLocale().toString(amount));
+    ui->period_value->setText(QLocale().toString(period) + " мес");
+    ui->rate_value->setText(QLocale().toString(rate) + " %");
+    ui->payed_months_value->setText(QLocale().toString(passed_months) + " мес");
+
+    int next_payment = count_next_payment(amount, rate, period - passed_months);
+    ui->next_payment_value->setText(QLocale().toString(next_payment));
 
     ui->ql_loan_id->setText("Номер кредита: " + QString::number(loan_id + 1));
 
@@ -151,3 +159,16 @@ void loan_info::on_tb_next_clicked()
     }
 }
 
+
+int loan_info::count_next_payment(int amount, int rate, int period)
+{
+    if (period <= 0 || amount <= 0) {
+        return 0;
+    }
+
+    double principal_part = static_cast<double>(amount) / period;
+    double interest_part = amount * (rate / 100.0 / 12.0);
+    int next_payment = static_cast<int>(principal_part + interest_part + 0.5);
+
+    return next_payment;
+}

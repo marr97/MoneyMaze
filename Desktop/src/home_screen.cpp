@@ -19,6 +19,7 @@ home_screen::home_screen(QWidget *parent)
   connect(http_client_home, &httpClient::financial_profile_received, this, &home_screen::show_financial_profile);
   connect(http_client_home, &httpClient::loan_info_received, this, &home_screen::loan_information);
   connect(&ui_loan, &loan::update_profile, this, &home_screen::update_financial_profile);
+  connect(&ui_deposit, &deposit::update_profile, this, &home_screen::update_financial_profile);
 
   // Имя пользователя
 
@@ -523,6 +524,16 @@ void home_screen::on_pb_make_deposit_clicked()
 
     QTimer::singleShot(900, this, [this]{
         ui_deposit.show();
+    });
+}
+
+
+void home_screen::on_pb_my_savings_clicked()
+{
+    ui_deposit_info.get_deposit_data(username);
+
+    QTimer::singleShot(900, this, [this]{
+        ui_deposit_info.show();
     });
 }
 
