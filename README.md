@@ -7,7 +7,7 @@
 
 ## Описание
 
-**MoneyMaze** — кроссплатформенное приложение для обучения финансовой грамотности в игровой форме. Основная функциональность включает симуляцию личного бюджета с ежемесячным циклом, систему кредитов и вкладов, обучающие модули и визуализацию финансового состояния.
+**MoneyMaze** — кроссплатформенное приложение для обучения финансовой грамотности в игровой форме. Основная функциональность включает симуляцию личного бюджета с ежемесячным циклом, систему кредитов и вкладов, обучающие модули и визуализацию финансового состояния пользователя.
 
 
 ## Архитектура
@@ -28,7 +28,7 @@
 
 * Возможность оформить кредит или вклад, а так же просмотреть информацию по ним:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/deposit.png" width="50%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/loan.png" width="48%"/> <img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/loan_info.png" width="48%"/>
 
 * Финансовая диаграмма пользователя:
 
@@ -37,7 +37,7 @@
 
 ## Используемые технологии
 
-* Интерфейс:` Qt 6`
+* Интерфейс: `Qt 6`
 * База данных: `PostgreSQL`
 * Сеть: `Poco Libraries`
 * Система сборки: `Cmake`
@@ -59,7 +59,7 @@ sudo apt-get install build-essential libgl1-mesa-dev pkg-config libpqxx-dev qt6-
 git clone https://github.com/marr97/MoneyMaze
 ```
 
-3. Перейдите в серверную часть `MoneyMaze/Server` или десктопную `cd MoneyMaze/Desktop` и соберите
+3. Перейдите в серверную часть `MoneyMaze/Server` или десктопную `MoneyMaze/Desktop` и соберите
 
 ```bash
 cd MoneyMaze/Server
