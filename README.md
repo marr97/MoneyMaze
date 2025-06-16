@@ -24,15 +24,15 @@
 
 * Обучающие модули:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/module.png" width="40%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/module.png" width="30%"/>
 
 * Возможность оформить кредит или вклад, а так же просмотреть информацию по ним:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/loan.png" width="40%"/> <img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/loan_info.png" width="41%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/loan.png" width="30%"/> <img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/loan_info.png" width="31,5%"/>
 
 * Финансовая диаграмма пользователя:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="80%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="70%"/>
 
 
 ## Используемые технологии
