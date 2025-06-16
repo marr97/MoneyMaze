@@ -22,9 +22,7 @@
 
 ## Функциональности проекта
 
-* Обучающие модули:
-
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/module.png" width="40%"/>
+* Обучающие модули
 
 * Возможность оформить кредит или вклад, а так же просмотреть информацию по ним:
 
@@ -32,7 +30,7 @@
 
 * Финансовая диаграмма пользователя:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="70%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="90%"/>
 
 
 ## Используемые технологии
