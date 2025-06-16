@@ -30,7 +30,7 @@
 
 * Финансовая диаграмма пользователя:
 
-<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="90%"/>
+<img src="https://github.com/marr97/MoneyMaze/blob/main/screenshots/home_screen.png" width="81%"/>
 
 
 ## Используемые технологии
