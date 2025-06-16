@@ -34,7 +34,7 @@ DatabaseManager::~DatabaseManager() { disconnect(); }
 
 bool DatabaseManager::connect() {
     try {
-        std::string connStr = "postgres://money-maze-backend:yc&+qJ`XM=&g,QMB6Hj$9{>g`IM)5|rq2@rc1a-jwq5jn2b23cxfn3i.mdb.yandexcloud.net:6432/money-maze?ssl=true&sslmode=verify-full&target_session_attrs=read-write";
+        std::string connStr = "postgres://money-maze-backend:yc&+qJ`XM=&g,QMB6Hj$9{>g`IM)5|rq2@rc1d-mbwo305swnyjdr1k.mdb.yandexcloud.net:6432/money-maze?ssl=true&sslmode=verify-full";
         conn = std::make_unique<pqxx::connection>(connStr);
         if (!conn->is_open()) {
             Logger::log(LogLevel::ERROR, "Failed to open DB connection.");
